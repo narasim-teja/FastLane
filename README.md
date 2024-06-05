@@ -6,7 +6,7 @@ cd FastLane
 
 cd frontend
 
-npm install --force
+npm install 
 
 change the .envexample file to .env
 
