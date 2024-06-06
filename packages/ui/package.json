@@ -1,0 +1,44 @@
+{
+  "name": "@fastlane/ui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": [
+      "./src/*.tsx",
+      "./src/*.ts"
+    ]
+  },
+  "license": "MIT",
+  "scripts": {
+    "ui": "bunx shadcn-ui@latest",
+    "clean": "rm -rf .turbo node_modules",
+    "fmt": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
+    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
+    "lint": "eslint",
+    "typec-heck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@fastlane/eslint-config": "*",
+    "@fastlane/prettier-config": "*",
+    "@fastlane/tailwind-config": "*",
+    "@fastlane/typescript-config": "*",
+    "@types/react": "^18.3.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "react": "18.3.1",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "react": "18.3.1"
+  },
+  "prettier": "@fastlane/prettier-config"
+}

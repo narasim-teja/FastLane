@@ -1,0 +1,10 @@
+{
+  "extends": "@fastlane/typescript-config/vite.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "~": ["src/*"]
+    }
+  }
+}

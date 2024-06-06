@@ -1,0 +1,10 @@
+{
+  "extends": "@fastlane/typescript-config/base.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "~": ["src/*"]
+    }
+  }
+}
