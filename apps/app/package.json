@@ -12,8 +12,7 @@
     "fmt": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "clean": "rm -rf dist",
-    "cleani": "rm -rf dist && rm -rf node_modules && bun i",
-    "prepare": "husky"
+    "cleani": "rm -rf dist && rm -rf node_modules && bun i"
   },
   "dependencies": {
     "clsx": "^2.1.1",

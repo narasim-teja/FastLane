@@ -6,7 +6,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "fmt": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
-    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries"
+    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
+    "prepare": "husky"
   },
   "dependencies": {
     "@fastlane/ui": "*"
