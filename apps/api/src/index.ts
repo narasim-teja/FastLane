@@ -21,7 +21,7 @@ const server = serve({ fetch: app.fetch, port: env.SOCKET_PORT }, (info) => {
 
 const ioServer = new Server(server, {
   cors: {
-    origin: env.SOCKET_ORIGIN,
+    origin: env.SOCKET_ORIGIN.split(","),
     methods: ["GET", "POST"],
   },
 });

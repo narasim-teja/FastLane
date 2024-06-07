@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+
 import { useEffect, useRef } from "react";
 
 import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
@@ -21,11 +22,14 @@ function useEventListener<K extends keyof WindowEventMap>(
 
 // Element Event based useEventListener interface
 function useEventListener<
-  K extends keyof HTMLElementEventMap,
-  T extends HTMLElement = HTMLDivElement,
+  K extends keyof HTMLElementEventMap & keyof SVGElementEventMap,
+  T extends Element = K extends keyof HTMLElementEventMap ? HTMLDivElement
+  : SVGElement,
 >(
   eventName: K,
-  handler: (event: HTMLElementEventMap[K]) => void,
+  handler:
+    | ((event: HTMLElementEventMap[K]) => void)
+    | ((event: SVGElementEventMap[K]) => void),
   element: RefObject<T>,
   options?: boolean | AddEventListenerOptions,
 ): void;
@@ -43,15 +47,16 @@ function useEventListener<K extends keyof DocumentEventMap>(
  */
 function useEventListener<
   KW extends keyof WindowEventMap,
-  KH extends keyof HTMLElementEventMap,
+  KH extends keyof HTMLElementEventMap & keyof SVGElementEventMap,
   KM extends keyof MediaQueryListEventMap,
-  T extends HTMLElement | MediaQueryList | void = void,
+  T extends HTMLElement | SVGAElement | MediaQueryList = HTMLElement,
 >(
   eventName: KW | KH | KM,
   handler: (
     event:
       | WindowEventMap[KW]
       | HTMLElementEventMap[KH]
+      | SVGElementEventMap[KH]
       | MediaQueryListEventMap[KM]
       | Event,
   ) => void,
@@ -72,7 +77,9 @@ function useEventListener<
     if (!(targetElement && targetElement.addEventListener)) return;
 
     // Create event listener that calls handler function stored in ref
-    const listener: typeof handler = (event) => savedHandler.current(event);
+    const listener: typeof handler = (event) => {
+      savedHandler.current(event);
+    };
 
     targetElement.addEventListener(eventName, listener, options);
 

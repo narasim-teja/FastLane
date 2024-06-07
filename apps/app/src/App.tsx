@@ -1,15 +1,45 @@
-import { Button } from "@fastlane/ui/button";
+import React from "react";
+
+import { KeyboardControls, OrbitControls } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Physics } from "@react-three/rapier";
+import { Perf } from "r3f-perf";
+
+import { Experience } from "./components/experience";
+import { Lights } from "./components/lights";
+import { Spinner } from "./components/spinner";
 
 export default function App() {
   return (
-    <div className="grid h-screen w-full place-items-center">
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <div className="text-5xl">
-          Hello from <span className="text-blue-500">Fastlane</span>!
-        </div>
+    <KeyboardControls
+      map={[
+        { name: "forward", keys: ["ArrowUp", "KeyW"] },
+        { name: "backward", keys: ["ArrowDown", "KeyS"] },
+        { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+        { name: "rightward", keys: ["ArrowRight", "KeyD"] },
+      ]}
+    >
+      <React.Suspense fallback={<Spinner />}>
+        <Canvas
+          shadows
+          camera={{
+            fov: 45,
+            near: 0.1,
+            far: 200,
+            position: [0, 4, 23],
+          }}
+        >
+          <color args={["#bdedfc"]} attach="background" />
+          <OrbitControls makeDefault />
+          <Perf />
 
-        <Button>Click Me</Button>
-      </div>
-    </div>
+          <Physics debug={false}>
+            <Lights />
+
+            <Experience />
+          </Physics>
+        </Canvas>
+      </React.Suspense>
+    </KeyboardControls>
   );
 }
