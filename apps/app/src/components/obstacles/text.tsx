@@ -35,10 +35,16 @@ export function TextObstacle({ position = [0, 0, 0] }) {
       <RigidBody
         ref={ref}
         type="kinematicPosition"
-        restitution={0.2}
+        // restitution={0.2}
+        restitution={0}
         friction={0}
       >
-        <primitive object={wagmi} scale={0.01} position={[-1.6, 0.25, 0]} />
+        <primitive
+          object={wagmi}
+          scale={0.01}
+          // position={[-1.6, 0.25, 0]}
+          position={[-1, 0, 0]}
+        />
       </RigidBody>
     </group>
   );

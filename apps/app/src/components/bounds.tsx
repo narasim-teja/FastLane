@@ -20,21 +20,20 @@ export function Bounds({ length = 9, onClick }: BoundsProps) {
   };
 
   // Quantizing scale and position values to 3 decimal places
-  const scale = [quantize(0.014), quantize(0.01), quantize(0.00668 * length)];
-  const position = [
-    quantize(2),
-    quantize(-0.21),
-    quantize(-(2 * length) + 0.05),
-  ];
+  const scale = [0.014, 0.01, 0.00668 * length].map(quantize);
+  // const position = [2, -0.21, -(2 * length) + 0.05].map(quantize);
+  const position = [2, -0.2, -(2 * length) + 0].map(quantize);
 
   return (
     <RigidBody type="fixed" colliders="trimesh" restitution={0.2} friction={1}>
       <primitive object={corridor} scale={scale} position={position} />
       <CuboidCollider
-        args={[2.5, 0, 2.5]}
-        position={[2, 0, -(5 * length) + 2]}
-        restitution={0.2}
+        // args={[2.5, 0, 2.5]}
+        args={[2, 0, 2]}
+        // restitution={0.2}
+        restitution={0}
         friction={1}
+        position={[2, 0, -(5 * length) + 2]}
         onCollisionEnter={handleCheckpointEnter}
       />
     </RigidBody>

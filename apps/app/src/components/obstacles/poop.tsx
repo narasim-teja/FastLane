@@ -29,14 +29,16 @@ export function PoopObstacle({ position = [0, 0, 0] }) {
     <group position={position as Position}>
       <RigidBody
         colliders="hull"
-        restitution={0.2}
+        // restitution={0.2}
+        restitution={0}
         friction={1}
         onCollisionExit={handleCollisionExit}
       >
         <primitive
           object={poop}
-          scale={0.007}
-          position={[0, 0.8, 1.6]}
+          scale={0.007} // NOTE: scale down the model
+          // position={[0, 0.8, 1.6]}
+          position={[0, 1, 1]}
           rotation-x={-Math.PI / 2}
         />
       </RigidBody>

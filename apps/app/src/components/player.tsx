@@ -24,9 +24,7 @@ export function Player() {
   const body = useRef<RapierRigidBody>(null);
   const lastRow = useRef(0);
 
-  const [recordedActions, setRecordedActions] = useState<
-    { frameNumber: number; action: string }[]
-  >([]);
+  const [recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
   const [_, setSimulationData] = useState<GamePlayAction[]>([]);
   // const [simulationIndex, setSimulationIndex] = useState(0);
 

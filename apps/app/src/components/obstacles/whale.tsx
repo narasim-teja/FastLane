@@ -15,7 +15,7 @@ export function WhaleObstacle({ position = [0, 0, 0] }) {
   const { activateSpeedBoost } = useGame();
 
   React.useEffect(() => {
-    const timer = setTimeout(() => setGameReady(true), 1000); // Ensure consistent timing
+    const timer = setTimeout(() => setGameReady(true), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -34,7 +34,8 @@ export function WhaleObstacle({ position = [0, 0, 0] }) {
     <group position={quantizedPosition as Position}>
       <RigidBody
         colliders="hull"
-        restitution={0.2}
+        // restitution={0.2}
+        restitution={0}
         friction={1}
         onCollisionExit={handleCollisionExit}
       >

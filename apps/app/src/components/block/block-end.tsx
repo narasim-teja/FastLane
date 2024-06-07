@@ -8,13 +8,17 @@ export function BlockEnd({ position = [0, 0, 0] }) {
       <Text
         font="/bebas-neue-v9-latin-regular.woff"
         scale={1}
-        position={[0, 1.25, 2]}
+        // position={[0, 1.25, 2]}
+        position={[0, 1, 2]}
       >
         Checkpoint
         <meshBasicMaterial toneMapped={false} />
       </Text>
       <mesh receiveShadow position={[2, 0, 2]}>
-        <boxGeometry args={[5, 0.1, 5]} />
+        <boxGeometry
+          // args={[5, 0.1, 5]}
+          args={[5, 0, 5]}
+        />
         <meshStandardMaterial color="limegreen" />
       </mesh>
     </group>

@@ -24,7 +24,9 @@ export default function App() {
           shadows
           camera={{
             fov: 45,
-            near: 0.1,
+            // NOTE: Use ints instead of floats for cost efficiency and full on-chain implementation
+            // near: 0.1,
+            near: 1,
             far: 200,
             position: [0, 4, 23],
           }}
@@ -32,7 +34,6 @@ export default function App() {
           <color args={["#bdedfc"]} attach="background" />
           <OrbitControls makeDefault />
           <Perf />
-
           <Physics debug={false}>
             <Lights />
 

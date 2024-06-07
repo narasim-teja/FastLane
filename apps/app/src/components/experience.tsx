@@ -30,8 +30,14 @@ export function Experience() {
             );
           })}
 
-          <BlockStart position={[2, 0.1, 7]} />
-          <BlockEnd position={[0, 0, -((8 + 1) * 4.99)]} />
+          <BlockStart
+            //  position={[2, 0.1, 7]}
+            position={[2, 0, 7]}
+          />
+          <BlockEnd
+            // position={[0, 0, -((8 + 1) * 4.99)]}
+            position={[0, 0, -((8 + 1) * 5)]}
+          />
           <Bounds
             length={8 + 1}
             onClick={() => {

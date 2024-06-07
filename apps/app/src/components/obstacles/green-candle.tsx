@@ -31,13 +31,15 @@ export function GreenCandle({ position = [0, 0, 0] }) {
       <RigidBody
         ref={obstacleRef}
         type="kinematicPosition"
-        restitution={0.2}
+        // restitution={0.2}
+        restitution={0}
         friction={1}
       >
         <primitive
           object={candle}
-          scale={0.005}
-          position={[2.1, 0.2, 0]}
+          scale={0.005} // NOTE: scale down the model
+          // position={[2.1, 0.2, 0]}
+          position={[2, 0, 0]}
           rotation-z={Math.PI / 2}
         />
       </RigidBody>
