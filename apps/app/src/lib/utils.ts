@@ -16,8 +16,8 @@ export function downloadRecordedActions(actions: GamePlayAction[]) {
   document.body.removeChild(link);
 }
 
-export function logger(message: string, data?: unknown) {
+export function logger(message: unknown, data?: unknown) {
   if (process.env.NODE_ENV === "development") {
-    console.log(message, data);
+    console.log(message, data ?? "");
   }
 }

@@ -92,7 +92,6 @@ export function Player() {
       // optionally reset linear and angular velocity to 0 to stop all movement immediately
       body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
-      return;
     }
 
     const { forward, backward, leftward, rightward } = getKeys();
@@ -250,24 +249,22 @@ export function Player() {
   const texture = useTexture("/marbel-04.png");
 
   return (
-    <>
-      <RigidBody
-        ref={body}
-        canSleep={false}
-        colliders="ball"
-        restitution={0.2}
-        friction={1}
-        linearDamping={0.5}
-        angularDamping={0.5}
-        position={[2, 1, 7]}
-      >
-        {/* <primitive object={ball} scale={0.005} /> */}
+    <RigidBody
+      ref={body}
+      canSleep={false}
+      colliders="ball"
+      restitution={0.2}
+      friction={1}
+      linearDamping={0.5}
+      angularDamping={0.5}
+      position={[2, 1, 7]}
+    >
+      {/* <primitive object={ball} scale={0.005} /> */}
 
-        <mesh castShadow>
-          <sphereGeometry args={[0.25, 18, 18]} />
-          <meshStandardMaterial attach="material" map={texture} />
-        </mesh>
-      </RigidBody>
-    </>
+      <mesh castShadow>
+        <sphereGeometry args={[0.25, 18, 18]} />
+        <meshStandardMaterial attach="material" map={texture} />
+      </mesh>
+    </RigidBody>
   );
 }

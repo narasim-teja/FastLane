@@ -6,10 +6,14 @@ import { Physics } from "@react-three/rapier";
 import { Perf } from "r3f-perf";
 
 import { Experience } from "./components/experience";
+import { LevelEditor } from "./components/level-editor";
 import { Lights } from "./components/lights";
 import { Spinner } from "./components/spinner";
+import { useGame } from "./hooks/use-game";
 
 export default function App() {
+  const { isEditorOpen, addSegment } = useGame();
+
   return (
     <KeyboardControls
       map={[
@@ -41,6 +45,8 @@ export default function App() {
           </Physics>
         </Canvas>
       </React.Suspense>
+
+      {isEditorOpen && <LevelEditor onObstaclesSelected={addSegment} />}
     </KeyboardControls>
   );
 }
