@@ -1,47 +1,53 @@
 {
   "name": "fastlane",
+  "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "turbo build",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo clean",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "fmt": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
-    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
+    "fmt": "turbo fmt --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
+    "fmt:check": "turbo fmt --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
+    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
+    "type-check": "turbo type-check",
+    "lint:ws": "bunx sherif@latest",
+    "postinstall": "bun lint:ws",
     "prepare": "husky"
-  },
-  "dependencies": {
-    "@fastlane/ui": "*"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@fastlane/eslint-config": "*",
-    "@fastlane/prettier-config": "*",
-    "@fastlane/tailwind-config": "*",
-    "@fastlane/typescript-config": "*",
-    "eslint": "^8.57.0",
+    "@fastlane/prettier-config": "workspace:*",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.5",
     "prettier": "^3.3.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typescript": "^5.4.5"
   },
+  "prettier": "@fastlane/prettier-config",
   "packageManager": "bun@1.1.12",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "tooling/*"
   ],
-  "prettier": "@fastlane/prettier-config",
   "lint-staged": {
     "*.{ts,tsx,md,mdx}": [
-      "prettier --write \"**/*.{ts,tsx,mdx}\" --cache --experimental-ternaries"
+      "bun fmt"
     ],
     "*.{ts,tsx,mdx}": [
-      "eslint --fix ."
+      "bun lint"
     ]
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "engines": {
+    "node": ">=20.12.0"
   }
 }

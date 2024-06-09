@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
-import type { Obstacle } from "~/types/misc";
+import type { Obstacles } from "~/types/misc";
 import { socket } from "~/lib/socket";
 
-type State = {
-  segments: { obstacles: Obstacle[] }[];
-  addSegment: (obstacles: Obstacle[]) => void;
-  addObstaclesRow: (obstacles: Obstacle[]) => void;
+interface State {
+  segments: { obstacles: Obstacles }[];
+  addSegment: (obstacles: Obstacles) => void;
+  addObstaclesRow: (obstacles: Obstacles) => void;
 
   isEditorOpen: boolean;
   openEditor: () => void;
@@ -27,7 +27,7 @@ type State = {
   startGame: () => void;
   endGame: () => void;
   restartGame: () => void;
-};
+}
 
 export const useGame = create<State>()(
   subscribeWithSelector((set, get) => ({
@@ -40,15 +40,23 @@ export const useGame = create<State>()(
       const { segments } = get();
 
       const latestSegment = segments[segments.length - 1];
-      socket.emit("server.addSegment", 59140, latestSegment.obstacles);
+      socket.emit("server.addSegment", 59140, latestSegment?.obstacles);
     },
     addObstaclesRow: (obstacles) =>
-      set((state) => ({
+      set((state) => {
         // assuming we're always updating the first (and currently only) segment
-        segments: [
-          { obstacles: [...state.segments[0].obstacles, ...obstacles] },
-        ],
-      })),
+        const firstSegment = state.segments[0];
+
+        if (firstSegment) {
+          return {
+            segments: [
+              { obstacles: [...firstSegment.obstacles, ...obstacles] },
+            ],
+          };
+        }
+
+        return state;
+      }),
 
     isEditorOpen: false,
     openEditor: () => set(() => ({ isEditorOpen: true })),

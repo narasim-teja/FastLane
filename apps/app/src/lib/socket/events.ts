@@ -1,4 +1,4 @@
-import type { Obstacle } from "~/types/misc";
+import type { Obstacles } from "~/types/misc";
 import { useGame } from "~/hooks/use-game";
 import { socket } from ".";
 
@@ -10,10 +10,10 @@ socket.on("connect", () => {
   console.log(`>>> WebSocket connected`);
 });
 
-socket.on("client.revealRow", (rowId: number, obstaclesInRow: Obstacle[]) => {
+socket.on("client.revealRow", (rowId: number, obstaclesInRow: Obstacles) => {
   console.log(`Raw event data for row ${rowId}:`, obstaclesInRow);
 
-  if (obstaclesInRow) {
+  if (obstaclesInRow.length) {
     console.log(
       `>>> Reveal data for row: ${rowId}, Data: ${JSON.stringify(obstaclesInRow)}`,
     );

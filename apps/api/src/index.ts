@@ -40,19 +40,22 @@ ioServer.on("connection", async (socket) => {
     console.error("Failed to load initial obstacles:", error);
   }
 
-  socket.on("server.revealRow", async (chainId, sessionId, rowIndex) => {
-    console.log(
-      `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`,
-    );
+  socket.on(
+    "server.revealRow",
+    async (chainId: number, sessionId: number, rowIndex: number) => {
+      console.log(
+        `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`,
+      );
 
-    try {
-      const obstaclesInRow = await revealRow(chainId, sessionId, rowIndex);
+      try {
+        const obstaclesInRow = await revealRow(chainId, sessionId, rowIndex);
 
-      socket.emit("client.revealRow", rowIndex, obstaclesInRow);
-    } catch (error) {
-      console.error("Error in revealRow:", error);
-    }
-  });
+        socket.emit("client.revealRow", rowIndex, obstaclesInRow);
+      } catch (error) {
+        console.error("Error in revealRow:", error);
+      }
+    },
+  );
 
   socket.on("disconnect", (reason) => {
     console.log(`<<< Disconnected: ${socket.id} (${reason})`);

@@ -1,12 +1,12 @@
 import React from "react";
 
-import type { Obstacle } from "~/types/misc";
+import type { Obstacles } from "~/types/misc";
+import { useContract } from "~/hooks/use-contract";
 import { CHAIN_ID } from "~/lib/constants/globals";
-import { eth } from "~/lib/eth";
 
 const obstacleOptions = [
   { label: "None", value: null, image: "/images/none.png" },
-  { label: "Whale Obstacle", value: "1", image: "/images/whale_obstacle.png" },
+  { label: "Whale Obstacles", value: "1", image: "/images/whale_obstacle.png" },
   { label: "Text Obstacle", value: "2", image: "/images/wagmi_obstacle.png" },
   { label: "Poop Obstacle", value: "3", image: "/images/poop_obstacle.webp" },
   { label: "Green Candle", value: "4", image: "/images/candle_obstacle.webp" },
@@ -15,18 +15,18 @@ const obstacleOptions = [
 const NUMBER_OF_COLUMNS = 5;
 const NUMBER_OF_ROWS = 8;
 
-const contract = await eth;
+interface LevelEditorProps {
+  onObstaclesSelected: (obstacles: Obstacles) => void;
+}
 
-type LevelEditorProps = {
-  onObstaclesSelected: (obstacles: Obstacle[]) => void;
-};
-
-type Selection = {
+interface Selection {
   obstacle: string | null;
   column: number | null;
-};
+}
 
 export function LevelEditor({ onObstaclesSelected }: LevelEditorProps) {
+  const contract = useContract();
+
   const [selections, setSelections] = React.useState<Selection[]>(
     Array(NUMBER_OF_ROWS).fill({ obstacle: null, column: null }),
   );
@@ -48,11 +48,13 @@ export function LevelEditor({ onObstaclesSelected }: LevelEditorProps) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const resultArray = Array(NUMBER_OF_COLUMNS * NUMBER_OF_ROWS).fill(0);
+    const resultArray = Array(NUMBER_OF_COLUMNS * NUMBER_OF_ROWS).fill(
+      0,
+    ) as number[];
 
-    selections.forEach((sel, index) => {
+    selections.forEach((sel, i) => {
       if (sel.obstacle !== null && sel.column !== null) {
-        resultArray[sel.column + index * NUMBER_OF_COLUMNS] = parseInt(
+        resultArray[sel.column + i * NUMBER_OF_COLUMNS] = parseInt(
           sel.obstacle,
         );
       }
@@ -62,7 +64,7 @@ export function LevelEditor({ onObstaclesSelected }: LevelEditorProps) {
     const extendedResultArray = resultArray.concat(Array(10).fill(0));
 
     try {
-      await contract.addSegment(CHAIN_ID, extendedResultArray);
+      await contract?.addSegment(CHAIN_ID, extendedResultArray);
       onObstaclesSelected(extendedResultArray);
     } catch (error) {
       console.error("Error submitting obstacles to the blockchain:", error);
@@ -89,14 +91,14 @@ export function LevelEditor({ onObstaclesSelected }: LevelEditorProps) {
                   type="radio"
                   name={`obstacle-${index}`}
                   value={option.value ?? ""}
-                  checked={selections[index].obstacle === option.value}
+                  checked={selections[index]?.obstacle === option.value}
                   onChange={() => handleObstacleChange(index, option.value)}
-                  className="border border-[4CAF50]"
+                  className="border border-[#4CAF50]"
                 />
                 <img
                   src={option.image}
                   alt={option.label}
-                  className="ml-1.5 size-20 rounded-md border border-[4CAF50]"
+                  className="ml-1.5 size-20 rounded-md border border-[#4CAF50]"
                 />
               </label>
             ))}
@@ -105,7 +107,7 @@ export function LevelEditor({ onObstaclesSelected }: LevelEditorProps) {
                 <label key={colIndex}>
                   <input
                     type="checkbox"
-                    checked={selections[index].column === colIndex}
+                    checked={selections[index]?.column === colIndex}
                     onChange={() => handleColumnChange(index, colIndex)}
                     className="ml-1.5"
                   />

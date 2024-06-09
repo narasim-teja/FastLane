@@ -1,5 +1,5 @@
 {
-  "extends": "@fastlane/typescript-config/vite.json",
+  "extends": "@fastlane/tsconfig/vite.json",
   "include": ["src"],
   "compilerOptions": {
     "baseUrl": "./",

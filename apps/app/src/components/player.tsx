@@ -37,7 +37,7 @@ export function Player() {
   } = useGame();
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       try {
         const response = await fetch("/player-actions.json");
         const data = await response.json();

@@ -13,32 +13,42 @@
   "license": "MIT",
   "scripts": {
     "ui": "bunx shadcn-ui@latest",
-    "clean": "rm -rf .turbo node_modules",
-    "fmt": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
-    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx,json}\" --cache --experimental-ternaries",
+    "ui-add": "bunx shadcn-ui add && prettier src --write --list-different",
+    "fmt": "prettier --write . --ignore-path ../../.gitignore",
+    "fmt:check": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
-    "typec-heck": "tsc --noEmit --emitDeclarationOnly false"
+    "type-check": "tsc --noEmit --emitDeclarationOnly false",
+    "clean": "rm -rf .turbo node_modules"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
+    "next-themes": "^0.3.0",
+    "react-hook-form": "^7.51.4",
+    "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@fastlane/eslint-config": "*",
-    "@fastlane/prettier-config": "*",
-    "@fastlane/tailwind-config": "*",
-    "@fastlane/typescript-config": "*",
-    "@types/react": "^18.3.2",
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
-    "react": "18.3.1",
+    "@fastlane/eslint-config": "workspace:*",
+    "@fastlane/prettier-config": "workspace:*",
+    "@fastlane/tailwind-config": "workspace:*",
+    "@fastlane/tsconfig": "workspace:*",
+    "@types/react": "^18.3.3",
+    "eslint": "^9.2.0",
+    "prettier": "^3.3.0",
+    "react": "^18.3.1",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "react": "18.3.1"
+    "react": "^18.3.1",
+    "zod": "^3.23.8"
   },
   "prettier": "@fastlane/prettier-config"
 }

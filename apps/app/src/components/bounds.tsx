@@ -4,10 +4,10 @@ import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import { useGame } from "~/hooks/use-game";
 import { quantize } from "~/lib/utils";
 
-type BoundsProps = {
+interface BoundsProps {
   length?: number;
   onClick: () => void;
-};
+}
 
 export function Bounds({ length = 9, onClick }: BoundsProps) {
   const corridor = useFBX("/road-plane.fbx");

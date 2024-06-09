@@ -2,17 +2,17 @@
   "name": "fastlane-play",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview",
     "preview": "tsc && vite build && vite preview",
+    "start": "vite preview",
     "type-check": "tsc --noEmit",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "fmt": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
-    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
-    "clean": "rm -rf dist",
-    "cleani": "rm -rf dist && rm -rf node_modules && bun i"
+    "lint": "eslint src",
+    "fmt": "prettier --write . --ignore-path ../../.gitignore --cache",
+    "fmt:check": "prettier --check . --ignore-path ../../.gitignore --cache",
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
     "@react-three/a11y": "^3.0.0",
@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^7.11.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "autoprefixer": "^10.4.19",
-    "eslint": "^8.57.0",
+    "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",

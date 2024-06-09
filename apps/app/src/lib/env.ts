@@ -2,8 +2,6 @@ import { z } from "zod";
 
 export const envSchema = z
   .object({
-    DEV: z.boolean().default(true),
-
     // ethers.js
     VITE_TEST_TRACK_OWNER_PKEY: z.string({
       required_error: "`TEST_TRACK_OWNER_PKEY` is required",
@@ -32,6 +30,6 @@ try {
     `${(error as z.ZodError).errors.map((e) => e.message).join("\n")}`,
   );
 
-  // force exit
+  // TODO: force exit
   // process.exit(1);
 }

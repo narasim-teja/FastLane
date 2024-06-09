@@ -8,4 +8,10 @@ declare global {
   }
 }
 
+declare module "ethers" {
+  interface Contract {
+    addSegment(chainId: number, obstacleIds: number[]): Promise<void>;
+  }
+}
+
 export {};

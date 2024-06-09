@@ -12,7 +12,7 @@ export function Spinner({ size = "md", ...props }: SpinnerProps) {
       <span className="sr-only">Loading...</span>
       <div
         className={cn(
-          "border-primary aspect-square h-16 animate-spin rounded-full border-y-2 lg:h-32",
+          "aspect-square h-16 animate-spin rounded-full border-y-2 border-primary lg:h-32",
           {
             "h-12 lg:h-24": size === "sm",
             "h-16 lg:h-32": size === "md",

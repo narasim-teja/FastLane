@@ -33,10 +33,7 @@ export async function revealRow(
       await newSession(chainId, sessionId);
     }
 
-    if (
-      !obstaclesInSession[sessionId] ||
-      !obstaclesInSession[sessionId].length
-    ) {
+    if (!obstaclesInSession[sessionId]?.length) {
       console.log("rowIndex:", rowIndex);
       console.error(`No obstacles found for sessionId: ${sessionId}`);
 
@@ -44,7 +41,7 @@ export async function revealRow(
     }
 
     // directly retrieve obstacles numbers for the requested row
-    const obstaclesInRow = obstaclesInSession[sessionId][rowIndex] || [];
+    const obstaclesInRow = obstaclesInSession.at(sessionId)?.at(rowIndex) ?? [];
     console.log(
       `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`,
       obstaclesInRow,
@@ -78,7 +75,7 @@ export async function getAllObstacles(chainId: number, sessionId: number) {
   try {
     const contract = getContract();
 
-    const rowCountBigint: bigint = await contract.getRowCount(chainId);
+    const rowCountBigint = await contract.getRowCount(chainId);
     const rowCount = Number(rowCountBigint.toString());
 
     console.log("rowCount:", rowCount);
@@ -88,7 +85,7 @@ export async function getAllObstacles(chainId: number, sessionId: number) {
 
       console.log("Obstacles for row:", obstacles);
 
-      obstaclesInSession[sessionId].push(obstacles);
+      obstaclesInSession[sessionId]?.push(obstacles);
     }
   } catch (error) {
     console.log("Error in getAllObstaclesASYNC:", error);
@@ -106,8 +103,9 @@ export async function getObstaclesForSession(sessionId: number, row: number) {
     const contract = getContract();
 
     // Await the promise resolution and log the result
-    const obstacless: bigint = await contract.getObstaclesInRow(CHAIN_ID, row);
-    const obstacles = obstacless.toString().split(",").map(Number);
+    const obstaclesBigint = await contract.getObstaclesInRow(CHAIN_ID, row);
+
+    const obstacles = obstaclesBigint.toString().split(",").map(Number);
 
     return obstacles;
   } catch (error) {

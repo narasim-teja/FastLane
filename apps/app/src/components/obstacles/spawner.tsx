@@ -3,11 +3,11 @@ import { PoopObstacle } from "./poop";
 import { TextObstacle } from "./text";
 import { WhaleObstacle } from "./whale";
 
-type ObstaclesSpawnerProps = {
+interface ObstaclesSpawnerProps {
   id: string;
   row: number;
   col: number;
-};
+}
 
 const ObstaclesMap = new Map([
   ["1", WhaleObstacle],
