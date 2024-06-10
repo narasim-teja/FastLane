@@ -1,17 +1,9 @@
 import { config } from "dotenv";
 import { z } from "zod";
 
-config({ path: "../../.env" });
+config();
 
 export const envSchema = z.object({
-  // socket.io
-  SOCKET_PORT: z
-    .string({ required_error: "`SOCKET_PORT` is required" })
-    .transform((v) => +v)
-    .default("3000"),
-  SOCKET_PATH: z.string().default("/socket.io"),
-  SOCKET_ORIGIN: z.string().default("http://localhost:5173"),
-
   // ethers.js
   TEST_TRACK_OWNER_PKEY: z.string({
     required_error: "`TEST_TRACK_OWNER_PKEY` is required",

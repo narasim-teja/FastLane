@@ -1,35 +1,29 @@
+import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
-export const envSchema = z
-  .object({
+export const env = createEnv({
+  clientPrefix: "",
+  client: {
     // ethers.js
-    VITE_TEST_TRACK_OWNER_PKEY: z.string({
+    TEST_TRACK_OWNER_PKEY: z.string({
       required_error: "`TEST_TRACK_OWNER_PKEY` is required",
     }),
 
     // Oasis contract
-    VITE_OASIS_CONTRACT_ADDRESS: z.string({
+    OASIS_CONTRACT_ADDRESS: z.string({
       required_error: "`OASIS_CONTRACT_ADDR` is required",
     }),
-  })
-  .transform((data) => ({
-    ...data,
-    TRACK_OWNER_PKEY: data.VITE_TEST_TRACK_OWNER_PKEY,
-    OASIS_CONTRACT_ADDRESS: data.VITE_OASIS_CONTRACT_ADDRESS,
-  }));
 
-export type Env = z.infer<typeof envSchema>;
+    // Production url
+    SERVER_URL: z.string({
+      required_error: "`SERVER_URL` is required",
+    }),
+  },
 
-export let env: Env;
-
-try {
-  env = envSchema.parse(import.meta.env);
-} catch (error) {
-  console.log(">>> Failed to parse environment variables:");
-  console.log(
-    `${(error as z.ZodError).errors.map((e) => e.message).join("\n")}`,
-  );
-
-  // TODO: force exit
-  // process.exit(1);
-}
+  runtimeEnvStrict: {
+    TEST_TRACK_OWNER_PKEY: import.meta.env.VITE_TEST_TRACK_OWNER_PKEY as string,
+    OASIS_CONTRACT_ADDRESS: import.meta.env
+      .VITE_OASIS_CONTRACT_ADDRESS as string,
+    SERVER_URL: import.meta.env.SERVER_URL as string,
+  },
+});

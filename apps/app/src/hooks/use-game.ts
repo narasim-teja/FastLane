@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
 import type { Obstacles } from "~/types/misc";
-import { socket } from "~/lib/socket";
 
 interface State {
   segments: { obstacles: Obstacles }[];
@@ -30,17 +29,12 @@ interface State {
 }
 
 export const useGame = create<State>()(
-  subscribeWithSelector((set, get) => ({
+  subscribeWithSelector((set) => ({
     segments: [{ obstacles: [] }],
     addSegment: (obstacles) => {
       set((state) => ({
         segments: [...state.segments, { obstacles }],
       }));
-
-      const { segments } = get();
-
-      const latestSegment = segments[segments.length - 1];
-      socket.emit("server.addSegment", 59140, latestSegment?.obstacles);
     },
     addObstaclesRow: (obstacles) =>
       set((state) => {

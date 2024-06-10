@@ -3,6 +3,9 @@ import React from "react";
 import { Environment } from "@react-three/drei";
 
 import { useGame } from "~/hooks/use-game";
+import { CHAIN_ID, SESSION_ID } from "~/lib/constants/globals";
+import { api } from "~/lib/trpc";
+import { logger } from "~/lib/utils";
 import { BlockEnd } from "./block/block-end";
 import { BlockStart } from "./block/block-start";
 import { Bounds } from "./bounds";
@@ -10,7 +13,20 @@ import { ObstaclesSpawner } from "./obstacles/spawner";
 import { Player } from "./player";
 
 export function Experience() {
-  const { segments, openEditor } = useGame();
+  const { segments, addObstaclesRow, openEditor } = useGame();
+
+  const { mutate: revealRow } = api.ws.revealRow.useMutation();
+
+  api.ws.onRevealRow.useSubscription(undefined, {
+    onStarted: () => {
+      logger(">>> Fetching Initial Row");
+      revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
+    },
+    onData: ({ rowIdx, obstacles }) => {
+      logger(`Raw event data for row ${rowIdx}:`, obstacles);
+      addObstaclesRow(obstacles);
+    },
+  });
 
   return (
     <React.Fragment>

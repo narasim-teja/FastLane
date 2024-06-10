@@ -5,7 +5,7 @@ import { RigidBody } from "@react-three/rapier";
 
 import type { Position } from "~/types/misc";
 import { useGame } from "~/hooks/use-game";
-import { quantize } from "~/lib/utils";
+import { logger, quantize } from "~/lib/utils";
 
 export function WhaleObstacle({ position = [0, 0, 0] }) {
   const [isGameReady, setGameReady] = React.useState(false);
@@ -21,7 +21,7 @@ export function WhaleObstacle({ position = [0, 0, 0] }) {
 
   const handleCollisionExit = () => {
     if (isGameReady) {
-      console.log(">> Activating speed boost");
+      logger(">> Activating speed boost");
       activateSpeedBoost();
     }
   };

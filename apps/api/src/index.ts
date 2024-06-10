@@ -1,63 +1,41 @@
-import { serve } from "@hono/node-server";
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import { Server } from "socket.io";
+import { createHTTPServer } from "@trpc/server/adapters/standalone";
+import { applyWSSHandler } from "@trpc/server/adapters/ws";
+import cors from "cors";
+import { WebSocketServer } from "ws";
 
-import { CHAIN_ID, SESSION_ID } from "./constants/globals";
-import { env } from "./env";
-import { revealRow } from "./helper";
+import { appRouter, createContext } from "@fastlane/api";
 
-const app = new Hono();
+import { env } from "./lib/env";
 
-app.use(cors());
-
-app.get("/", (c) => {
-  return c.text("Hell from FastLane API! 🚀");
+export const server = createHTTPServer({
+  router: appRouter,
+  createContext,
+  middleware: cors({ origin: env.ORIGIN }),
+}).listen(env.PORT, () => {
+  console.log(`>>> HTTP Server is running PORT=${env.PORT}`);
 });
 
-const server = serve({ fetch: app.fetch, port: env.SOCKET_PORT }, (info) => {
-  console.log(`Server is running: http://${info.address}:${info.port}`);
+export const wss = new WebSocketServer({ server });
+
+const handler = applyWSSHandler({
+  wss,
+  router: appRouter,
+  createContext,
 });
 
-const ioServer = new Server(server, {
-  cors: {
-    origin: env.SOCKET_ORIGIN.split(","),
-    methods: ["GET", "POST"],
-  },
-});
-
-ioServer.on("connection", async (socket) => {
-  console.log(`>>> New connection: ${socket.id}`);
-
-  // automatically load and send the first row's obstacles upon new connection
-  try {
-    console.log("Loading initial obstacles...");
-
-    const obstaclesForRowZero = await revealRow(CHAIN_ID, SESSION_ID, 0);
-
-    socket.emit("client.revealRow", 0, obstaclesForRowZero);
-  } catch (error) {
-    console.error("Failed to load initial obstacles:", error);
-  }
-
-  socket.on(
-    "server.revealRow",
-    async (chainId: number, sessionId: number, rowIndex: number) => {
-      console.log(
-        `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`,
-      );
-
-      try {
-        const obstaclesInRow = await revealRow(chainId, sessionId, rowIndex);
-
-        socket.emit("client.revealRow", rowIndex, obstaclesInRow);
-      } catch (error) {
-        console.error("Error in revealRow:", error);
-      }
-    },
-  );
-
-  socket.on("disconnect", (reason) => {
-    console.log(`<<< Disconnected: ${socket.id} (${reason})`);
+wss
+  .on("listening", () => {
+    console.log(">>> WebSocket Server is running on ws://localhost:3000");
+  })
+  .on("connection", (ws) => {
+    console.log(`>>> ++ Connection (${wss.clients.size})`);
+    ws.once("close", () => {
+      console.log(`>>> -- Connection (${wss.clients.size})`);
+    });
   });
+
+process.on("SIGTERM", () => {
+  console.log("SIGTERM");
+  handler.broadcastReconnectNotification();
+  wss.close();
 });

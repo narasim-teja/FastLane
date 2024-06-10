@@ -10,12 +10,9 @@ import { LevelEditor } from "./components/level-editor";
 import { Lights } from "./components/lights";
 import { Spinner } from "./components/spinner";
 import { useGame } from "./hooks/use-game";
-import { logger } from "./lib/utils";
 
 export default function App() {
-  const { isEditorOpen, addSegment, segments } = useGame();
-
-  logger("segments", segments);
+  const { isEditorOpen, addSegment } = useGame();
 
   return (
     <KeyboardControls
