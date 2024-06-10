@@ -1,8 +1,8 @@
 import * as sapphire from "@oasisprotocol/sapphire-paratime";
 import { ethers } from "ethers";
 
-import { CHAIN_ID } from "./constants/globals";
-import abi from "./constants/spargu-abi.json";
+import { CHAIN_ID } from "../constants/globals";
+import abi from "../constants/spargu-abi.json";
 import { env } from "./env";
 
 export const sessionToChainIdMap: Record<number, number> = {};

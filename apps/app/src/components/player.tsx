@@ -10,14 +10,16 @@ import * as THREE from "three";
 import type { GamePlayAction } from "~/types/misc";
 import { useEventListener } from "~/hooks/use-event-listener";
 import { useGame } from "~/hooks/use-game";
-import { SESSION_ID } from "~/lib/constants/globals";
-import { revealRow } from "~/lib/socket/events";
+import { CHAIN_ID, SESSION_ID } from "~/lib/constants/globals";
+import { api } from "~/lib/trpc";
 import { downloadRecordedActions } from "~/lib/utils";
 
 export function Player() {
   const { gl } = useThree();
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
+
+  const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -239,7 +241,11 @@ export function Player() {
     if (currentRow > lastRow.current) {
       lastRow.current = currentRow; // update the last row
       // emit event to server to reveal the next row of obstacles
-      revealRow(SESSION_ID, currentRow);
+      revealRow({
+        chainId: CHAIN_ID,
+        sessionId: SESSION_ID,
+        rowIdx: currentRow,
+      });
     }
 
     if (bodyPosition.y < -4) restartGame();

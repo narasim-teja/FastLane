@@ -5,6 +5,7 @@ import { RigidBody } from "@react-three/rapier";
 
 import type { Position } from "~/types/misc";
 import { useGame } from "~/hooks/use-game";
+import { logger } from "~/lib/utils";
 
 export function PoopObstacle({ position = [0, 0, 0] }) {
   const [isGameReady, setGameReady] = React.useState(false);
@@ -20,7 +21,7 @@ export function PoopObstacle({ position = [0, 0, 0] }) {
 
   const handleCollisionExit = () => {
     if (isGameReady) {
-      console.log(">>> activating speed reduction");
+      logger(">>> activating speed reduction");
       activateSpeedReduced();
     }
   };
