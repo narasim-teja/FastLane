@@ -5,6 +5,10 @@
     "topo": {
       "dependsOn": ["^topo"]
     },
+    "dev": {
+      "persistent": true,
+      "cache": false
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": [
@@ -16,9 +20,8 @@
         ".vercel/output/**"
       ]
     },
-    "dev": {
-      "persistent": true,
-      "cache": false
+    "start": {
+      "dependsOn": ["^build"]
     },
     "fmt": {
       "outputs": ["node_modules/.cache/.prettiercache"]

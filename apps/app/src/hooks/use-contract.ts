@@ -18,7 +18,7 @@ export const useContract = () => {
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const contract = new ethers.Contract(
-          env.OASIS_CONTRACT_ADDRESS,
+          env.VITE_OASIS_CONTRACT_ADDRESS,
           abi,
           signer,
         );
