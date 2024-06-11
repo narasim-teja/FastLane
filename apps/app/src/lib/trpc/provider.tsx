@@ -14,7 +14,7 @@ import { api, getQueryClient } from ".";
 import { env } from "../env";
 
 const wsClient = createWSClient({
-  url: env.SERVER_URL.replace(/https?/, "ws"),
+  url: env.VITE_BACKEND_URL.replace(/https?/, "ws"),
 });
 
 export function TRPCReactProvider(props: React.PropsWithChildren) {
@@ -33,7 +33,7 @@ export function TRPCReactProvider(props: React.PropsWithChildren) {
           true: wsLink({ client: wsClient, transformer: SuperJSON }),
           false: unstable_httpBatchStreamLink({
             transformer: SuperJSON,
-            url: env.SERVER_URL,
+            url: env.VITE_BACKEND_URL,
             headers() {
               const headers = new Headers();
               headers.set("x-trpc-source", "fastlane-react");

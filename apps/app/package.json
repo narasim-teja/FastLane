@@ -15,7 +15,7 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
-    "@fastlane/api": "workspace:*",
+    "@fastlane/api": "*",
     "@react-three/a11y": "^3.0.0",
     "@react-three/drei": "^9.106.0",
     "@react-three/fiber": "^8.16.8",
@@ -34,9 +34,11 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@fastlane/eslint-config": "workspace:*",
-    "@fastlane/prettier-config": "workspace:*",
-    "@fastlane/tsconfig": "workspace:*",
+    "@fastlane/eslint-config": "*",
+    "@fastlane/prettier-config": "*",
+    "@fastlane/tailwind-config": "*",
+    "@fastlane/tsconfig": "*",
+    "@fastlane/ui": "*",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/node": "^20.14.0",
     "@types/react": "^18.3.3",

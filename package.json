@@ -20,7 +20,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@fastlane/prettier-config": "workspace:*",
+    "@fastlane/prettier-config": "*",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.5",
     "prettier": "^3.3.1",
@@ -28,12 +28,6 @@
     "typescript": "^5.4.5"
   },
   "prettier": "@fastlane/prettier-config",
-  "packageManager": "bun@1.1.12",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "tooling/*"
-  ],
   "lint-staged": {
     "*.{ts,tsx,md,mdx}": [
       "bun fmt"
@@ -49,5 +43,11 @@
   },
   "engines": {
     "node": ">=20.12.0"
-  }
+  },
+  "packageManager": "bun@1.1.12",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tooling/*"
+  ]
 }

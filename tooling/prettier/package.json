@@ -17,7 +17,7 @@
     "prettier-plugin-tailwindcss": "^0.6.1"
   },
   "devDependencies": {
-    "@fastlane/tsconfig": "workspace:*",
+    "@fastlane/tsconfig": "*",
     "typescript": "^5.4.5"
   },
   "prettier": "@fastlane/prettier-config"
