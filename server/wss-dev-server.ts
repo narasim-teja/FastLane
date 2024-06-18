@@ -1,6 +1,8 @@
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import { WebSocketServer } from "ws";
 
+import { env } from "~/lib/env";
+
 import { appRouter } from "./router";
 import { createContext } from "./trpc";
 
@@ -16,7 +18,7 @@ wss.on("connection", (ws) => {
   });
 });
 
-console.log("✅ WebSocket Server listening on ws://localhost:3001");
+console.log(`✅ WebSocket Server listening on ${env.NEXT_PUBLIC_WS_URL}`);
 
 process.on("SIGTERM", () => {
   console.log("SIGTERM");

@@ -1,6 +1,8 @@
 import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
+import type { RevealRowData } from "~/types/ws";
+
 import { revealRow } from "../helper";
 import { createRouter, publicProcedure } from "../trpc";
 
@@ -16,13 +18,14 @@ export const wsRouter = createRouter({
     .mutation(
       async ({ ctx: { ee }, input: { chainId, sessionId, rowIdx } }) => {
         const obstacles = await revealRow(chainId, sessionId, rowIdx);
-        ee.emit("revealRow", rowIdx, obstacles);
+        ee.emit("revealRow", { rowIdx, obstacles });
       }
     ),
 
   onRevealRow: publicProcedure.subscription(({ ctx: { ee } }) =>
-    observable<{ rowIdx: number; obstacles: number[] }>((emit) => {
-      const listener = (rowIdx: number, obstacles: number[]) => {
+    observable<RevealRowData>((emit) => {
+      const listener = ({ rowIdx, obstacles }: RevealRowData) => {
+        console.log(">>> listener called <<<");
         emit.next({ rowIdx, obstacles });
       };
 

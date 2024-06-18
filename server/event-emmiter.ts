@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 
 import { EventEmitter } from "events";
 
+import type { RevealRowData } from "~/types/ws";
+
 export interface MyEvents {
-  revealRow: (rowIdx: number, obstacles: number[]) => void;
+  revealRow: (data: RevealRowData) => void;
 }
 
 declare interface MyEventEmitter {

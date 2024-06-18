@@ -18,7 +18,7 @@
       "warn",
       { "prefer": "type-imports", "fixStyle": "separate-type-imports" }
     ],
-    "@typescript-eslint/consistent-type-definitions": "warn",
+    "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {

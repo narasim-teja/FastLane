@@ -53,7 +53,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           true: wsLink({ client: wsClient, transformer: SuperJSON }),
           false: unstable_httpBatchStreamLink({
             transformer: SuperJSON,
-            url: absoluteUrl() + "/api/trpc",
+            url: absoluteUrl("/api/trpc"),
             headers: () => {
               const headers = new Headers();
               headers.set("x-trpc-source", "nextjs-react");

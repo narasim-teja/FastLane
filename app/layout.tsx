@@ -4,8 +4,6 @@ import React from "react";
 
 import type { Metadata, Viewport } from "next";
 
-import { Footer } from "~/components/site-footer/footer";
-import { Navbar } from "~/components/site-header/navbar";
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
@@ -17,6 +15,7 @@ import {
   fontSans,
   fontVirgil,
 } from "~/lib/fonts";
+import { TRPCReactProvider } from "~/lib/trpc/react";
 import { absoluteUrl, cn } from "~/lib/utils";
 
 export const viewport: Viewport = {
@@ -81,11 +80,9 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           "min-h-screen scroll-smooth font-sans antialiased"
         )}
       >
-        <TooltipProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </TooltipProvider>
+        <TRPCReactProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </TRPCReactProvider>
 
         <Toaster />
         <TailwindIndicator />

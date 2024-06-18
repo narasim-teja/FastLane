@@ -3,9 +3,9 @@ import { cn } from "~/lib/utils";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-interface WaitlistFormProps {
+type WaitlistFormProps = {
   isFooter?: boolean;
-}
+};
 
 export function WaitlistForm({ isFooter = false }: WaitlistFormProps) {
   return (

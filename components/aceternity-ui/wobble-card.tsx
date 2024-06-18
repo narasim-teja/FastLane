@@ -6,11 +6,11 @@ import { motion } from "framer-motion";
 
 import { cn } from "~/lib/utils";
 
-interface WobbleCardProps {
+type WobbleCardProps = {
   children: React.ReactNode;
   containerClassName?: string;
   className?: string;
-}
+};
 
 export const WobbleCard = (props: WobbleCardProps) => {
   const { children, containerClassName, className } = props;
