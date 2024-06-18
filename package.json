@@ -4,37 +4,69 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "start": "turbo start",
-    "fmt": "turbo fmt --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
-    "fmt:check": "turbo fmt --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
-    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
-    "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
-    "type-check": "turbo type-check",
-    "lint:ws": "bunx sherif@latest",
-    "clean": "git clean -xdf node_modules",
-    "clean:workspaces": "turbo clean",
-    "postinstall": "bun lint:ws",
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "preview": "next build && next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "fmt": "prettier --write \"**/*.{ts,tsx,mdx,json}\" --cache",
+    "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx,json}\" --cache",
+    "ui": "bunx shadcn-ui@latest",
+    "ui-add": "bunx shadcn-ui@latest add",
     "prepare": "husky"
   },
-  "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@fastlane/prettier-config": "*",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.5",
-    "prettier": "^3.3.1",
-    "turbo": "latest",
-    "typescript": "^5.4.5"
+  "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "babel-plugin-react-compiler": "^0.0.0-experimental-592953e-20240517",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.2.10",
+    "geist": "^1.3.0",
+    "lucide-react": "^0.376.0",
+    "next": "^14.3.0-canary.72",
+    "next-themes": "^0.3.0",
+    "react": "^19.0.0-beta-26f2496093-20240514",
+    "react-dom": "^19.0.0-beta-26f2496093-20240514",
+    "sonner": "^1.5.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript-eslint": "^7.13.1",
+    "zod": "^3.23.4"
   },
-  "prettier": "@fastlane/prettier-config",
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.3",
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@total-typescript/ts-reset": "^0.5.1",
+    "@types/node": "20.12.7",
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "autoprefixer": "10.4.19",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-tailwindcss": "^3.15.1",
+    "husky": "^9.0.11",
+    "jiti": "^1.21.0",
+    "lint-staged": "^15.2.2",
+    "postcss": "8.4.38",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwindcss": "3.4.3",
+    "typescript": "5.4.5"
+  },
   "lint-staged": {
     "*.{ts,tsx,md,mdx}": [
-      "bun fmt"
+      "prettier --write \"**/*.{ts,tsx,mdx}\" --cache"
     ],
     "*.{ts,tsx,mdx}": [
-      "bun lint"
+      "eslint --fix ."
     ]
   },
   "commitlint": {
@@ -43,12 +75,6 @@
     ]
   },
   "engines": {
-    "node": ">=20.12.0"
-  },
-  "packageManager": "bun@1.1.12",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "tooling/*"
-  ]
+    "node": ">=20.12.2"
+  }
 }
