@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-properties */
+
 import { createEnv } from "@t3-oss/env-nextjs";
 import { vercel } from "@t3-oss/env-nextjs/presets";
 import { z } from "zod";
@@ -25,7 +26,16 @@ export const env = createEnv({
    * Specify your server-side environment variables schema here. This way you can ensure the app
    * isn't built with invalid env vars.
    */
-  server: {},
+  server: {
+    TEST_TRACK_OWNER_PKEY: z.string({
+      required_error: "`TEST_TRACK_OWNER_PKEY` is required",
+    }),
+
+    // Oasis contract
+    OASIS_CONTRACT_ADDRESS: z.string({
+      required_error: "`OASIS_CONTRACT_ADDR` is required",
+    }),
+  },
 
   /**
    * Specify your client-side environment variables schema here. This way you can ensure the app
@@ -33,7 +43,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_WS_URL: z.string().optional().default("ws://localhost:3001"),
   },
 
   /**
@@ -42,9 +52,9 @@ export const env = createEnv({
    * For Next.js >= 13.4.4, you only need to destructure client variables (Only valid for `experimental__runtimeEnv`)
    */
   experimental__runtimeEnv: {
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
   },
 
   /**

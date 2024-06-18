@@ -16,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
  * @param path The path to get the absolute url for
  * @returns The absolute url for the given path
  */
-export function absoluteUrl(path: `/${string}`) {
+export function absoluteUrl(path: `/${string}` = "/") {
   if (env.NODE_ENV === "production") {
     return `${siteConfig.url}${path}`;
   } else {
