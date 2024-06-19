@@ -2,6 +2,8 @@ import "~/app/globals.css";
 
 import React from "react";
 
+import { ThirdwebProvider } from "thirdweb/react";
+
 import type { Metadata, Viewport } from "next";
 
 import { TailwindIndicator } from "~/components/tailwind-indicator";
@@ -80,9 +82,11 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           "min-h-screen scroll-smooth font-sans antialiased"
         )}
       >
-        <TRPCReactProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-        </TRPCReactProvider>
+        <ThirdwebProvider>
+          <TRPCReactProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </TRPCReactProvider>
+        </ThirdwebProvider>
 
         <Toaster />
         <TailwindIndicator />

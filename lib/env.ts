@@ -29,13 +29,26 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    /* -----------------------------------------------------------------------------------------------
+     * ethers.js
+     * -----------------------------------------------------------------------------------------------*/
+
     TEST_TRACK_OWNER_PKEY: z.string({
       required_error: "`TEST_TRACK_OWNER_PKEY` is required",
     }),
 
-    // Oasis contract
+    /* -----------------------------------------------------------------------------------------------
+     * Oasis contract
+     * -----------------------------------------------------------------------------------------------*/
     OASIS_CONTRACT_ADDRESS: z.string({
       required_error: "`OASIS_CONTRACT_ADDR` is required",
+    }),
+
+    THIRDWEB_SECRET_KEY: z.string({
+      required_error: "`THIRDWEB_SECRET_KEY` is required",
+    }),
+    THIRDWEB_ADMIN_PRIVATE_KEY: z.string({
+      required_error: "`THIRDWEB_ADMIN_PRIVATE_KEY` is required",
     }),
   },
 
@@ -44,7 +57,18 @@ export const env = createEnv({
    * isn't built with invalid env vars. To expose them to the client, prefix them with
    * `NEXT_PUBLIC_`.
    */
-  client: {},
+  client: {
+    /* -----------------------------------------------------------------------------------------------
+     * Thirdweb (https://thirdweb.com/create-api-key)
+     * -----------------------------------------------------------------------------------------------*/
+
+    NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN: z.string({
+      required_error: "`NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN` is required",
+    }),
+    NEXT_PUBLIC_THIRDWEB_CLIENT_ID: z.string({
+      required_error: "`NEXT_PUBLIC_THIRDWEB_CLIENT_ID` is required",
+    }),
+  },
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -55,6 +79,9 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
     SERVER_URL: process.env.SERVER_URL,
+    NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN:
+      process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
+    NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
   },
 
   /**

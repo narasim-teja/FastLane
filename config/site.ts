@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "FastLane",
   url: "https://www.fastlane.run",
-  description: "",
+  description: "Race the chain, own the road",
 
   authors: [
     {
