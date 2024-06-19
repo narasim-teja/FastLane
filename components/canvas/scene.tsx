@@ -4,7 +4,7 @@ import React from "react";
 
 import { Preload, View } from "@react-three/drei";
 import { addEffect, Canvas } from "@react-three/fiber";
-import Lenis from "@studio-freight/lenis";
+import Lenis from "lenis";
 
 import type { CanvasProps } from "@react-three/fiber";
 

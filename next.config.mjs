@@ -1,10 +1,13 @@
 /* eslint-disable no-restricted-properties */
-import withBundleAnalyzer from "@next/bundle-analyzer";
 import createJiti from "jiti";
 
 // This is validation for the environment variables early in the build process.
 const jiti = createJiti(new URL(import.meta.url).pathname);
 jiti("./lib/env");
+
+const withBundleAnalyzer = await import("@next/bundle-analyzer").then((mod) =>
+  mod.default({ enabled: process.env.ANALYZE === "true" })
+);
 
 const isDocker = process.env.IS_DOCKER === "true";
 
@@ -22,6 +25,4 @@ const nextConfig = {
   // ...
 };
 
-export default withBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true",
-})(nextConfig);
+export default withBundleAnalyzer(nextConfig);

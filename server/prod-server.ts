@@ -1,3 +1,12 @@
+/* -----------------------------------------------------------------------------------------------
+ * NOTE:
+ *
+ * currently facing an issue where events are not triggering (either emitting
+ * or listening or both) from next.js router handlers.
+ * As a result, I have moved to a standalone WebSocket server.
+ * This setup might change in the future if a possible solution is found.
+ * -----------------------------------------------------------------------------------------------*/
+
 import { createServer } from "node:http";
 import { parse } from "node:url";
 import next from "next";

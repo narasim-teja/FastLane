@@ -19,7 +19,9 @@ export const env = createEnv({
       .string()
       .transform((v) => +v)
       .optional()
-      .default("3000"),
+      .default("8080"),
+
+    SERVER_URL: z.string().optional().default("http://localhost:8080"),
   },
 
   /**
@@ -42,9 +44,7 @@ export const env = createEnv({
    * isn't built with invalid env vars. To expose them to the client, prefix them with
    * `NEXT_PUBLIC_`.
    */
-  client: {
-    NEXT_PUBLIC_WS_URL: z.string().optional().default("ws://localhost:3001"),
-  },
+  client: {},
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -54,7 +54,7 @@ export const env = createEnv({
   experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
-    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
+    SERVER_URL: process.env.SERVER_URL,
   },
 
   /**

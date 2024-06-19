@@ -30,7 +30,7 @@ type State = {
   startGame: () => void;
   endGame: () => void;
   restartGame: () => void;
-}
+};
 
 export const useGame = create<State>()(
   subscribeWithSelector((set) => ({

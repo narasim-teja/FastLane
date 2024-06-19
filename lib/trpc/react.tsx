@@ -16,10 +16,9 @@ import SuperJSON from "superjson";
 import { type AppRouter } from "~/server/router";
 
 import { env } from "../env";
-import { absoluteUrl } from "../utils";
 
 const wsClient = createWSClient({
-  url: env.NEXT_PUBLIC_WS_URL,
+  url: env.SERVER_URL.replace(/https?/, "ws"),
 });
 
 const createQueryClient = () => new QueryClient();
@@ -28,10 +27,8 @@ let clientQueryClientSingleton: QueryClient | undefined = undefined;
 
 const getQueryClient = () => {
   if (typeof window === "undefined") {
-    // Server: always make a new query client
     return createQueryClient();
   }
-  // Browser: use singleton pattern to keep the same query client
   return (clientQueryClientSingleton ??= createQueryClient());
 };
 
@@ -53,7 +50,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           true: wsLink({ client: wsClient, transformer: SuperJSON }),
           false: unstable_httpBatchStreamLink({
             transformer: SuperJSON,
-            url: absoluteUrl("/api/trpc"),
+            url: env.SERVER_URL,
             headers: () => {
               const headers = new Headers();
               headers.set("x-trpc-source", "nextjs-react");

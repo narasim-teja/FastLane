@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 
 import { abi, CHAIN_ID } from "~/config/constants";
 import { env } from "~/lib/env";
+import { logger } from "~/lib/utils";
 
 export const sessionToChainIdMap: Record<number, number> = {};
 export const obstaclesInSession: number[][][] = [];
@@ -22,18 +23,18 @@ export async function revealRow(
   sessionId: number,
   rowIndex: number
 ) {
-  console.log(
+  logger(
     `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`
   );
 
   try {
     if (!sessionToChainIdMap[sessionId]) {
-      console.log("rowIndex:", rowIndex);
+      logger("rowIndex:", rowIndex);
       await newSession(chainId, sessionId);
     }
 
     if (!obstaclesInSession[sessionId]?.length) {
-      console.log("rowIndex:", rowIndex);
+      logger("rowIndex:", rowIndex);
       console.error(`No obstacles found for sessionId: ${sessionId}`);
 
       return [];
@@ -41,7 +42,7 @@ export async function revealRow(
 
     // directly retrieve obstacles numbers for the requested row
     const obstaclesInRow = obstaclesInSession.at(sessionId)?.at(rowIndex) ?? [];
-    console.log(
+    logger(
       `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`,
       obstaclesInRow
     );
@@ -55,7 +56,7 @@ export async function revealRow(
 
 export async function newSession(chainId: number, sessionId: number) {
   try {
-    console.log(
+    logger(
       `NewSession called with chainId: ${chainId}, sessionId: ${sessionId}`
     );
 
@@ -64,7 +65,7 @@ export async function newSession(chainId: number, sessionId: number) {
 
     await getAllObstacles(chainId, sessionId); // pass sessionId if needed
 
-    console.log("Obstacles in session:", obstaclesInSession[sessionId]);
+    logger("Obstacles in session:", obstaclesInSession[sessionId]);
   } catch (error) {
     console.error("Failed to create new session:", error);
   }
@@ -77,27 +78,24 @@ export async function getAllObstacles(chainId: number, sessionId: number) {
     const rowCountBigint = await contract.getRowCount(chainId);
     const rowCount = Number(rowCountBigint.toString());
 
-    console.log("rowCount:", rowCount);
+    logger("rowCount:", rowCount);
 
     for (let i = 0; i < rowCount; i++) {
       const obstacles = await getObstaclesForSession(chainId, i);
 
-      console.log("Obstacles for row:", obstacles);
+      logger("Obstacles for row:", obstacles);
 
       obstaclesInSession[sessionId]?.push(obstacles);
     }
   } catch (error) {
-    console.log("Error in getAllObstaclesASYNC:", error);
+    logger("Error in getAllObstaclesASYNC:", error);
   }
 }
 
 export async function getObstaclesForSession(sessionId: number, row: number) {
   try {
-    console.log(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
-    console.log(
-      "Current mapping:",
-      JSON.stringify(sessionToChainIdMap, null, 2)
-    );
+    logger(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
+    logger("Current mapping:", JSON.stringify(sessionToChainIdMap, null, 2));
 
     const contract = getContract();
 

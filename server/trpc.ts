@@ -12,10 +12,13 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
+import type { IncomingHttpHeaders } from "http";
 
 import { ee } from "./event-emmiter";
 
-type Opts = { headers: Headers } | CreateWSSContextFnOptions;
+type Opts =
+  | { headers: Headers | IncomingHttpHeaders }
+  | CreateWSSContextFnOptions;
 
 /**
  * 1. CONTEXT

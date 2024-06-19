@@ -5,7 +5,6 @@ import { Environment } from "@react-three/drei";
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
-import { logger } from "~/lib/utils";
 
 import { BlockEnd, BlockStart } from "./block";
 import { Bounds } from "./bounds";
@@ -19,12 +18,16 @@ export function Experience() {
 
   api.ws.onRevealRow.useSubscription(undefined, {
     onStarted: () => {
-      logger(">>> Fetching Initial Row");
+      console.log(">>> Fetching Initial Row");
       revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
     },
     onData: ({ rowIdx, obstacles }) => {
-      logger(`Raw event data for row ${rowIdx}:`, obstacles);
+      console.log(`Raw event data for row ${rowIdx}:`, obstacles);
       addObstaclesRow(obstacles);
+    },
+
+    onError(err) {
+      console.log(">>> Error in onRevealRow subscription <<<", err);
     },
   });
 

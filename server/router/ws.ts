@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import type { RevealRowData } from "~/types/ws";
 
+import { logger } from "~/lib/utils";
+
 import { revealRow } from "../helper";
 import { createRouter, publicProcedure } from "../trpc";
 
@@ -24,8 +26,9 @@ export const wsRouter = createRouter({
 
   onRevealRow: publicProcedure.subscription(({ ctx: { ee } }) =>
     observable<RevealRowData>((emit) => {
+      logger(">>>> observer running <<<<");
+
       const listener = ({ rowIdx, obstacles }: RevealRowData) => {
-        console.log(">>> listener called <<<");
         emit.next({ rowIdx, obstacles });
       };
 
