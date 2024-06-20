@@ -3,7 +3,7 @@
 import React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Mail } from "lucide-react";
+import { Check, Loader, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -95,7 +95,12 @@ export function WaitlistForm({ isFooter = false }: WaitlistFormProps) {
             !isFooter && "px-8 sm:h-16 sm:text-xl"
           )}
         >
-          {form.formState.isSubmitSuccessful ?
+          {isSubmitting ?
+            <span>
+              <Loader className="mr-2 inline-block animate-spin" />
+              Adding to Waitlist...
+            </span>
+          : form.formState.isSubmitSuccessful ?
             <span>
               <Check className="mr-2 inline-block" />
               Added to Waitlist!

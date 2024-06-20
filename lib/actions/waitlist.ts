@@ -5,14 +5,31 @@ import pg from "postgres";
 import type { waitlistSchema } from "../validations";
 import type { z } from "zod";
 
+import { siteConfig } from "~/config/site";
+import { WaitlistEmail } from "~/emails/waitlist-email";
+
 import { db } from "../db";
 import { waitlist } from "../db/schema";
+import { resend } from "../resend";
 
 type FormData = z.infer<typeof waitlistSchema>;
 
 export async function addToWaitlistAction({ email }: FormData) {
   try {
-    await db.insert(waitlist).values({ email }).execute();
+    const [dbRes] = await db.insert(waitlist).values({ email }).returning();
+
+    if (dbRes.email) {
+      const { error } = await resend.emails.send({
+        from: `${siteConfig.name} <${siteConfig.email}>`,
+        to: [email],
+        subject: "Hello world",
+        react: WaitlistEmail({ email }),
+      });
+
+      if (error) {
+        console.error(`Failed to send email to ${email}: ${error.message}`);
+      }
+    }
   } catch (error) {
     if (error instanceof pg.PostgresError && error.code === "23505") {
       throw new Error("You're already on the waitlist!");
