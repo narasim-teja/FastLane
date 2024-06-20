@@ -23,7 +23,9 @@ export async function middleware(req: NextRequest) {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      return NextResponse.redirect(
+        new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.toString())
+      );
     }
 
     return null;
@@ -36,7 +38,10 @@ export async function middleware(req: NextRequest) {
     }
 
     return NextResponse.redirect(
-      new URL(`/connect-wallet?from=${encodeURIComponent(from)}`, nextUrl)
+      new URL(
+        `/connect-wallet?from=${encodeURIComponent(from)}`,
+        nextUrl.toString()
+      )
     );
   }
 
