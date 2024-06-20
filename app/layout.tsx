@@ -1,6 +1,7 @@
 import "~/app/globals.css";
 
 import React from "react";
+import Script from "next/script";
 
 import { ThirdwebProvider } from "thirdweb/react";
 
@@ -10,6 +11,7 @@ import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { siteConfig } from "~/config/site";
+import { env } from "~/lib/env";
 import {
   fontCal,
   fontMatter,
@@ -91,6 +93,13 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
         <Toaster />
         <TailwindIndicator />
       </body>
+
+      {/* Umami Analytics */}
+      <Script
+        async
+        src="https://cloud.umami.is/script.js"
+        data-website-id={env.UMAMI_WEBSITE_ID}
+      />
     </html>
   );
 }

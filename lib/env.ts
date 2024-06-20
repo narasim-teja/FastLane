@@ -50,6 +50,19 @@ export const env = createEnv({
     THIRDWEB_ADMIN_PRIVATE_KEY: z.string({
       required_error: "`THIRDWEB_ADMIN_PRIVATE_KEY` is required",
     }),
+
+    /* -----------------------------------------------------------------------------------------------
+     * Postgres Database URL (Supabase)
+     * -----------------------------------------------------------------------------------------------*/
+
+    DATABASE_URL: z.string({
+      required_error: "`DATABASE_URL` is required",
+    }),
+
+    /* -----------------------------------------------------------------------------------------------
+     * Umami Analytics
+     * -----------------------------------------------------------------------------------------------*/
+    UMAMI_WEBSITE_ID: z.string().optional(),
   },
 
   /**
