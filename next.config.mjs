@@ -5,9 +5,9 @@ import createJiti from "jiti";
 const jiti = createJiti(new URL(import.meta.url).pathname);
 jiti("./lib/env");
 
-const withBundleAnalyzer = await import("@next/bundle-analyzer").then((mod) =>
-  mod.default({ enabled: process.env.ANALYZE === "true" })
-);
+// const withBundleAnalyzer = await import("@next/bundle-analyzer").then((mod) =>
+//   mod.default({ enabled: process.env.ANALYZE === "true" })
+// );
 
 const isDocker = process.env.IS_DOCKER === "true";
 
@@ -25,4 +25,4 @@ const nextConfig = {
   // ...
 };
 
-export default withBundleAnalyzer(nextConfig);
+export default nextConfig;

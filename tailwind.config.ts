@@ -1,3 +1,4 @@
+import tailwindCSSAnimate from "tailwindcss-animate";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 import type { Config } from "tailwindcss";
@@ -94,7 +95,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindCSSAnimate],
 } satisfies Config;
 
 export default config;

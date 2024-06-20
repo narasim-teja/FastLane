@@ -1,11 +1,11 @@
 {
-  "id": "96d7ad07-a969-4f92-9a7e-0ccf10aeecd7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "4f7b9659-f942-46b3-8a68-5394896a70e4",
+  "prevId": "96d7ad07-a969-4f92-9a7e-0ccf10aeecd7",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.fastlane_wishlist": {
-      "name": "fastlane_wishlist",
+    "public.fastlane_waitlist": {
+      "name": "fastlane_waitlist",
       "schema": "",
       "columns": {
         "id": {
@@ -55,8 +55,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "fastlane_wishlist_email_unique": {
-          "name": "fastlane_wishlist_email_unique",
+        "fastlane_waitlist_email_unique": {
+          "name": "fastlane_waitlist_email_unique",
           "nullsNotDistinct": false,
           "columns": ["email"]
         }

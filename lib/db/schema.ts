@@ -2,8 +2,8 @@ import { text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { createTable } from "./table-creator";
 
-export const wishlist = createTable(
-  "wishlist",
+export const waitlist = createTable(
+  "waitlist",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     email: text("email").notNull().unique(),

@@ -1,11 +1,22 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
+
+import { isLoggedIn } from "~/lib/actions/auth";
 
 const Scene = dynamic(() => import("~/components/canvas/scene"), {
   ssr: false,
 });
 
-export default function GameLayout({ children }: React.PropsWithChildren) {
+type GameLayoutProps = React.PropsWithChildren<{
+  // ...
+}>;
+
+export default async function GameLayout({ children }: GameLayoutProps) {
+  if (!(await isLoggedIn())) {
+    redirect("/connect-wallet");
+  }
+
   return (
     <div className="h-screen w-screen">
       {children}
