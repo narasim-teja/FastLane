@@ -59,7 +59,6 @@ In the project directory, you can run:
 | `start`       | Runs the built app in the production mode.           |
 | `preview`     | Builds and serves the app in the production mode.    |
 | `email`       | Runs the React email development server.             |
-| `docker`      | Starts the app in a Docker container.                |
 | `db:generate` | Generates the migration files.                       |
 | `db:migrate`  | Migrates the database.                               |
 | `db:drop`     | Drops the database.                                  |
@@ -73,3 +72,6 @@ In the project directory, you can run:
 | `fmt:check`   | Checks if the code is formatted with Prettier.       |
 | `ui`          | Runs the `shadcn/ui` CLI tool                        |
 | `analyze`     | Analyzes the bundle size.                            |
+
+> [!NOTE]  
+> All of the Docker scripts mentioned in `package.json` are intended to be used in the `Dockerfile` only.
