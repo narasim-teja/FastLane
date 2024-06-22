@@ -36,8 +36,8 @@ export const env = createEnv({
      * ethers.js
      * -----------------------------------------------------------------------------------------------*/
 
-    TEST_TRACK_OWNER_PKEY: z.string({
-      required_error: "`TEST_TRACK_OWNER_PKEY` is required",
+    TRACK_OWNER_PKEY: z.string({
+      required_error: "`TRACK_OWNER_PKEY` is required",
     }),
 
     /* -----------------------------------------------------------------------------------------------

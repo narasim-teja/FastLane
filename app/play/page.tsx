@@ -1,21 +1,27 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 
 import { Environment, KeyboardControls } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 
 import { BlockEnd, BlockStart } from "~/components/block";
 import { Bounds } from "~/components/bounds";
-import { View } from "~/components/canvas/view";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { Player } from "~/components/player";
+import { Spinner } from "~/components/spinner";
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
 import { logger } from "~/lib/utils";
 
 import Common from "./_components/common";
+
+const View = dynamic(() => import("~/components/canvas/view"), {
+  ssr: false,
+  loading: () => <Spinner />,
+});
 
 export default function Experience() {
   const { segments, addObstaclesRow, openEditor } = useGame();

@@ -19,7 +19,7 @@ import {
   fontSans,
   fontVirgil,
 } from "~/lib/fonts";
-import { TRPCReactProvider } from "~/lib/trpc/react";
+import { ReactLenis } from "~/lib/lenis";
 import { absoluteUrl, cn } from "~/lib/utils";
 
 export const viewport: Viewport = {
@@ -84,11 +84,11 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           "min-h-screen scroll-smooth font-sans antialiased"
         )}
       >
-        <ThirdwebProvider>
-          <TRPCReactProvider>
+        <ReactLenis root>
+          <ThirdwebProvider>
             <TooltipProvider>{children}</TooltipProvider>
-          </TRPCReactProvider>
-        </ThirdwebProvider>
+          </ThirdwebProvider>
+        </ReactLenis>
 
         <Toaster />
         <TailwindIndicator />

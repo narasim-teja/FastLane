@@ -10,7 +10,7 @@ export const obstaclesInSession: number[][][] = [];
 
 function getContract() {
   const signer = sapphire
-    .wrap(new ethers.Wallet(env.TEST_TRACK_OWNER_PKEY))
+    .wrap(new ethers.Wallet(env.TRACK_OWNER_PKEY))
     .connect(
       ethers.getDefaultProvider(sapphire.NETWORKS.testnet.defaultGateway)
     );

@@ -100,6 +100,7 @@ export function Player() {
     }
 
     const { forward, backward, leftward, rightward } = getKeys();
+    const bodyPosition = body.current.translation();
 
     // frame number approximation
     const frameNumber =
@@ -160,8 +161,11 @@ export function Player() {
       setRecordedActions((prev) => [...prev, { frameNumber, action: "left" }]);
     }
 
-    body.current.applyImpulse(impulse, true);
-    body.current.applyTorqueImpulse(torque, true);
+    // only apply impulse and torque if the player is not below the base level
+    if (!(bodyPosition.y < -0.5)) {
+      body.current.applyImpulse(impulse, true);
+      body.current.applyTorqueImpulse(torque, true);
+    }
 
     // // make sure there is an action to simulate and we're within the bounds of the simulationData array.
     // if (simulationIndex < simulationData.length) {
@@ -214,8 +218,6 @@ export function Player() {
     /* -----------------------------------------------------------------------------------------------
      * camera
      * -----------------------------------------------------------------------------------------------*/
-    const bodyPosition = body.current.translation();
-
     const cameraPosition = new THREE.Vector3();
     cameraPosition.copy(bodyPosition);
     cameraPosition.z += 4.25;
@@ -236,12 +238,12 @@ export function Player() {
      * -----------------------------------------------------------------------------------------------*/
     const zPosition = body.current.translation().z;
 
-    const currentRow = Math.floor(-zPosition / 4.5); // when to reveal the obstacle
+    const currentRow = Math.floor(-zPosition / 4.75); // when to reveal the obstacle
     // console.log(currentRow)
     // Assuming each unit in Z represents a row
 
     // check if the player has moved to a new row
-    if (currentRow > lastRow.current) {
+    if (currentRow > lastRow.current && bodyPosition.y > 0) {
       lastRow.current = currentRow; // update the last row
       // emit event to server to reveal the next row of obstacles
       revealRow({
