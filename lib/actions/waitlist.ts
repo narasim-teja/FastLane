@@ -22,7 +22,7 @@ export async function addToWaitlistAction({ email }: FormData) {
       const { error } = await resend.emails.send({
         from: `${siteConfig.name} <${siteConfig.email}>`,
         to: [email],
-        subject: "Hello world",
+        subject: "Thank you for joining our waitlist! 🎉",
         react: WaitlistEmail({ email }),
       });
 

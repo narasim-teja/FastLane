@@ -13,7 +13,9 @@ git clone https://github.com/narasim-teja/FastLane
 cd FastLane
 ```
 
-- Rename **.env.example** => **.env**, add your own environment variables.
+```
+cp .env.example .env
+```
 
 - Run the app with VS Code or the command line:
 

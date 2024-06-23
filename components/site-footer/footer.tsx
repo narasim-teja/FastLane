@@ -1,3 +1,5 @@
+import { siteConfig } from "~/config/site";
+
 import { InstagramIcon, LinkedInIcon, XIcon } from "../icons";
 import { WaitlistForm } from "../waitlist-form";
 
@@ -42,18 +44,31 @@ export function Footer() {
 
         <div className="gap-2.5 *:flex *:aspect-square *:w-full *:items-center *:justify-center *:gap-2.5">
           <a
-            href="https://twitter.com/fastlane_run"
+            href={siteConfig.links.x}
+            aria-label="Twitter"
             target="_blank"
             rel="noopener noreferrer"
           >
             <XIcon className="size-12 sm:size-16" />
           </a>
 
-          <a>
+          <a
+            // TODO: Update href to LinkedIn
+            href={siteConfig.links.x}
+            aria-label="LinkedIn"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <LinkedInIcon className="size-12 sm:size-16" />
           </a>
 
-          <a>
+          <a
+            // TODO: Update href to Instagram
+            href={siteConfig.links.x}
+            aria-label="Instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <InstagramIcon className="size-12 sm:size-16" />
           </a>
         </div>

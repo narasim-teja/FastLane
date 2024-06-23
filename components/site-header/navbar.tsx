@@ -48,6 +48,7 @@ export function Navbar() {
               <TooltipTrigger asChild>
                 <Link
                   href={href}
+                  aria-label={label}
                   className={cn(
                     buttonVariants(),
                     "h-[54px] rounded-4xl p-4 text-lg font-semibold uppercase transition-all duration-200 ease-in-out hover:rounded-2xl"

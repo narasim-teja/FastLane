@@ -7,6 +7,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 
 import type { Metadata, Viewport } from "next";
 
+import { RealViewport } from "~/components/real-viewport";
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
         </ReactLenis>
 
         <Toaster />
+        <RealViewport />
         <TailwindIndicator />
       </body>
 
