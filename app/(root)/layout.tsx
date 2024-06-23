@@ -12,7 +12,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
   return (
     <>
       <Navbar />
-      {children}
+      <div className="my-20 md:my-40">{children}</div>
       {pathname !== "/tracks" && <Footer />}
     </>
   );

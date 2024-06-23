@@ -7,7 +7,7 @@ import { Tracks } from "./_components/tracks";
 
 export default function LandingPage() {
   return (
-    <main className="relative my-20 md:my-40">
+    <main className="relative">
       <RetroGrid className="fixed top-0 -z-10" />
 
       <div className="container flex flex-col items-center gap-8 md:gap-16">

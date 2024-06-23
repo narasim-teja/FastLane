@@ -4,16 +4,16 @@ import React from "react";
 
 import { motion } from "framer-motion";
 
+import type { HTMLMotionProps } from "framer-motion";
+
 import { cn } from "~/lib/utils";
 
-type WobbleCardProps = {
-  children: React.ReactNode;
+type WobbleCardProps = HTMLMotionProps<"div"> & {
   containerClassName?: string;
-  className?: string;
 };
 
 export const WobbleCard = (props: WobbleCardProps) => {
-  const { children, containerClassName, className } = props;
+  const { children, containerClassName, className, ...rest } = props;
 
   const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = React.useState(false);
@@ -42,7 +42,7 @@ export const WobbleCard = (props: WobbleCardProps) => {
         transition: "transform 0.1s ease-out",
       }}
       className={cn(
-        "relative mx-auto overflow-hidden rounded-2xl bg-indigo-800",
+        "relative overflow-hidden rounded-2xl bg-indigo-800",
         containerClassName
       )}
     >
@@ -54,6 +54,7 @@ export const WobbleCard = (props: WobbleCardProps) => {
         }}
       >
         <motion.div
+          {...rest}
           style={{
             transform:
               isHovering ?
@@ -64,7 +65,7 @@ export const WobbleCard = (props: WobbleCardProps) => {
           className={cn("h-full px-4 py-20 sm:px-10", className)}
         >
           <Noise />
-          {children}
+          {children as React.ReactNode}
         </motion.div>
       </div>
     </motion.section>
