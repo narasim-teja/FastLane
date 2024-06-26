@@ -127,6 +127,8 @@ export const useGame = create<State>()(
             startTime: 0,
             endTime: 0,
             phase: "ready",
+            isSpeedReduced: false,
+            isSpeedBoostActive: false,
             segments: [{ obstacles: [] }],
           };
         }

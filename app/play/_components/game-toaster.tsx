@@ -6,6 +6,7 @@ import { Snail, Zap } from "lucide-react";
 
 import { CircleProgress } from "~/components/ui/progress";
 import { useGame } from "~/hooks/use-game";
+import { cn } from "~/lib/utils";
 
 export function GameToaster() {
   const { isSpeedReduced, isSpeedBoostActive } = useGame();
@@ -48,29 +49,34 @@ export function GameToaster() {
     };
   }, [isSpeedBoostActive, isSpeedReduced]);
 
-  if (!isSpeedReduced && !isSpeedBoostActive) return null;
-
   return (
-    <div className="fixed bottom-4 left-4 z-10 flex items-center gap-4 rounded-2xl border border-white/35 bg-white/40 p-4 shadow-md backdrop-blur-sm">
-      <p className="font-matter text-lg font-semibold">
-        {isSpeedBoostActive && (
-          <>
-            <Zap className="mr-2 inline-flex size-8 fill-yellow-500 stroke-yellow-500" />{" "}
-            Speed Boost Active
-          </>
-        )}
-        {isSpeedReduced && (
-          <>
-            <Snail className="mr-2 inline-flex size-8 stroke-red-400" /> Speed
-            Reduced
-          </>
-        )}
-      </p>
+    <div
+      className={cn(
+        "fixed inset-x-4 top-4 z-10 flex w-full md:bottom-4 md:top-auto",
+        !isSpeedBoostActive && !isSpeedReduced && "invisible"
+      )}
+    >
+      <div className="flex items-center gap-4 rounded-2xl border border-white/35 bg-white/40 p-4 shadow-md backdrop-blur-sm">
+        <div className="font-matter text-lg font-semibold">
+          {isSpeedBoostActive && (
+            <p className="flex items-start">
+              <Zap className="mr-2 size-8 fill-yellow-500 stroke-yellow-500" />
+              <span>Speed Boost Active</span>
+            </p>
+          )}
+          {isSpeedReduced && (
+            <p className="flex items-start">
+              <Snail className="mr-2 size-8 stroke-red-400" />
+              <span>Speed Reduced</span>
+            </p>
+          )}
+        </div>
 
-      <CircleProgress
-        value={progress}
-        progressColor={isSpeedBoostActive ? "lime" : "red"}
-      />
+        <CircleProgress
+          value={progress}
+          progressColor={isSpeedBoostActive ? "lime" : "red"}
+        />
+      </div>
     </div>
   );
 }
