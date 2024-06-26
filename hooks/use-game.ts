@@ -73,7 +73,7 @@ export const useGame = create<State>()(
 
     isSpeedBoostActive: false,
     activateSpeedBoost: () => {
-      set(() => ({ isSpeedBoostActive: true }));
+      set(() => ({ isSpeedBoostActive: true, isSpeedReduced: false }));
 
       setTimeout(() => {
         set(() => ({ isSpeedBoostActive: false }));
@@ -82,7 +82,7 @@ export const useGame = create<State>()(
 
     isSpeedReduced: false,
     activateSpeedReduced: () => {
-      set(() => ({ isSpeedReduced: true }));
+      set(() => ({ isSpeedReduced: true, isSpeedBoostActive: false }));
 
       setTimeout(() => {
         set(() => ({ isSpeedReduced: false }));
@@ -127,6 +127,7 @@ export const useGame = create<State>()(
             startTime: 0,
             endTime: 0,
             phase: "ready",
+            segments: [{ obstacles: [] }],
           };
         }
 

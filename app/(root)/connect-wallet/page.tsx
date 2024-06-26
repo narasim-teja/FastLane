@@ -14,7 +14,7 @@ export default async function ConnectWalletPage() {
   }
 
   return (
-    <div className="grid h-screen place-content-center space-y-4">
+    <div className="-mt-20 grid h-screen place-content-center space-y-4 md:-mt-40">
       <h1 className="text-center font-cal text-4xl drop-shadow sm:text-5xl md:text-6xl lg:text-7xl">
         Connect your wallet
       </h1>

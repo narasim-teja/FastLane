@@ -8,6 +8,7 @@ import { Plus, Rocket } from "lucide-react";
 import { CanvasRevealEffect } from "~/components/aceternity-ui/canvas-reveal-effect";
 import { WobbleCard } from "~/components/aceternity-ui/wobble-card";
 import { Button } from "~/components/ui/button";
+import { siteConfig } from "~/config/site";
 import { communityTracks, tracks } from "~/config/tracks";
 import { cn } from "~/lib/utils";
 
@@ -28,7 +29,7 @@ export default function TracksPage({ searchParams: { type } }: Props) {
         Choose a track to start your journey
       </h1>
 
-      <div className="flex flex-wrap items-center gap-10">
+      <div className="flex flex-wrap items-center justify-center gap-10">
         {tracks.map((track, i) => (
           <WobbleCard
             key={i}
@@ -81,7 +82,7 @@ export default function TracksPage({ searchParams: { type } }: Props) {
         Community tracks
       </h2>
 
-      <div className="flex flex-wrap items-center gap-10">
+      <div className="flex flex-wrap items-center justify-center gap-10">
         {communityTracks.map((track, i) => (
           <WobbleCard
             key={i}
@@ -154,7 +155,7 @@ export default function TracksPage({ searchParams: { type } }: Props) {
                 Have a track idea?
                 <br />
                 <a
-                  href="https://discord.gg/fastlane"
+                  href={siteConfig.links.discord}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-blue-500 underline-offset-4 hover:text-blue-600 hover:underline"

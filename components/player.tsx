@@ -22,7 +22,7 @@ export function Player() {
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
-  const { mutate: revealRow } = api.ws.revealRow.useMutation();
+  const { mutate: revealRow } = api.ws.revealRow.useMutation({});
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -253,7 +253,16 @@ export function Player() {
       });
     }
 
-    if (bodyPosition.y < -4) restartGame();
+    if (bodyPosition.y < -2) {
+      revealRow({
+        chainId: CHAIN_ID,
+        sessionId: SESSION_ID,
+        rowIdx: 0,
+      });
+
+      lastRow.current = 0;
+      restartGame();
+    }
   });
 
   // const ball = useFBX("/marble-high-poly.fbx");

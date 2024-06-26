@@ -43,7 +43,7 @@ export function Navbar() {
         <nav className="hidden w-full items-center justify-end gap-2 md:flex">
           <ConnectWallet from="navbar" />
 
-          {navLinks.slice(0, 1).map(({ label, href, icon: Icon }, i) => (
+          {navLinks.map(({ label, href, icon: Icon }, i) => (
             <Tooltip key={`${i}-${label}`} delayDuration={0}>
               <TooltipTrigger asChild>
                 <Link
@@ -58,7 +58,7 @@ export function Navbar() {
                 </Link>
               </TooltipTrigger>
 
-              <TooltipContent side="right" className="text-base">
+              <TooltipContent side="bottom" className="text-base">
                 {label}
               </TooltipContent>
             </Tooltip>
