@@ -7,12 +7,12 @@ import {
   Html,
   Link,
   Preview,
+  Section,
   Tailwind,
   Text,
 } from "@react-email/components";
 import { Gamepad } from "lucide-react";
 
-import { X } from "~/components/icons";
 import { siteConfig } from "~/config/site";
 
 type WaitlistEmailProps = {
@@ -39,15 +39,15 @@ export const WaitlistEmail = ({ email }: WaitlistEmailProps) => (
         Thank you for joining our waitlist and for your patience
       </Preview>
 
-      <Body className="bg-[#fbfbfb]">
-        <Text className="mx-auto flex items-end justify-center gap-2 text-lg font-bold lowercase md:text-3xl">
-          <Gamepad size={32} />{" "}
-          {siteConfig.url.replace(/https:\/\/(www).?/, "")}
-        </Text>
+      <Body className="bg-[#fbfbfb] p-6">
+        <Section className="flex w-full flex-col items-center justify-center space-y-2">
+          <Text className="-ml-6 flex items-end justify-center gap-2 text-lg font-bold lowercase md:text-3xl">
+            <Gamepad size={32} />{" "}
+            {siteConfig.url.replace(/https:\/\/(www).?/, "")}
+          </Text>
 
-        <Text className="mx-auto !-mt-4 flex justify-center font-medium">
-          {siteConfig.description}
-        </Text>
+          <Text>{siteConfig.description}</Text>
+        </Section>
 
         <Container className="border border-dashed border-black bg-white p-4 shadow-md md:p-8">
           <Heading className="text-2xl">
@@ -72,8 +72,11 @@ export const WaitlistEmail = ({ email }: WaitlistEmailProps) => (
 
           <Text>
             In the meantime, feel free to follow us on{" "}
-            <Link href={siteConfig.links.x} className="text-blue-500 underline">
-              <X size={16} />
+            <Link
+              href={siteConfig.links.x}
+              className="font-medium text-blue-500 underline"
+            >
+              X (formerly twitter)
             </Link>{" "}
             for the latest news and updates.
           </Text>

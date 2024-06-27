@@ -91,6 +91,13 @@ export const env = createEnv({
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: z.string({
       required_error: "`NEXT_PUBLIC_THIRDWEB_CLIENT_ID` is required",
     }),
+
+    /* -----------------------------------------------------------------------------------------------
+     * Oasis contract
+     * -----------------------------------------------------------------------------------------------*/
+    NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS: z.string({
+      required_error: "`OASIS_CONTRACT_ADDR` is required",
+    }),
   },
 
   /**
@@ -105,6 +112,8 @@ export const env = createEnv({
     NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN:
       process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
+    NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS:
+      process.env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS,
   },
 
   /**

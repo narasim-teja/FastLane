@@ -29,6 +29,7 @@ export function Experience() {
       addObstaclesRow(obstacles);
     },
   });
+
   return (
     <KeyboardControls
       map={[

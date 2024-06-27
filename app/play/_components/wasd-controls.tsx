@@ -16,47 +16,48 @@ type Key =
   | "KeyD";
 
 export function WASDControls() {
-  const [key, setKey] = React.useState<Key | null>(null);
+  const [keys, setKeys] = React.useState<Set<Key>>(new Set());
 
-  useEventListener("keydown", ({ code }) => {
-    if (code === "ArrowUp" || code === "KeyW") {
-      setKey("ArrowUp");
-    } else if (code === "ArrowDown" || code === "KeyS") {
-      setKey("ArrowDown");
-    } else if (code === "ArrowLeft" || code === "KeyA") {
-      setKey("ArrowLeft");
-    } else if (code === "ArrowRight" || code === "KeyD") {
-      setKey("ArrowRight");
-    }
-  });
+  const handleKeyDown = React.useCallback(({ code }: KeyboardEvent) => {
+    setKeys((prevKeys) => new Set(prevKeys.add(code as Key)));
+  }, []);
 
-  useEventListener("keyup", () => setKey(null));
+  const handleKeyUp = React.useCallback(({ code }: KeyboardEvent) => {
+    setKeys((prevKeys) => {
+      const newKeys = new Set(prevKeys);
+      newKeys.delete(code as Key);
+      return newKeys;
+    });
+  }, []);
+
+  useEventListener("keydown", handleKeyDown);
+  useEventListener("keyup", handleKeyUp);
 
   return (
     <div className="fixed inset-x-1/2 bottom-4 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-12 *:rounded-md *:border *:border-white/20 *:backdrop-blur">
       <div
         className={cn(
           "col-start-2 row-start-1 bg-white/20",
-          key === "ArrowUp" && "bg-white/40 shadow-md"
+          keys.has("ArrowUp") && "bg-white/40 shadow-md"
         )}
       />
 
       <div
         className={cn(
           "col-start-1 row-start-2 bg-white/20",
-          key === "ArrowLeft" && "bg-white/40 shadow-md"
+          keys.has("ArrowLeft") && "bg-white/40 shadow-md"
         )}
       />
       <div
         className={cn(
           "col-start-2 row-start-2 bg-white/20",
-          key === "ArrowDown" && "bg-white/40 shadow-md"
+          keys.has("ArrowDown") && "bg-white/40 shadow-md"
         )}
       />
       <div
         className={cn(
           "col-start-3 row-start-2 bg-white/20",
-          key === "ArrowRight" && "bg-white/40 shadow-md"
+          keys.has("ArrowRight") && "bg-white/40 shadow-md"
         )}
       />
     </div>

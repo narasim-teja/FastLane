@@ -39,6 +39,7 @@ export function Player() {
     isSpeedBoostActive,
     isSpeedReduced,
     isPaused,
+    isEditorOpen,
   } = useGame();
 
   useEffect(() => {
@@ -162,7 +163,7 @@ export function Player() {
     }
 
     // only apply impulse and torque if the player is not below the base level
-    if (!(bodyPosition.y < -0.5) && !isPaused) {
+    if (!(bodyPosition.y < -0.5) && !isPaused && !isEditorOpen) {
       body.current.applyImpulse(impulse, true);
       body.current.applyTorqueImpulse(torque, true);
     }
