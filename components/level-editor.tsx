@@ -44,12 +44,15 @@ type Selection = {
 export function LevelEditor() {
   const contract = useContract();
 
-  const { addSegment, isEditorOpen } = useGame();
+  const { segments, addSegment, isEditorOpen } = useGame();
 
   const [currentRow, setCurrentRow] = React.useState<number>(0);
   const [selections, setSelections] = React.useState<Selection[]>(
     Array(NUMBER_OF_ROWS).fill({ obstacle: null, column: null })
   );
+
+  const shouldOpenEditor =
+    isEditorOpen && segments[segments.length - 1].obstacles.length <= 10;
 
   function handleObstacleSelection(value: string) {
     setSelections((prev) =>
@@ -132,7 +135,7 @@ export function LevelEditor() {
   }
 
   return (
-    <Dialog open={isEditorOpen}>
+    <Dialog open={shouldOpenEditor}>
       <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-scroll">
         <DialogHeader className="space-y-0">
           <DialogTitle className="font-cal text-3xl tracking-wide md:text-4xl">

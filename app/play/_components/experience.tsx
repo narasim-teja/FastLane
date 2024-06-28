@@ -1,6 +1,6 @@
 "use client";
 
-import { Environment, KeyboardControls } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 
 import { BlockEnd, BlockStart } from "~/components/block";
@@ -31,55 +31,46 @@ export function Experience() {
   });
 
   return (
-    <KeyboardControls
-      map={[
-        { name: "forward", keys: ["ArrowUp", "KeyW"] },
-        { name: "backward", keys: ["ArrowDown", "KeyS"] },
-        { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
-        { name: "rightward", keys: ["ArrowRight", "KeyD"] },
-      ]}
-    >
-      <Physics>
-        <Common />
+    <Physics>
+      <Common />
 
-        {segments.map(({ obstacles }, i) => (
-          <group key={i}>
-            {obstacles.map((obstacle, j) => {
-              const row = Math.floor(j / 5);
-              const col = j % 5;
+      {segments.map(({ obstacles }, i) => (
+        <group key={i}>
+          {obstacles.map((obstacle, j) => {
+            const row = Math.floor(j / 5);
+            const col = j % 5;
 
-              return (
-                <ObstaclesSpawner
-                  key={j}
-                  id={obstacle.toString()}
-                  row={row}
-                  col={col}
-                />
-              );
-            })}
+            return (
+              <ObstaclesSpawner
+                key={j}
+                id={obstacle.toString()}
+                row={row}
+                col={col}
+              />
+            );
+          })}
 
-            <BlockStart
-              //  position={[2, 0.1, 7]}
-              position={[2, 0, 7]}
-            />
-            <BlockEnd
-              // position={[0, 0, -((8 + 1) * 4.99)]}
-              position={[0, 0, -((8 + 1) * 5)]}
-            />
-            <Bounds
-              length={8 + 1}
-              onClick={() => {
-                if (i === segments.length - 1) {
-                  openEditor();
-                }
-              }}
-            />
-            <Environment preset="dawn" background />
-          </group>
-        ))}
+          <BlockStart
+            //  position={[2, 0.1, 7]}
+            position={[2, 0, 7]}
+          />
+          <BlockEnd
+            // position={[0, 0, -((8 + 1) * 4.99)]}
+            position={[0, 0, -((8 + 1) * 5)]}
+          />
+          <Bounds
+            length={8 + 1}
+            onClick={() => {
+              if (i === segments.length - 1) {
+                openEditor();
+              }
+            }}
+          />
+          <Environment preset="dawn" background />
+        </group>
+      ))}
 
-        <Player />
-      </Physics>
-    </KeyboardControls>
+      <Player />
+    </Physics>
   );
 }
