@@ -44,10 +44,6 @@ export function downloadRecordedActions(actions: GamePlayAction[]) {
 
 export function logger(...args: unknown[]) {
   if (env.NODE_ENV === "development") {
-    console.log(
-      ...args.map((arg) =>
-        typeof arg === "object" ? JSON.stringify(arg, null, 2) : arg
-      )
-    );
+    console.log(...args);
   }
 }

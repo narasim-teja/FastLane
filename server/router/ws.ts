@@ -5,7 +5,7 @@ import type { RevealRowData } from "~/types/ws";
 
 import { logger } from "~/lib/utils";
 
-import { revealRow } from "../helper";
+import { revealObstaclesInRow } from "../helper";
 import { createRouter, publicProcedure } from "../trpc";
 
 export const wsRouter = createRouter({
@@ -19,7 +19,11 @@ export const wsRouter = createRouter({
     )
     .mutation(
       async ({ ctx: { ee }, input: { chainId, sessionId, rowIdx } }) => {
-        const obstacles = await revealRow(chainId, sessionId, rowIdx);
+        const obstacles = await revealObstaclesInRow(
+          chainId,
+          sessionId,
+          rowIdx
+        );
         ee.emit("revealRow", { rowIdx, obstacles });
       }
     ),
