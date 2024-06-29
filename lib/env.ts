@@ -2,10 +2,7 @@
 
 import { createEnv } from "@t3-oss/env-nextjs";
 import { vercel } from "@t3-oss/env-nextjs/presets";
-import { config } from "dotenv";
 import { z } from "zod";
-
-config();
 
 export const env = createEnv({
   extends: [vercel()],
@@ -22,9 +19,7 @@ export const env = createEnv({
       .string()
       .transform((v) => +v)
       .optional()
-      .default("8080"),
-
-    SERVER_URL: z.string().optional().default("http://localhost:8080"),
+      .default("3000"),
   },
 
   /**
@@ -108,7 +103,6 @@ export const env = createEnv({
   experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
-    SERVER_URL: process.env.SERVER_URL,
     NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN:
       process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,

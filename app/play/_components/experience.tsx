@@ -24,7 +24,7 @@ export function Experience() {
       logger(">>> Fetching Initial Row");
       revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
     },
-    onData: ({ rowIdx, obstacles }) => {
+    onData: ({ data: { rowIdx, obstacles } }) => {
       console.log(`>>> Raw event data for row ${rowIdx}:`, obstacles);
       addObstaclesRow(obstacles);
     },
