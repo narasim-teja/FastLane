@@ -14,7 +14,7 @@ cd FastLane
 ```
 
 ```
-cp .env.example .env
+cp .env.example .env.local
 ```
 
 - Run the app with VS Code or the command line:
@@ -74,6 +74,3 @@ In the project directory, you can run:
 | `fmt:check`   | Checks if the code is formatted with Prettier.       |
 | `ui`          | Runs the `shadcn/ui` CLI tool                        |
 | `analyze`     | Analyzes the bundle size.                            |
-
-> [!NOTE]  
-> All of the Docker scripts mentioned in `package.json` are intended to be used in the `Dockerfile` only.

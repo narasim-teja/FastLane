@@ -2,9 +2,9 @@ services:
   fastlane:
     build:
       dockerfile: Dockerfile
+      context: .
     image: fastlane
     ports:
-      - "8080:8080"
       - "3000:3000"
     networks:
       - fastlane_network
