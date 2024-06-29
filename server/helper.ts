@@ -7,15 +7,20 @@ import { logger } from "~/lib/utils";
 
 export const sessionChainMap: Record<number, number> = {};
 export const sessionObstacles: number[][][] = [];
+let contract: ethers.Contract | null = null;
 
 function getContractInstance() {
-  const signer = sapphire
-    .wrap(new ethers.Wallet(env.TRACK_OWNER_PKEY))
-    .connect(
-      ethers.getDefaultProvider(sapphire.NETWORKS.testnet.defaultGateway)
-    );
+  if (!contract) {
+    const signer = sapphire
+      .wrap(new ethers.Wallet(env.TRACK_OWNER_PKEY))
+      .connect(
+        ethers.getDefaultProvider(sapphire.NETWORKS.testnet.defaultGateway)
+      );
 
-  return new ethers.Contract(env.OASIS_CONTRACT_ADDRESS, abi, signer);
+    contract = new ethers.Contract(env.OASIS_CONTRACT_ADDRESS, abi, signer);
+  }
+
+  return contract;
 }
 
 export async function revealObstaclesInRow(
@@ -34,7 +39,10 @@ export async function revealObstaclesInRow(
 
     if (!sessionObstacles[sessionId]?.length) {
       console.error(`No obstacles found for sessionId: ${sessionId}`);
-      return [];
+      return {
+        rowCount: 0,
+        obstaclesInRow: [],
+      };
     }
 
     const obstaclesInRow = sessionObstacles[sessionId]?.[rowIndex] ?? [];
@@ -43,10 +51,16 @@ export async function revealObstaclesInRow(
       obstaclesInRow
     );
 
-    return obstaclesInRow;
+    return {
+      rowCount: sessionObstacles[sessionId].length,
+      obstaclesInRow,
+    };
   } catch (error) {
     console.error("Error in revealObstaclesInRow:", error);
-    return [];
+    return {
+      rowCount: 0,
+      obstaclesInRow: [],
+    };
   }
 }
 

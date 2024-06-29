@@ -1,12 +1,3 @@
-/* -----------------------------------------------------------------------------------------------
- * NOTE:
- *
- * currently facing an issue where events are not triggering (either emitting
- * or listening or both) from next.js router handlers.
- * As a result, I have moved to a standalone WebSocket server.
- * This setup might change in the future if a possible solution is found.
- * -----------------------------------------------------------------------------------------------*/
-
 import { type NextRequest } from "next/server";
 
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
