@@ -63,7 +63,7 @@ export function Player() {
   function reset() {
     if (body.current) {
       // TODO: check for the wakeUp parameter
-      body.current.setTranslation({ x: 2, y: 1, z: 7 }, true);
+      body.current.setTranslation({ x: 2, y: 1, z: 2.5 }, true);
       body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
     }
@@ -111,7 +111,7 @@ export function Player() {
     const torque = { x: 0, y: 0, z: 0 };
 
     // define base impulse and torque strengths
-    const baseImpulseStrength = 0.6;
+    const baseImpulseStrength = 0.3;
     const baseTorqueStrength = 0.2;
 
     // define multipliers for boost and reduction
@@ -238,13 +238,15 @@ export function Player() {
      * phases
      * -----------------------------------------------------------------------------------------------*/
     const zPosition = body.current.translation().z;
+    // console.log(zPosition)
 
-    const currentRow = Math.floor(-zPosition / 4.75); // when to reveal the obstacle
+    const currentRow = Math.floor((-zPosition - 3) / 5); // when to reveal the obstacle
     // console.log(currentRow)
     // Assuming each unit in Z represents a row
 
     // check if the player has moved to a new row
     if (currentRow > lastRow.current && bodyPosition.y > 0) {
+      console.log(lastRow.current);
       lastRow.current = currentRow; // update the last row
       // emit event to server to reveal the next row of obstacles
       revealRow({
@@ -278,7 +280,7 @@ export function Player() {
       friction={1}
       linearDamping={0.5}
       angularDamping={0.5}
-      position={[2, 1, 7]}
+      position={[2, 1, 2.5]}
     >
       {/* <primitive object={ball} scale={0.005} /> */}
 

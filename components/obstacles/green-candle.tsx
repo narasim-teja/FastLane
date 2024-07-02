@@ -39,7 +39,7 @@ export function GreenCandle({ position = [0, 0, 0] }) {
           object={candle}
           scale={0.005} // NOTE: scale down the model
           // position={[2.1, 0.2, 0]}
-          position={[2, 0, 0]}
+          position={[2, 0.2, 0]}
           rotation-z={Math.PI / 2}
         />
       </RigidBody>

@@ -43,7 +43,7 @@ export function TextObstacle({ position = [0, 0, 0] }) {
           object={wagmi}
           scale={0.01}
           // position={[-1.6, 0.25, 0]}
-          position={[-1, 0, 0]}
+          position={[-1, 0.5, 0]}
         />
       </RigidBody>
     </group>

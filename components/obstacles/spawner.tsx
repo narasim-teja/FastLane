@@ -24,7 +24,7 @@ export function ObstaclesSpawner({ id, row, col }: ObstaclesSpawnerProps) {
   }
 
   // adjust based on your coordinate system
-  const position = [col, 0, -row * 5];
+  const position = [col, 0, -(row + 1) * 5];
 
   return <Obstacle position={position} />;
 }
