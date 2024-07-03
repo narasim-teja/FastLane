@@ -1,4 +1,4 @@
-import { Store, TrafficCone } from "lucide-react";
+import { TrafficCone } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
 
@@ -9,11 +9,11 @@ export type NavLink = {
 };
 
 export const navLinks: NavLink[] = [
-  {
-    label: "Marketplace",
-    href: "/marketplace",
-    icon: Store,
-  },
+  // {
+  //   label: "Marketplace",
+  //   href: "/marketplace",
+  //   icon: Store,
+  // },
   {
     label: "Tracks",
     href: "/tracks",

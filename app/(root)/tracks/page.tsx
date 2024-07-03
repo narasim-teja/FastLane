@@ -2,12 +2,13 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Plus, Rocket } from "lucide-react";
 
 import { CanvasRevealEffect } from "~/components/aceternity-ui/canvas-reveal-effect";
 import { WobbleCard } from "~/components/aceternity-ui/wobble-card";
-import { Button } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import { siteConfig } from "~/config/site";
 import { communityTracks, tracks } from "~/config/tracks";
 import { cn } from "~/lib/utils";
@@ -169,14 +170,16 @@ export default function TracksPage({ searchParams: { type } }: Props) {
         </WobbleCard>
       </div>
 
-      <Button
-        variant="outline"
-        disabled
-        className="fixed bottom-10 left-1/2 h-[54px] -translate-x-1/2 rounded-4xl border-2 px-8 py-4 text-lg font-semibold uppercase shadow-md transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:[box-shadow:_2px_4px_0_#000] active:translate-y-0"
+      <Link
+        href={`/play?track=${selectedTrack}`}
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "fixed bottom-10 left-1/2 h-[54px] -translate-x-1/2 rounded-4xl border-2 px-8 py-4 text-lg font-semibold uppercase shadow-md transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:[box-shadow:_2px_4px_0_#000] active:translate-y-0"
+        )}
       >
         <Rocket className="mr-2" />
         Launch Game
-      </Button>
+      </Link>
     </div>
   );
 }

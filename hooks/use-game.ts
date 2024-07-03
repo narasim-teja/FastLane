@@ -8,6 +8,9 @@ type State = {
 
   setTrack: (track: State["track"]) => void;
 
+  rowCount: number;
+  setRowCount: (rowCount: number) => void;
+
   segments: { obstacles: Obstacles }[];
   addSegment: (obstacles: Obstacles) => void;
   addObstaclesRow: (obstacles: Obstacles) => void;
@@ -45,6 +48,9 @@ export const useGame = create<State>()(
 
         return { track: null };
       }),
+
+    rowCount: 0,
+    setRowCount: (rowCount) => set(() => ({ rowCount })),
 
     segments: [{ obstacles: [] }],
     addSegment: (obstacles) => {

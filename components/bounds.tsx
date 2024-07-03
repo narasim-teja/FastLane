@@ -6,17 +6,17 @@ import { quantize } from "~/lib/utils";
 
 type BoundsProps = {
   length?: number;
-  onClick: () => void;
+  onCollison: () => void;
 };
 
-export function Bounds({ length = 9, onClick }: BoundsProps) {
+export function Bounds({ length = 9, onCollison }: BoundsProps) {
   const corridor = useFBX("/road-plane.fbx");
 
   const { activatePause } = useGame();
 
   const handleCheckpointEnter = () => {
     activatePause();
-    onClick();
+    onCollison();
   };
 
   // Quantizing scale and position values to 3 decimal places

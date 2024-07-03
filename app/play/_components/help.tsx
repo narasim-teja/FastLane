@@ -16,14 +16,12 @@ export function Help() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="fixed right-4 top-4 z-10 flex w-full justify-end md:bottom-4 md:top-auto">
-          <Button
-            size="icon"
-            className="shrink-0 border border-white/20 bg-white/20 shadow backdrop-blur hover:bg-white/35"
-          >
-            <Info className="text-muted" />
-          </Button>
-        </div>
+        <Button
+          size="icon"
+          className="fixed right-4 top-4 z-10 shrink-0 border border-white/20 bg-white/20 shadow backdrop-blur hover:bg-white/35 md:bottom-4 md:top-auto"
+        >
+          <Info className="text-muted" />
+        </Button>
       </DialogTrigger>
 
       <DialogContent>
