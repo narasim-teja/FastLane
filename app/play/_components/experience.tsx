@@ -30,18 +30,25 @@ export function Experience() {
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
-  api.ws.onRevealRow.useSubscription(void function () {}, {
-    onStarted: () => {
-      logger(">>> Fetching Initial Row");
-      revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
-    },
-    onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
-      console.log(`>>> Raw event data for row ${rowIdx}:`, obstacles);
-      addObstaclesRow(obstacles);
-      setRowCount(rowCount);
-      isGameReady.current = true;
-    },
-  });
+  // Debugging mode check
+  const isDebugging = false; // Set to true for debugging, false for normal operation
+
+  if (!isDebugging) {
+    api.ws.onRevealRow.useSubscription(void function () {}, {
+      onStarted: () => {
+        logger(">>> Fetching Initial Row");
+        revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
+      },
+      onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
+        console.log(`>>> Raw event data for row ${rowIdx}:`, obstacles);
+        addObstaclesRow(obstacles);
+        setRowCount(rowCount);
+        isGameReady.current = true;
+      },
+    });
+  } else {
+    isGameReady.current = true;
+  }
 
   if (!isGameReady.current) {
     return (
@@ -78,10 +85,11 @@ export function Experience() {
           />
           <BlockEnd
             // position={[0, 0, -((8 + 1) * 4.99)]}
-            position={[0, 0, -(rowCount * 5)]}
+            position={[0, 0.05, -(rowCount * 5)]}
           />
           <Bounds
             length={rowCount}
+            rowCount={rowCount}
             onCollison={() => {
               if (i === segments.length - 1) {
                 openEditor();
