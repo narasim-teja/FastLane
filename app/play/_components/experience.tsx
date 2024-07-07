@@ -1,6 +1,8 @@
 "use client";
 
-import { Environment } from "@react-three/drei";
+import React from "react";
+
+import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 
 import { BlockEnd, BlockStart } from "~/components/block";
@@ -15,20 +17,47 @@ import { logger } from "~/lib/utils";
 import Common from "./common";
 
 export function Experience() {
-  const { segments, addObstaclesRow, openEditor } = useGame();
+  const isGameReady = React.useRef(false);
+
+  const {
+    rowCount,
+    setRowCount,
+    segments,
+    addObstaclesRow,
+    openEditor,
+    // ...
+  } = useGame();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
-  api.ws.onRevealRow.useSubscription(void function () {}, {
-    onStarted: () => {
-      logger(">>> Fetching Initial Row");
-      revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
-    },
-    onData: ({ data: { rowIdx, obstacles } }) => {
-      console.log(`>>> Raw event data for row ${rowIdx}:`, obstacles);
-      addObstaclesRow(obstacles);
-    },
-  });
+  // Debugging mode check
+  const isDebugging = false; // Set to true for debugging, false for normal operation
+
+  if (!isDebugging) {
+    api.ws.onRevealRow.useSubscription(void function () {}, {
+      onStarted: () => {
+        logger(">>> Fetching Initial Row");
+        revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
+      },
+      onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
+        console.log(`>>> Raw event data for row ${rowIdx}:`, obstacles);
+        addObstaclesRow(obstacles);
+        setRowCount(rowCount);
+        isGameReady.current = true;
+      },
+    });
+  } else {
+    isGameReady.current = true;
+  }
+
+  if (!isGameReady.current) {
+    return (
+      <Html className="space-y-4">
+        <div className="aspect-square h-16 animate-spin rounded-full border-y-2 border-primary lg:h-32" />
+        <p className="shrink-0 font-cal text-3xl">Loading Obstacles</p>
+      </Html>
+    );
+  }
 
   return (
     <Physics>
@@ -56,11 +85,12 @@ export function Experience() {
           />
           <BlockEnd
             // position={[0, 0, -((8 + 1) * 4.99)]}
-            position={[0, 0, -((9 + 1) * 5)]}
+            position={[0, 0.05, -(rowCount * 5)]}
           />
           <Bounds
-            length={8 + 1}
-            onClick={() => {
+            length={rowCount}
+            rowCount={rowCount}
+            onCollison={() => {
               if (i === segments.length - 1) {
                 openEditor();
               }
