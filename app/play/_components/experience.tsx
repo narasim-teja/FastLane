@@ -59,6 +59,15 @@ export function Experience() {
     );
   }
 
+  // Function to generate BlockEnd components at intervals
+  const generateBlockEnds = () => {
+    const blockEnds = [];
+    for (let i = 50; i <= rowCount * 5; i += 50) {
+      blockEnds.push(<BlockEnd key={i} position={[0, 0.05, -i]} />);
+    }
+    return blockEnds;
+  };
+
   return (
     <Physics>
       <Common />
@@ -83,10 +92,7 @@ export function Experience() {
             //  position={[2, 0.1, 7]}
             position={[2, 0, 2]}
           />
-          <BlockEnd
-            // position={[0, 0, -((8 + 1) * 4.99)]}
-            position={[0, 0.05, -(rowCount * 5)]}
-          />
+          {generateBlockEnds()}
           <Bounds
             length={rowCount}
             rowCount={rowCount}

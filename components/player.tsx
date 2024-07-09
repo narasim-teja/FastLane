@@ -48,23 +48,23 @@ export function Player() {
     isEditorOpen,
   } = useGame();
 
-  useEffect(() => {
-    void (async () => {
-      try {
-        const response = await fetch("/player-actions.json");
-        const data = await response.json();
-        setSimulationData(data as GamePlayAction[]);
-      } catch (error) {
-        console.error("Error loading the JSON data: ", error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   void (async () => {
+  //     try {
+  //       const response = await fetch("/player-actions.json");
+  //       const data = await response.json();
+  //       setSimulationData(data as GamePlayAction[]);
+  //     } catch (error) {
+  //       console.error("Error loading the JSON data: ", error);
+  //     }
+  //   })();
+  // }, []);
 
-  useEventListener("keydown", (event) => {
-    if (event.code === "Space") {
-      downloadRecordedActions(recordedActions);
-    }
-  });
+  // useEventListener("keydown", (event) => {
+  //   if (event.code === "Space") {
+  //     downloadRecordedActions(recordedActions);
+  //   }
+  // });
 
   function reset() {
     if (body.current) {

@@ -8,11 +8,11 @@ export function BlockEnd({ position = [0, 0, 0] }) {
     <group position={position as Position}>
       <Text
         font="/fonts/bebas-neue-v9-latin-regular.woff"
-        scale={1}
+        scale={0.5}
         // position={[0, 1.25, 2]}
         position={[0, 1, 2]}
       >
-        Checkpoint
+        Checkpoint 2 Owner:
         <meshBasicMaterial toneMapped={false} />
       </Text>
       <mesh receiveShadow position={[2, 0, 2]}>
@@ -36,6 +36,15 @@ export function BlockStart({ position = [0, 0, 0] }) {
         restitution={0}
         friction={1}
       >
+        <Text
+          font="/fonts/bebas-neue-v9-latin-regular.woff"
+          scale={0.5}
+          // position={[0, 1.25, 2]}
+          position={[-2.5, 1, -2]}
+        >
+          Checkpoint 1
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
         <mesh
           receiveShadow
           //  position={[0, -0.1, 0]}
