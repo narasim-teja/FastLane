@@ -60,7 +60,6 @@ In the project directory, you can run:
 | `build`       | Builds the app for production to the `.next` folder. |
 | `start`       | Runs the built app in the production mode.           |
 | `preview`     | Builds and serves the app in the production mode.    |
-| `email`       | Runs the React email development server.             |
 | `db:generate` | Generates the migration files.                       |
 | `db:migrate`  | Migrates the database.                               |
 | `db:drop`     | Drops the database.                                  |

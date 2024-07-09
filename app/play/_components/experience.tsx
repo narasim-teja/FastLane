@@ -52,9 +52,9 @@ export function Experience() {
 
   if (!isGameReady.current) {
     return (
-      <Html className="space-y-4">
+      <Html fullscreen className="grid h-full place-items-center">
         <div className="aspect-square h-16 animate-spin rounded-full border-y-2 border-primary lg:h-32" />
-        <p className="shrink-0 font-cal text-3xl">Loading Obstacles</p>
+        <span className="sr-only">Loading initial obstacle...</span>
       </Html>
     );
   }

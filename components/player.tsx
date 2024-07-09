@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { useKeyboardControls, useTexture } from "@react-three/drei";
+import { Html, useKeyboardControls, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
@@ -15,7 +15,7 @@ import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useEventListener } from "~/hooks/use-event-listner";
 import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
-import { downloadRecordedActions } from "~/lib/utils";
+import { cn, downloadRecordedActions } from "~/lib/utils";
 
 export function Player() {
   const { gl } = useThree();
@@ -27,6 +27,12 @@ export function Player() {
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
   const body = useRef<RapierRigidBody>(null);
+  const keysRef = useRef({
+    forward: false,
+    backward: false,
+    leftward: false,
+    rightward: false,
+  }).current;
   const lastRow = useRef(0);
 
   const [recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
@@ -130,7 +136,7 @@ export function Player() {
       torqueStrength *= reductionMultiplier;
     }
 
-    if (forward) {
+    if (forward || keysRef.forward) {
       impulse.z -= impulseStrength;
       torque.x -= torqueStrength;
 
@@ -140,13 +146,13 @@ export function Player() {
       ]);
     }
 
-    if (rightward) {
+    if (rightward || keysRef.rightward) {
       impulse.x += impulseStrength;
       torque.z -= torqueStrength;
       setRecordedActions((prev) => [...prev, { frameNumber, action: "right" }]);
     }
 
-    if (backward) {
+    if (backward || keysRef.backward) {
       impulse.z += impulseStrength;
       torque.x += torqueStrength;
 
@@ -156,7 +162,7 @@ export function Player() {
       ]);
     }
 
-    if (leftward) {
+    if (leftward || keysRef.leftward) {
       impulse.x -= impulseStrength;
       torque.z += torqueStrength;
       setRecordedActions((prev) => [...prev, { frameNumber, action: "left" }]);
@@ -272,22 +278,65 @@ export function Player() {
   const texture = useTexture("/marbel-04.png");
 
   return (
-    <RigidBody
-      ref={body}
-      canSleep={false}
-      colliders="ball"
-      restitution={0.2}
-      friction={1}
-      linearDamping={0.5}
-      angularDamping={0.5}
-      position={[2, 1, 2.5]}
-    >
-      {/* <primitive object={ball} scale={0.005} /> */}
+    <>
+      <Html fullscreen className="pointer-events-none">
+        <div className="pointer-events-auto absolute inset-x-1/2 bottom-4 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-12 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur">
+          <div
+            onMouseDown={() => (keysRef.forward = true)}
+            onMouseUp={() => (keysRef.forward = false)}
+            className={cn(
+              "col-start-2 row-start-1 bg-white/20",
+              (getKeys().forward || keysRef.forward) && "bg-white/40 shadow-md"
+            )}
+          />
 
-      <mesh castShadow>
-        <sphereGeometry args={[0.25, 18, 18]} />
-        <meshStandardMaterial attach="material" map={texture} />
-      </mesh>
-    </RigidBody>
+          <div
+            onMouseDown={() => (keysRef.leftward = true)}
+            onMouseUp={() => (keysRef.leftward = false)}
+            className={cn(
+              "col-start-1 row-start-2 bg-white/20",
+              (getKeys().leftward || keysRef.leftward) &&
+                "bg-white/40 shadow-md"
+            )}
+          />
+          <div
+            onMouseDown={() => (keysRef.backward = true)}
+            onMouseUp={() => (keysRef.backward = false)}
+            className={cn(
+              "col-start-2 row-start-2 bg-white/20",
+              (getKeys().backward || keysRef.backward) &&
+                "bg-white/40 shadow-md"
+            )}
+          />
+          <div
+            onMouseDown={() => (keysRef.rightward = true)}
+            onMouseUp={() => (keysRef.rightward = false)}
+            className={cn(
+              "col-start-3 row-start-2 bg-white/20",
+              (getKeys().rightward || keysRef.rightward) &&
+                "bg-white/40 shadow-md"
+            )}
+          />
+        </div>
+      </Html>
+
+      <RigidBody
+        ref={body}
+        canSleep={false}
+        colliders="ball"
+        restitution={0.2}
+        friction={1}
+        linearDamping={0.5}
+        angularDamping={0.5}
+        position={[2, 1, 2.5]}
+      >
+        {/* <primitive object={ball} scale={0.005} /> */}
+
+        <mesh castShadow>
+          <sphereGeometry args={[0.25, 18, 18]} />
+          <meshStandardMaterial attach="material" map={texture} />
+        </mesh>
+      </RigidBody>
+    </>
   );
 }
