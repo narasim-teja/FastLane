@@ -12,10 +12,9 @@ import type { RapierRigidBody } from "@react-three/rapier";
 import type { GamePlayAction } from "~/types/misc";
 
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
-import { useEventListener } from "~/hooks/use-event-listner";
 import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
-import { cn, downloadRecordedActions } from "~/lib/utils";
+import { cn } from "~/lib/utils";
 
 export function Player() {
   const { gl } = useThree();
@@ -35,8 +34,8 @@ export function Player() {
   }).current;
   const lastRow = useRef(0);
 
-  const [recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
-  const [_, setSimulationData] = useState<GamePlayAction[]>([]);
+  const [_recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
+  // const [_, setSimulationData] = useState<GamePlayAction[]>([]);
   // const [simulationIndex, setSimulationIndex] = useState(0);
 
   const {
@@ -280,10 +279,10 @@ export function Player() {
   return (
     <>
       <Html fullscreen className="pointer-events-none">
-        <div className="pointer-events-auto absolute inset-x-1/2 bottom-4 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-12 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur">
+        <div className="pointer-events-auto absolute inset-x-1/2 bottom-8 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-16 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur md:bottom-4 *:md:size-12">
           <div
-            onMouseDown={() => (keysRef.forward = true)}
-            onMouseUp={() => (keysRef.forward = false)}
+            onTouchStart={() => (keysRef.forward = true)}
+            onTouchEnd={() => (keysRef.forward = false)}
             className={cn(
               "col-start-2 row-start-1 bg-white/20",
               (getKeys().forward || keysRef.forward) && "bg-white/40 shadow-md"
@@ -291,8 +290,8 @@ export function Player() {
           />
 
           <div
-            onMouseDown={() => (keysRef.leftward = true)}
-            onMouseUp={() => (keysRef.leftward = false)}
+            onTouchStart={() => (keysRef.leftward = true)}
+            onTouchEnd={() => (keysRef.leftward = false)}
             className={cn(
               "col-start-1 row-start-2 bg-white/20",
               (getKeys().leftward || keysRef.leftward) &&
@@ -300,8 +299,8 @@ export function Player() {
             )}
           />
           <div
-            onMouseDown={() => (keysRef.backward = true)}
-            onMouseUp={() => (keysRef.backward = false)}
+            onTouchStart={() => (keysRef.backward = true)}
+            onTouchEnd={() => (keysRef.backward = false)}
             className={cn(
               "col-start-2 row-start-2 bg-white/20",
               (getKeys().backward || keysRef.backward) &&
@@ -309,8 +308,8 @@ export function Player() {
             )}
           />
           <div
-            onMouseDown={() => (keysRef.rightward = true)}
-            onMouseUp={() => (keysRef.rightward = false)}
+            onTouchStart={() => (keysRef.rightward = true)}
+            onTouchEnd={() => (keysRef.rightward = false)}
             className={cn(
               "col-start-3 row-start-2 bg-white/20",
               (getKeys().rightward || keysRef.rightward) &&

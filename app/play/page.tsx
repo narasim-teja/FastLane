@@ -12,7 +12,7 @@ const View = dynamic(() => import("~/components/canvas/view"), {
 
 export default function GamePage() {
   return (
-    <View className="h-screen w-screen">
+    <View className="h-dvh w-dvw">
       <Experience />
     </View>
   );
