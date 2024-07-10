@@ -14,7 +14,7 @@ const Scene = dynamic(() => import("~/components/canvas/scene"), {
 
 export default async function GameLayout(props: React.PropsWithChildren) {
   if (!(await isLoggedIn())) {
-    redirect("/connect-wallet");
+    redirect("/signin");
   }
 
   return (

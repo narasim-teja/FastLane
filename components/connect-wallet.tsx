@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { Wallet } from "lucide-react";
 import { ConnectButton } from "thirdweb/react";
 
-import { generatePayload, isLoggedIn, login, logout } from "~/lib/actions/auth";
-import { client } from "~/lib/thirdweb/client";
+import { thirdwebProps } from "~/lib/thirdweb/props";
 import { cn } from "~/lib/utils";
 
 type ConnectWalletProps = React.ComponentProps<"div"> & {
@@ -19,7 +18,7 @@ export function ConnectWallet(props: ConnectWalletProps) {
 
   const pathname = usePathname();
 
-  if (pathname === "/connect-wallet" && from === "navbar") {
+  if (pathname === "/signin" && from === "navbar") {
     return null;
   }
 
@@ -32,8 +31,7 @@ export function ConnectWallet(props: ConnectWalletProps) {
       {...rest}
     >
       <ConnectButton
-        client={client}
-        theme="light"
+        {...thirdwebProps}
         connectButton={{
           label: (
             <span>
@@ -51,12 +49,6 @@ export function ConnectWallet(props: ConnectWalletProps) {
         detailsButton={{
           className:
             "!min-w-[205px] !border-none !bg-background !px-8 !py-4 !text-lg !font-semibold !text-foreground",
-        }}
-        auth={{
-          isLoggedIn,
-          doLogin: login,
-          getLoginPayload: generatePayload,
-          doLogout: logout,
         }}
       />
     </div>

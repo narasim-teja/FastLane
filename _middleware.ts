@@ -38,10 +38,7 @@ export async function middleware(req: NextRequest) {
     }
 
     return NextResponse.redirect(
-      new URL(
-        `/connect-wallet?from=${encodeURIComponent(from)}`,
-        nextUrl.toString()
-      )
+      new URL(`/signin?from=${encodeURIComponent(from)}`, nextUrl.toString())
     );
   }
 

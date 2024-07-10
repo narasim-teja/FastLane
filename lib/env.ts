@@ -42,6 +42,10 @@ export const env = createEnv({
       required_error: "`OASIS_CONTRACT_ADDR` is required",
     }),
 
+    /* -----------------------------------------------------------------------------------------------
+     * Thirdweb (https://thirdweb.com/create-api-key)
+     * -----------------------------------------------------------------------------------------------*/
+
     THIRDWEB_SECRET_KEY: z.string({
       required_error: "`THIRDWEB_SECRET_KEY` is required",
     }),

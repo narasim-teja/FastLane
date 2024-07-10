@@ -12,12 +12,12 @@ import type {
 } from "thirdweb/auth";
 
 import { env } from "../env";
-import { client } from "../thirdweb/client";
+import { thirdWebclient } from "../thirdweb/client";
 
 const thirdwebAuth = createAuth({
   domain: env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
   adminAccount: privateKeyToAccount({
-    client,
+    client: thirdWebclient,
     privateKey: env.THIRDWEB_ADMIN_PRIVATE_KEY,
   }),
 });

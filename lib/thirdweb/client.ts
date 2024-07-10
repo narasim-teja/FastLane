@@ -3,9 +3,9 @@ import { createThirdwebClient } from "thirdweb";
 import { env } from "../env";
 
 const clientId = env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID; // this will be used on the client
-// const secretKey = env.THIRDWEB_SECRET_KEY; // this will be used on the server-side
+// eslint-disable-next-line no-restricted-properties
+const secretKey = process.env.THIRDWEB_SECRET_KEY; // this will be used on the server-side
 
-export const client = createThirdwebClient(
-  // secretKey ? { secretKey } :
-  { clientId }
+export const thirdWebclient = createThirdwebClient(
+  secretKey ? { secretKey } : { clientId }
 );
