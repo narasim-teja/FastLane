@@ -17,7 +17,7 @@ export const siteConfig = {
   keywords: [],
 
   links: {
-    discord: "",
+    discord: "https://discord.gg/bsVZ3nup",
     x: "https://x.com/fastlane_run",
   },
 } as const;

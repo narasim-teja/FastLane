@@ -13,10 +13,13 @@ import type { GamePlayAction } from "~/types/misc";
 
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
+import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 
 export function Player() {
+  const logger = getLogger();
+
   const { gl } = useThree();
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
@@ -212,7 +215,7 @@ export function Player() {
     //       torque.z += torqueStrength;
     //       break;
     //     default:
-    //       console.log(`Unknown action: ${action}`);
+    //       logger.info(`Unknown action: ${action}`);
     //   }
 
     //   if (body.current) {
@@ -243,15 +246,15 @@ export function Player() {
      * phases
      * -----------------------------------------------------------------------------------------------*/
     const zPosition = body.current.translation().z;
-    // console.log(zPosition)
+    // logger.info(zPosition)
 
     const currentRow = Math.floor((-zPosition - 3) / 5); // when to reveal the obstacle
-    // console.log(currentRow)
+    // logger.info(currentRow)
     // Assuming each unit in Z represents a row
 
     // check if the player has moved to a new row
     if (currentRow > lastRow.current && bodyPosition.y > 0) {
-      console.log(lastRow.current);
+      logger.info(lastRow.current);
       lastRow.current = currentRow; // update the last row
       // emit event to server to reveal the next row of obstacles
       revealRow({

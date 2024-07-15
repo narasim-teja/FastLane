@@ -6,9 +6,12 @@ import { RigidBody } from "@react-three/rapier";
 import type { Position } from "~/types/misc";
 
 import { useGame } from "~/hooks/use-game";
-import { logger, quantize } from "~/lib/utils";
+import { getLogger } from "~/lib/logger";
+import { quantize } from "~/lib/utils";
 
 export function WhaleObstacle({ position = [0, 0, 0] }) {
+  const logger = getLogger();
+
   const [isGameReady, setGameReady] = React.useState(false);
 
   const whale = useFBX("/gold-coin-raised.fbx");
@@ -22,7 +25,7 @@ export function WhaleObstacle({ position = [0, 0, 0] }) {
 
   const handleCollisionExit = () => {
     if (isGameReady) {
-      logger(">> Activating speed boost");
+      logger.info(">> Activating speed boost");
       activateSpeedBoost();
     }
   };

@@ -11,12 +11,14 @@ import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { Player } from "~/components/player";
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
+import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
-import { logger } from "~/lib/utils";
 
 import Common from "./common";
 
 export function Experience() {
+  const logger = getLogger();
+
   const isGameReady = React.useRef(false);
 
   const {
@@ -36,11 +38,11 @@ export function Experience() {
   if (!isDebugging) {
     api.ws.onRevealRow.useSubscription(void function () {}, {
       onStarted: () => {
-        logger(">>> Fetching Initial Row");
+        logger.info(">>> Fetching Initial Row");
         revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
-        console.log(`>>> Raw event data for row ${rowIdx}:`, obstacles);
+        logger.info({ obstacles }, `>>> Raw event data for row ${rowIdx}:`);
         addObstaclesRow(obstacles);
         setRowCount(rowCount);
         isGameReady.current = true;
@@ -97,7 +99,15 @@ export function Experience() {
             length={rowCount}
             rowCount={rowCount}
             onCollison={() => {
+              logger.info(">>> Collision detected!");
+
+              logger.info({
+                i,
+                len: segments.length - 1,
+              });
+
               if (i === segments.length - 1) {
+                logger.info(">>> Opening editor...");
                 openEditor();
               }
             }}

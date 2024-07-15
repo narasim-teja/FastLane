@@ -6,10 +6,12 @@ import { z } from "zod";
 
 import type { RevealRowData } from "~/types/ws";
 
-import { logger } from "~/lib/utils";
+import { getLogger } from "~/lib/logger";
 
 import { revealObstaclesInRow } from "../helper";
 import { createRouter, publicProcedure } from "../trpc";
+
+const logger = getLogger();
 
 export const wsRouter = createRouter({
   revealRow: publicProcedure
@@ -29,7 +31,7 @@ export const wsRouter = createRouter({
     ),
 
   onRevealRow: publicProcedure.subscription(async function* ({ ctx: { ee } }) {
-    console.log(">>>> observer running <<<<");
+    logger.info(">>>> observer running <<<<");
 
     for await (const [data] of on(ee, "revealRow")) {
       const revealRowData = data as RevealRowData;
@@ -48,7 +50,7 @@ export const wsRouter = createRouter({
    */
   _onRevealRow: publicProcedure.subscription(({ ctx: { ee } }) =>
     observable<RevealRowData>((emit) => {
-      logger(">>>> observer running <<<<");
+      logger.info(">>>> observer running <<<<");
 
       const listener = (props: RevealRowData) => {
         emit.next(props);

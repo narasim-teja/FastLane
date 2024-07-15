@@ -3,11 +3,13 @@ import { ethers } from "ethers";
 
 import { abi, CHAIN_ID } from "~/config/constants";
 import { env } from "~/lib/env";
-import { logger } from "~/lib/utils";
+import { getLogger } from "~/lib/logger";
 
 export const sessionChainMap: Record<number, number> = {};
 export const sessionObstacles: number[][][] = [];
 let contract: ethers.Contract | null = null;
+
+const logger = getLogger();
 
 function getContractInstance() {
   if (!contract) {
@@ -28,7 +30,7 @@ export async function revealObstaclesInRow(
   sessionId: number,
   rowIndex: number
 ) {
-  logger(
+  logger.info(
     `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`
   );
 
@@ -46,7 +48,7 @@ export async function revealObstaclesInRow(
     }
 
     const obstaclesInRow = sessionObstacles[sessionId]?.[rowIndex] ?? [];
-    logger(
+    logger.info(
       `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`,
       obstaclesInRow
     );
@@ -66,7 +68,7 @@ export async function revealObstaclesInRow(
 
 export async function initializeSession(chainId: number, sessionId: number) {
   try {
-    logger(
+    logger.info(
       `initializeSession called with chainId: ${chainId}, sessionId: ${sessionId}`
     );
 
@@ -75,7 +77,7 @@ export async function initializeSession(chainId: number, sessionId: number) {
 
     await fetchAllObstacles(chainId, sessionId);
 
-    logger("Obstacles in session:", sessionObstacles[sessionId]);
+    logger.info("Obstacles in session:", sessionObstacles[sessionId]);
   } catch (error) {
     console.error("Failed to create new session:", error);
   }
@@ -88,7 +90,7 @@ async function fetchAllObstacles(chainId: number, sessionId: number) {
     const rowCountBigInt = await contract.getRowCount(chainId);
     const rowCount = Number(rowCountBigInt.toString());
 
-    logger("rowCount:", rowCount);
+    logger.info("rowCount:", rowCount);
 
     const obstaclePromises = Array.from({ length: rowCount }, (_, rowIndex) =>
       fetchObstaclesInRow(sessionId, rowIndex)
@@ -96,18 +98,18 @@ async function fetchAllObstacles(chainId: number, sessionId: number) {
 
     const allObstacles = await Promise.all(obstaclePromises);
 
-    logger("Obstacles for session:", allObstacles);
+    logger.info("Obstacles for session:", allObstacles);
 
     sessionObstacles[sessionId] = allObstacles;
   } catch (error) {
-    logger("Error in fetchAllObstacles:", error);
+    logger.info("Error in fetchAllObstacles:", error);
   }
 }
 
 async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
   try {
-    logger(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
-    logger("Current mapping:", JSON.stringify(sessionChainMap, null, 2));
+    logger.info(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
+    logger.info("Current mapping:", JSON.stringify(sessionChainMap, null, 2));
 
     const contract = getContractInstance();
 

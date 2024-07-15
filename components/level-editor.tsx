@@ -60,35 +60,30 @@ export function LevelEditor() {
         i === currentRow ? { ...sel, obstacle: value } : sel
       )
     );
-
-    // moveToNextRow();
   }
 
   function handleColumnSelection(value: number) {
     setSelections((prev) =>
       prev.map((sel, i) => (i === currentRow ? { ...sel, column: value } : sel))
     );
-
-    // moveToNextRow();
   }
 
-  // TODO: state not updating synchronously
-  // function moveToNextRow() {
-  //   const currentSelection = selections[currentRow];
+  React.useEffect(() => {
+    const currentSelection = selections[currentRow];
 
-  //   if (
-  //     currentSelection.obstacle !== null &&
-  //     currentSelection.column !== null
-  //   ) {
-  //     const nextRow = selections.findIndex(
-  //       (sel) => sel.obstacle === null && sel.column === null
-  //     );
+    if (
+      currentSelection.obstacle !== null &&
+      currentSelection.column !== null
+    ) {
+      const nextRow = selections.findIndex(
+        (sel) => sel.obstacle === null && sel.column === null
+      );
 
-  //     if (nextRow !== -1) {
-  //       setCurrentRow(nextRow);
-  //     }
-  //   }
-  // }
+      if (nextRow !== -1) {
+        setCurrentRow(nextRow);
+      }
+    }
+  }, [selections, currentRow]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -163,7 +158,7 @@ export function LevelEditor() {
                   );
 
                   return (
-                    <HoverCard key={i}>
+                    <HoverCard key={i} openDelay={300}>
                       <HoverCardTrigger
                         onClick={() => handleObstacleSelection(value)}
                         className={cn(
@@ -204,7 +199,7 @@ export function LevelEditor() {
                     ));
 
                   return (
-                    <HoverCard key={i}>
+                    <HoverCard key={i} openDelay={300}>
                       <HoverCardTrigger
                         onClick={() => handleColumnSelection(i)}
                         className={cn(
