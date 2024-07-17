@@ -68,7 +68,8 @@ export function LevelEditor() {
       currentSelection.column !== null
     ) {
       const nextRow = selections.findIndex(
-        (sel) => sel.obstacle === null && sel.column === null
+        (sel, i) =>
+          i > currentRow && (sel.obstacle === null || sel.column === null)
       );
 
       if (nextRow !== -1) {
