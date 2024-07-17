@@ -13,12 +13,12 @@ type BoundsProps = {
 export function Bounds({ length = 10, onCollison, rowCount }: BoundsProps) {
   const corridor = useFBX("/road-plane.fbx");
 
-  const { activatePause } = useGame();
+  const { togglePause } = useGame();
 
   const boundPosition = rowCount / 10 - 1;
 
   const handleCheckpointEnter = () => {
-    activatePause();
+    togglePause();
     onCollison();
   };
 

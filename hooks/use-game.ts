@@ -16,7 +16,7 @@ type State = {
   addObstaclesRow: (obstacles: Obstacles) => void;
 
   isEditorOpen: boolean;
-  openEditor: () => void;
+  toggleEditor: (open: boolean) => void;
 
   isSpeedBoostActive: boolean;
   activateSpeedBoost: () => void;
@@ -25,7 +25,7 @@ type State = {
   activateSpeedReduced: () => void;
 
   isPaused: boolean;
-  activatePause: () => void;
+  togglePause: (isPaused?: boolean) => void;
 
   startTime: number;
   endTime: number;
@@ -75,7 +75,7 @@ export const useGame = create<State>()(
       }),
 
     isEditorOpen: false,
-    openEditor: () => set(() => ({ isEditorOpen: true })),
+    toggleEditor: (open) => set(() => ({ isEditorOpen: open })),
 
     isSpeedBoostActive: false,
     activateSpeedBoost: () => {
@@ -96,7 +96,8 @@ export const useGame = create<State>()(
     },
 
     isPaused: false,
-    activatePause: () => set((state) => ({ isPaused: !state.isPaused })),
+    togglePause: (isPaused) =>
+      set((state) => ({ isPaused: isPaused ?? !state.isPaused })),
 
     startTime: 0,
     endTime: 0,

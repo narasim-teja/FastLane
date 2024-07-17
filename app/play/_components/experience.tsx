@@ -26,7 +26,7 @@ export function Experience() {
     setRowCount,
     segments,
     addObstaclesRow,
-    openEditor,
+    toggleEditor,
     // ...
   } = useGame();
 
@@ -108,7 +108,7 @@ export function Experience() {
 
               if (i === segments.length - 1) {
                 logger.info(">>> Opening editor...");
-                openEditor();
+                toggleEditor(true);
               }
             }}
           />

@@ -29,7 +29,7 @@ export default function TracksPage({ searchParams: { type } }: Props) {
 
   function handleLaunchGame() {
     if (!selectedTrack) {
-      toast.warning("Hold up!", {
+      toast.warning("Hold on!", {
         description: "Please select a track to start your journey.",
       });
 

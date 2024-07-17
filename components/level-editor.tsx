@@ -3,11 +3,15 @@
 import React from "react";
 import Image from "next/image";
 
+import { Info, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 import { CHAIN_ID } from "~/config/constants";
+import { OBSTACLES } from "~/config/obctacles";
 import { useContract } from "~/hooks/use-contract";
 import { useGame } from "~/hooks/use-game";
+import { env } from "~/lib/env";
+import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 
 import { Button } from "./ui/button";
@@ -20,18 +24,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
-
-const OBSTACLE_OPTIONS = [
-  { label: "None", value: "null", image: "/placeholder.svg" },
-  { label: "Whale Obstacle", value: "1", image: "/images/whale_obstacle.png" },
-  { label: "Text Obstacle", value: "2", image: "/images/wagmi_obstacle.png" },
-  { label: "Poop Obstacle", value: "3", image: "/images/poop_obstacle.webp" },
-  {
-    label: "Candle Obstacle",
-    value: "4",
-    image: "/images/candle_obstacle.webp",
-  },
-];
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const NUMBER_OF_COLUMNS = 5;
 const NUMBER_OF_ROWS = 8;
@@ -44,15 +37,14 @@ type Selection = {
 export function LevelEditor() {
   const contract = useContract();
 
-  const { segments, addSegment, isEditorOpen } = useGame();
+  const { addSegment, isEditorOpen, toggleEditor, togglePause } = useGame();
+
+  const { mutate: updateObstacles } = api.ws.updateObstacles.useMutation();
 
   const [currentRow, setCurrentRow] = React.useState<number>(0);
   const [selections, setSelections] = React.useState<Selection[]>(
     Array(NUMBER_OF_ROWS).fill({ obstacle: null, column: null })
   );
-
-  const shouldOpenEditor =
-    isEditorOpen && segments[segments.length - 1].obstacles.length <= 10;
 
   function handleObstacleSelection(value: string) {
     setSelections((prev) =>
@@ -122,15 +114,34 @@ export function LevelEditor() {
     try {
       if (contract) {
         await contract.addSegment(CHAIN_ID, extendedResultArray);
-        addSegment(extendedResultArray);
+
+        updateObstacles(undefined, {
+          onSuccess: () => {
+            addSegment(extendedResultArray);
+            toggleEditor(false);
+            togglePause(false);
+          },
+        });
       }
     } catch (error) {
       console.error("Error submitting obstacles to the blockchain:", error);
     }
   }
 
+  function setRandomObstacles() {
+    const randomObstacle = () =>
+      OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)].value;
+
+    setSelections((prev) =>
+      prev.map(() => ({
+        obstacle: randomObstacle(),
+        column: Math.floor(Math.random() * NUMBER_OF_COLUMNS),
+      }))
+    );
+  }
+
   return (
-    <Dialog open={shouldOpenEditor}>
+    <Dialog open={isEditorOpen}>
       <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-scroll">
         <DialogHeader className="space-y-0">
           <DialogTitle className="font-cal text-3xl tracking-wide md:text-4xl">
@@ -146,7 +157,7 @@ export function LevelEditor() {
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">Choose Obstacle</h2>
               <div className="grid grid-cols-3 gap-4">
-                {OBSTACLE_OPTIONS.map(({ label, value, image }, i) => {
+                {OBSTACLES.map(({ label, description, value, image }, i) => {
                   const Img = ({ width = 100, height = 100 }) => (
                     <Image
                       src={image}
@@ -158,25 +169,32 @@ export function LevelEditor() {
                   );
 
                   return (
-                    <HoverCard key={i} openDelay={300}>
-                      <HoverCardTrigger
-                        onClick={() => handleObstacleSelection(value)}
-                        className={cn(
-                          "size-20 cursor-pointer overflow-hidden rounded-md",
-                          selections[currentRow].obstacle === value &&
-                            "ring-2 ring-ring ring-offset-2"
-                        )}
-                      >
-                        <Img />
-                      </HoverCardTrigger>
+                    <div
+                      key={i}
+                      onClick={() => handleObstacleSelection(value)}
+                      className={cn(
+                        "relative size-20",
+                        selections[currentRow].obstacle === value &&
+                          "rounded-md ring-2 ring-ring ring-offset-2"
+                      )}
+                    >
+                      <Img />
 
-                      <HoverCardContent side="right" className="space-y-4">
-                        <Img height={400} width={400} />
-                        <p className="font-matter text-lg font-medium">
-                          {label}
-                        </p>
-                      </HoverCardContent>
-                    </HoverCard>
+                      <HoverCard>
+                        <HoverCardTrigger className="absolute right-1 top-1 cursor-pointer overflow-hidden rounded-full bg-background/50 p-0.5">
+                          <Info className="size-3.5" />
+                        </HoverCardTrigger>
+
+                        <HoverCardContent side="right" className="font-matter">
+                          <Img height={400} width={400} />
+
+                          <p className="text-lg font-medium">{label}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {description}
+                          </p>
+                        </HoverCardContent>
+                      </HoverCard>
+                    </div>
                   );
                 })}
               </div>
@@ -192,35 +210,24 @@ export function LevelEditor() {
                         key={j}
                         className={cn(
                           "rounded border border-black/20",
-                          i === j && "bg-secondary",
+                          i === j && "bg-secondary group-hover:animate-bounce",
                           className
                         )}
                       />
                     ));
 
                   return (
-                    <HoverCard key={i} openDelay={300}>
-                      <HoverCardTrigger
-                        onClick={() => handleColumnSelection(i)}
-                        className={cn(
-                          "flex size-20 cursor-pointer items-center justify-center gap-px overflow-hidden rounded-md border border-black/15",
-                          selections[currentRow].column === i &&
-                            "ring-2 ring-ring ring-offset-2"
-                        )}
-                      >
-                        <Segments className="size-3" />
-                      </HoverCardTrigger>
-
-                      <HoverCardContent side="left" className="space-y-4">
-                        <div className="flex aspect-square w-full items-center justify-center gap-2 rounded-md border border-black/15">
-                          <Segments className="size-8" />
-                        </div>
-
-                        <p className="font-matter text-lg font-medium">
-                          Column {i + 1}
-                        </p>
-                      </HoverCardContent>
-                    </HoverCard>
+                    <div
+                      key={i}
+                      onClick={() => handleColumnSelection(i)}
+                      className={cn(
+                        "group flex size-20 cursor-pointer items-center justify-center gap-px overflow-hidden rounded-md border border-black/15",
+                        selections[currentRow].column === i &&
+                          "ring-2 ring-ring ring-offset-2"
+                      )}
+                    >
+                      <Segments className="size-3" />
+                    </div>
                   );
                 })}
               </div>
@@ -228,7 +235,28 @@ export function LevelEditor() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Choose Row</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Choose Row</h2>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={setRandomObstacles}
+                    className={cn(
+                      "size-8",
+                      env.NODE_ENV === "production" && "hidden"
+                    )}
+                  >
+                    <RefreshCw className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  Select random obstacles for each row.
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <div className="grid grid-cols-5 gap-4">
               {Array.from({ length: NUMBER_OF_ROWS }).map((_, i) => (
                 <div

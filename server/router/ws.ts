@@ -6,9 +6,10 @@ import { z } from "zod";
 
 import type { RevealRowData } from "~/types/ws";
 
+import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { getLogger } from "~/lib/logger";
 
-import { revealObstaclesInRow } from "../helper";
+import { fetchAllObstacles, revealObstaclesInRow } from "../helper";
 import { createRouter, publicProcedure } from "../trpc";
 
 const logger = getLogger();
@@ -26,6 +27,7 @@ export const wsRouter = createRouter({
       async ({ ctx: { ee }, input: { chainId, sessionId, rowIdx } }) => {
         const { obstaclesInRow: obstacles, rowCount } =
           await revealObstaclesInRow(chainId, sessionId, rowIdx);
+
         ee.emit("revealRow", { rowIdx, rowCount, obstacles });
       }
     ),
@@ -63,4 +65,16 @@ export const wsRouter = createRouter({
       };
     })
   ),
+
+  updateObstacles: publicProcedure.mutation(async ({ ctx: { ee } }) => {
+    // 5 sec delay to allow for the blockchain to update
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    const { rowCount, obstacles } = await fetchAllObstacles(
+      CHAIN_ID,
+      SESSION_ID
+    );
+
+    ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
+  }),
 });

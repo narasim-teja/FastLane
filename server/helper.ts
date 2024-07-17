@@ -9,7 +9,7 @@ export const sessionChainMap: Record<number, number> = {};
 export const sessionObstacles: number[][][] = [];
 let contract: ethers.Contract | null = null;
 
-const logger = getLogger();
+const log = getLogger();
 
 function getContractInstance() {
   if (!contract) {
@@ -30,7 +30,7 @@ export async function revealObstaclesInRow(
   sessionId: number,
   rowIndex: number
 ) {
-  logger.info(
+  log.info(
     `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`
   );
 
@@ -40,17 +40,19 @@ export async function revealObstaclesInRow(
     }
 
     if (!sessionObstacles[sessionId]?.length) {
-      console.error(`No obstacles found for sessionId: ${sessionId}`);
+      log.error(`No obstacles found for sessionId: ${sessionId}`);
       return {
         rowCount: 0,
         obstaclesInRow: [],
       };
     }
 
+    log.info({ rowCount: sessionObstacles[sessionId].length }, "rowCount:");
+
     const obstaclesInRow = sessionObstacles[sessionId]?.[rowIndex] ?? [];
-    logger.info(
-      `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`,
-      obstaclesInRow
+    log.info(
+      { obstaclesInRow },
+      `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`
     );
 
     return {
@@ -58,7 +60,7 @@ export async function revealObstaclesInRow(
       obstaclesInRow,
     };
   } catch (error) {
-    console.error("Error in revealObstaclesInRow:", error);
+    log.error(error, "Error in revealObstaclesInRow:");
     return {
       rowCount: 0,
       obstaclesInRow: [],
@@ -68,7 +70,7 @@ export async function revealObstaclesInRow(
 
 export async function initializeSession(chainId: number, sessionId: number) {
   try {
-    logger.info(
+    log.info(
       `initializeSession called with chainId: ${chainId}, sessionId: ${sessionId}`
     );
 
@@ -77,20 +79,21 @@ export async function initializeSession(chainId: number, sessionId: number) {
 
     await fetchAllObstacles(chainId, sessionId);
 
-    logger.info("Obstacles in session:", sessionObstacles[sessionId]);
+    log.info(
+      { sessionObstacles: sessionObstacles[sessionId] },
+      "Obstacles in session:"
+    );
   } catch (error) {
-    console.error("Failed to create new session:", error);
+    log.error(error, "Failed to create new session:");
   }
 }
 
-async function fetchAllObstacles(chainId: number, sessionId: number) {
+export async function fetchAllObstacles(chainId: number, sessionId: number) {
   try {
     const contract = getContractInstance();
 
     const rowCountBigInt = await contract.getRowCount(chainId);
     const rowCount = Number(rowCountBigInt.toString());
-
-    logger.info("rowCount:", rowCount);
 
     const obstaclePromises = Array.from({ length: rowCount }, (_, rowIndex) =>
       fetchObstaclesInRow(sessionId, rowIndex)
@@ -98,18 +101,28 @@ async function fetchAllObstacles(chainId: number, sessionId: number) {
 
     const allObstacles = await Promise.all(obstaclePromises);
 
-    logger.info("Obstacles for session:", allObstacles);
+    log.info({ allObstacles }, "Obstacles for session:");
 
     sessionObstacles[sessionId] = allObstacles;
+
+    return {
+      rowCount,
+      obstacles: allObstacles,
+    };
   } catch (error) {
-    logger.info("Error in fetchAllObstacles:", error);
+    log.info(error, "Error in fetchAllObstacles:");
+
+    return {
+      rowCount: 0,
+      obstacles: [],
+    };
   }
 }
 
-async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
+export async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
   try {
-    logger.info(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
-    logger.info("Current mapping:", JSON.stringify(sessionChainMap, null, 2));
+    log.info(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
+    log.info({ sessionChainMap }, "Current mapping:");
 
     const contract = getContractInstance();
 
@@ -121,7 +134,7 @@ async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
 
     return obstacles;
   } catch (error) {
-    console.error("Error in fetchObstaclesInRow:", error);
+    log.error(error, "Error in fetchObstaclesInRow:");
     return [];
   }
 }

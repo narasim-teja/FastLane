@@ -26,5 +26,3 @@ export function getLogger() {
 
   return logger;
 }
-
-export default getLogger;
