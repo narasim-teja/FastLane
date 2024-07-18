@@ -15,6 +15,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ENV IS_DOCKER true
+
 # Mount secrets and read environment variables from them
 RUN --mount=type=secret,id=TRACK_OWNER_PKEY \
   --mount=type=secret,id=OASIS_CONTRACT_ADDRESS \

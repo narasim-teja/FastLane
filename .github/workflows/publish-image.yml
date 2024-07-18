@@ -25,13 +25,13 @@ jobs:
           push: true
           tags: ghcr.io/narasim-teja/fastlane:latest
           secrets: |
-            "TRACK_OWNER_PKEY"=${{ secrets.TRACK_OWNER_PKEY }}
-            "OASIS_CONTRACT_ADDRESS"=${{ secrets.OASIS_CONTRACT_ADDRESS }}
-            "NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS"=${{ secrets.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS }}
-            "NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN"=${{ secrets.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN }}
-            "NEXT_PUBLIC_THIRDWEB_CLIENT_ID"=${{ secrets.NEXT_PUBLIC_THIRDWEB_CLIENT_ID }}
-            "THIRDWEB_SECRET_KEY"=${{ secrets.THIRDWEB_SECRET_KEY }}
-            "THIRDWEB_ADMIN_PRIVATE_KEY"=${{ secrets.THIRDWEB_ADMIN_PRIVATE_KEY }}
-            "DATABASE_URL"=${{ secrets.DATABASE_URL }}
-            "RESEND_API_KEY"=${{ secrets.RESEND_API_KEY }}
-            "UMAMI_WEBSITE_ID"=${{ secrets.UMAMI_WEBSITE_ID }}
+            TRACK_OWNER_PKEY=${{ secrets.TRACK_OWNER_PKEY }}
+            OASIS_CONTRACT_ADDRESS=${{ secrets.OASIS_CONTRACT_ADDRESS }}
+            NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS=${{ secrets.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS }}
+            NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN }}
+            NEXT_PUBLIC_THIRDWEB_CLIENT_ID=${{ secrets.NEXT_PUBLIC_THIRDWEB_CLIENT_ID }}
+            THIRDWEB_SECRET_KEY=${{ secrets.THIRDWEB_SECRET_KEY }}
+            THIRDWEB_ADMIN_PRIVATE_KEY=${{ secrets.THIRDWEB_ADMIN_PRIVATE_KEY }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            UMAMI_WEBSITE_ID=${{ secrets.UMAMI_WEBSITE_ID }}
