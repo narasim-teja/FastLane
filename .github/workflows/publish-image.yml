@@ -24,7 +24,7 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/narasim-teja/fastlane:latest
-          secrets: |
+          build-args: |
             TRACK_OWNER_PKEY=${{ secrets.TRACK_OWNER_PKEY }}
             OASIS_CONTRACT_ADDRESS=${{ secrets.OASIS_CONTRACT_ADDRESS }}
             NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS=${{ secrets.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS }}
