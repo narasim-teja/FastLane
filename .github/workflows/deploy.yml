@@ -1,0 +1,16 @@
+name: Deploy Server
+
+on: push
+
+jobs:
+  deploy:
+    if: contains(github.event.head_commit.message, '[deploy]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy server
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.SSH_USERNAME }}
+          host: ${{ secrets.SSH_HOST }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: "cd deployment && ./refresh.sh && ./setup.sh"
