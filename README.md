@@ -14,7 +14,7 @@ cd FastLane
 ```
 
 ```
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 - Run the app with VS Code or the command line:
