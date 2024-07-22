@@ -1,10 +1,12 @@
-name: Push Docker Image to Ghcr
+name: Deploy Staging Server
 
-on: push
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build_and_publish:
-    if: contains(github.event.head_commit.message, '[release]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,7 +25,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/narasim-teja/fastlane:latest
+          tags: ghcr.io/narasim-teja/fastlane:staging
           build-args: |
             TRACK_OWNER_PKEY=${{ secrets.TRACK_OWNER_PKEY }}
             OASIS_CONTRACT_ADDRESS=${{ secrets.OASIS_CONTRACT_ADDRESS }}
@@ -35,3 +37,12 @@ jobs:
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             UMAMI_WEBSITE_ID=${{ secrets.UMAMI_WEBSITE_ID }}
+            PORT=3001
+
+      - name: Deploy server
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.SSH_USERNAME }}
+          host: ${{ secrets.SSH_HOST }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: "cd staging && ./deploy.sh"
