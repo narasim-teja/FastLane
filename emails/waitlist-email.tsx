@@ -43,7 +43,7 @@ export const WaitlistEmail = ({ email }: WaitlistEmailProps) => (
         <Section className="flex w-full flex-col items-center justify-center space-y-2">
           <Text className="-ml-6 flex items-end justify-center gap-2 text-lg font-bold lowercase md:text-3xl">
             <Gamepad size={32} />{" "}
-            {siteConfig.url.replace(/https:\/\/(www).?/, "")}
+            {siteConfig.url.replace(/^https:\/\/(www\.)?/, "")}
           </Text>
 
           <Text>{siteConfig.description}</Text>

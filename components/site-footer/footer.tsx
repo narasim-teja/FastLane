@@ -1,6 +1,6 @@
 import { siteConfig } from "~/config/site";
 
-import { InstagramIcon, LinkedInIcon, XIcon } from "../icons";
+import { DiscordIcon, InstagramIcon, LinkedInIcon, XIcon } from "../icons";
 import { WaitlistForm } from "../waitlist-form";
 
 export function Footer() {
@@ -42,7 +42,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="gap-2.5 *:flex *:aspect-square *:w-full *:items-center *:justify-center *:gap-2.5">
+        <div className="gap-2.5 *:flex *:aspect-square *:w-full *:items-center *:justify-center *:gap-2.5 *:transition-transform hover:*:scale-105 hover:*:drop-shadow-md">
           <a
             href={siteConfig.links.x}
             aria-label="Twitter"
@@ -60,6 +60,15 @@ export function Footer() {
             rel="noopener noreferrer"
           >
             <LinkedInIcon className="size-12 sm:size-16" />
+          </a>
+
+          <a
+            href={siteConfig.links.discord}
+            aria-label="Twitter"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <DiscordIcon className="size-12 sm:size-[4.5rem]" />
           </a>
 
           <a

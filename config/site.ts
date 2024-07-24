@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "FastLane",
-  url: "https://www.fastlane.run",
+  url: "https://fastlane.run",
   description: "Race the chain, own the road",
   email: "contact@fastlane.run",
   address: "",

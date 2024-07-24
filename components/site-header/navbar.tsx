@@ -22,7 +22,7 @@ export function Navbar() {
           <Gamepad className="size-6" />
 
           <Link href="/" className="font-cal text-xl sm:text-2xl md:text-3xl">
-            <span>{siteConfig.url.replace(/https:\/\/(www).?/, "")}</span>
+            <span>{siteConfig.url.replace(/^https:\/\/(www\.)?/, "")}</span>
           </Link>
           <Badge className="hidden text-xs md:block">WIP</Badge>
         </div>

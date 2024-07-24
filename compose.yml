@@ -14,7 +14,7 @@ services:
         DATABASE_URL: ${DATABASE_URL}
         RESEND_API_KEY: ${RESEND_API_KEY}
         UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID}
-    image: ghcr.io/narasim-teja/fastlane
+    image: ghcr.io/narasim-teja/fastlane:latest
     ports:
       - "3000:3000"
     networks:
