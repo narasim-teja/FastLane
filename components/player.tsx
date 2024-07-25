@@ -42,6 +42,7 @@ export function Player() {
   // const [simulationIndex, setSimulationIndex] = useState(0);
 
   const {
+    phase,
     startGame,
     restartGame,
     isSpeedBoostActive,
@@ -276,6 +277,14 @@ export function Player() {
     }
   });
 
+  function updateKeys(key: keyof typeof keysRef, value: boolean) {
+    keysRef[key] = value;
+
+    if (phase === "ready") {
+      startGame();
+    }
+  }
+
   // const ball = useFBX("/marble-high-poly.fbx");
   const texture = useTexture("/marbel-04.png");
 
@@ -284,8 +293,8 @@ export function Player() {
       <Html fullscreen className="pointer-events-none">
         <div className="pointer-events-auto absolute inset-x-1/2 bottom-8 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-16 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur md:bottom-4 *:md:size-12">
           <div
-            onTouchStart={() => (keysRef.forward = true)}
-            onTouchEnd={() => (keysRef.forward = false)}
+            onTouchStart={() => updateKeys("forward", true)}
+            onTouchEnd={() => updateKeys("forward", false)}
             className={cn(
               "col-start-2 row-start-1 bg-white/20",
               (getKeys().forward || keysRef.forward) && "bg-white/40 shadow-md"
@@ -293,8 +302,8 @@ export function Player() {
           />
 
           <div
-            onTouchStart={() => (keysRef.leftward = true)}
-            onTouchEnd={() => (keysRef.leftward = false)}
+            onTouchStart={() => updateKeys("leftward", true)}
+            onTouchEnd={() => updateKeys("leftward", false)}
             className={cn(
               "col-start-1 row-start-2 bg-white/20",
               (getKeys().leftward || keysRef.leftward) &&
@@ -302,8 +311,8 @@ export function Player() {
             )}
           />
           <div
-            onTouchStart={() => (keysRef.backward = true)}
-            onTouchEnd={() => (keysRef.backward = false)}
+            onTouchStart={() => updateKeys("backward", true)}
+            onTouchEnd={() => updateKeys("backward", false)}
             className={cn(
               "col-start-2 row-start-2 bg-white/20",
               (getKeys().backward || keysRef.backward) &&
@@ -311,8 +320,8 @@ export function Player() {
             )}
           />
           <div
-            onTouchStart={() => (keysRef.rightward = true)}
-            onTouchEnd={() => (keysRef.rightward = false)}
+            onTouchStart={() => updateKeys("rightward", true)}
+            onTouchEnd={() => updateKeys("rightward", false)}
             className={cn(
               "col-start-3 row-start-2 bg-white/20",
               (getKeys().rightward || keysRef.rightward) &&
