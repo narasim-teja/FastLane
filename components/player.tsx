@@ -17,6 +17,8 @@ import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 
+const TIME_LIMIT = 10; // in seconds
+
 export function Player() {
   const logger = getLogger();
 
@@ -36,6 +38,7 @@ export function Player() {
     rightward: false,
   }).current;
   const lastRow = useRef(0);
+  const timerRef = useRef<HTMLParagraphElement>(null);
 
   const [_recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
   // const [_, setSimulationData] = useState<GamePlayAction[]>([]);
@@ -43,6 +46,7 @@ export function Player() {
 
   const {
     phase,
+    startTime,
     startGame,
     restartGame,
     isSpeedBoostActive,
@@ -98,6 +102,31 @@ export function Player() {
 
   useFrame((state, delta) => {
     if (!body.current) return;
+
+    if (phase === "playing" && !isEditorOpen) {
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - startTime;
+      const remainingTime = Math.max(
+        TIME_LIMIT - Math.floor(elapsedTime / 1000),
+        0
+      );
+
+      if (timerRef.current) {
+        timerRef.current.textContent = remainingTime.toString();
+
+        if (remainingTime <= 3) {
+          timerRef.current.classList.add("text-red-500");
+        } else {
+          timerRef.current.classList.remove("text-red-500");
+        }
+
+        if (remainingTime <= 0) {
+          restartGame();
+
+          timerRef.current.textContent = TIME_LIMIT.toString();
+        }
+      }
+    }
 
     /* -----------------------------------------------------------------------------------------------
      * controls
@@ -274,6 +303,11 @@ export function Player() {
 
       lastRow.current = 0;
       restartGame();
+
+      if (timerRef.current) {
+        timerRef.current.textContent = TIME_LIMIT.toString();
+        timerRef.current.classList.remove("text-red-500");
+      }
     }
   });
 
@@ -291,6 +325,18 @@ export function Player() {
   return (
     <>
       <Html fullscreen className="pointer-events-none">
+        <div className="pointer-events-none absolute inset-x-0 top-28 z-10 grid w-full place-items-center">
+          <p
+            ref={timerRef}
+            className={cn(
+              "grid size-20 min-w-fit place-items-center rounded-full border border-white/20 bg-white/20 p-4 font-matter text-5xl font-semibold shadow backdrop-blur",
+              isEditorOpen && "hidden"
+            )}
+          >
+            <span className="mx-2">START</span>
+          </p>
+        </div>
+
         <div className="pointer-events-auto absolute inset-x-1/2 bottom-8 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-16 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur md:bottom-4 *:md:size-12">
           <div
             onTouchStart={() => updateKeys("forward", true)}

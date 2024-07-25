@@ -28,6 +28,8 @@ type State = {
   togglePause: (isPaused?: boolean) => void;
 
   startTime: number;
+  resetStartTime: () => void;
+
   endTime: number;
   phase: "ready" | "playing" | "paused" | "gameOver";
   startGame: () => void;
@@ -100,6 +102,7 @@ export const useGame = create<State>()(
       set((state) => ({ isPaused: isPaused ?? !state.isPaused })),
 
     startTime: 0,
+    resetStartTime: () => set(() => ({ startTime: Date.now() })),
     endTime: 0,
     phase: "ready",
 

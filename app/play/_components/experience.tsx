@@ -65,7 +65,9 @@ export function Experience() {
   const generateBlockEnds = () => {
     const blockEnds = [];
     for (let i = 50; i <= rowCount * 5; i += 50) {
-      blockEnds.push(<BlockEnd key={i} position={[0, 0.05, -i]} />);
+      blockEnds.push(
+        <BlockEnd key={i} position={[0, 0.05, -i]} checkpoint={i / 50 + 1} />
+      );
     }
     return blockEnds;
   };
@@ -99,13 +101,6 @@ export function Experience() {
             length={rowCount}
             rowCount={rowCount}
             onCollison={() => {
-              logger.info(">>> Collision detected!");
-
-              logger.info({
-                i,
-                len: segments.length - 1,
-              });
-
               if (i === segments.length - 1) {
                 logger.info(">>> Opening editor...");
                 toggleEditor(true);
