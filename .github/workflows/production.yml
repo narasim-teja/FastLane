@@ -44,4 +44,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           host: ${{ secrets.SSH_HOST }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: "cd production && ./deploy.sh"
+          script: "cd fastlane && ./deploy.sh --prod"

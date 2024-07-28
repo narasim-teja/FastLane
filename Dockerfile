@@ -66,6 +66,6 @@ ENV SKIP_ENV_VALIDATION=true
 
 EXPOSE $PORT
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-q0", "http://localhost:$PORT/health" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "wget", "-qO-", "http://localhost:$PORT/health" ]
 
 CMD node server.js
