@@ -121,6 +121,14 @@ export function Player() {
         }
 
         if (remainingTime <= 0) {
+          revealRow({
+            chainId: CHAIN_ID,
+            sessionId: SESSION_ID,
+            rowIdx: 0,
+          });
+
+          lastRow.current = 0;
+
           restartGame();
 
           timerRef.current.textContent = TIME_LIMIT.toString();
