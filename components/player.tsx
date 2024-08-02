@@ -9,15 +9,20 @@ import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
-import type { GamePlayAction } from "~/types/misc";
+import type { SwipeDirections } from "~/hooks/use-swipeable";
+import type { Direction, GamePlayAction } from "~/types/misc";
 
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
+import {
+  CHAIN_ID,
+  CHECKPOINT_TIME_LIMIT,
+  keyMap,
+  SESSION_ID,
+} from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
+import { useSwipeable } from "~/hooks/use-swipeable";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-
-const TIME_LIMIT = 10; // in seconds
 
 export function Player() {
   const logger = getLogger();
@@ -31,7 +36,7 @@ export function Player() {
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
   const body = useRef<RapierRigidBody>(null);
-  const keysRef = useRef({
+  const keysRef = useRef<Record<Direction, boolean>>({
     forward: false,
     backward: false,
     leftward: false,
@@ -54,6 +59,28 @@ export function Player() {
     isPaused,
     isEditorOpen,
   } = useGame();
+
+  const touchHandlers = useSwipeable({
+    onSwipeStart: ({ dir }) => {
+      Object.keys(keyMap).forEach((k) => {
+        const key = k as SwipeDirections;
+
+        if (key === dir) {
+          updateKeys(keyMap[key], true);
+        } else {
+          updateKeys(keyMap[key], false);
+        }
+      });
+    },
+
+    onSwiped: () => {
+      Object.keys(keyMap).forEach((k) => {
+        const key = k as SwipeDirections;
+
+        updateKeys(keyMap[key], false);
+      });
+    },
+  });
 
   // useEffect(() => {
   //   void (async () => {
@@ -107,7 +134,7 @@ export function Player() {
       const currentTime = Date.now();
       const elapsedTime = currentTime - startTime;
       const remainingTime = Math.max(
-        TIME_LIMIT - Math.floor(elapsedTime / 1000),
+        CHECKPOINT_TIME_LIMIT - Math.floor(elapsedTime / 1000),
         0
       );
 
@@ -131,7 +158,7 @@ export function Player() {
 
           restartGame();
 
-          timerRef.current.textContent = TIME_LIMIT.toString();
+          timerRef.current.textContent = CHECKPOINT_TIME_LIMIT.toString();
         }
       }
     }
@@ -312,14 +339,18 @@ export function Player() {
       lastRow.current = 0;
       restartGame();
 
+      Object.keys(keysRef).forEach((key) => {
+        keysRef[key as Direction] = false;
+      });
+
       if (timerRef.current) {
-        timerRef.current.textContent = TIME_LIMIT.toString();
+        timerRef.current.textContent = CHECKPOINT_TIME_LIMIT.toString();
         timerRef.current.classList.remove("text-red-500");
       }
     }
   });
 
-  function updateKeys(key: keyof typeof keysRef, value: boolean) {
+  function updateKeys(key: Direction, value: boolean) {
     keysRef[key] = value;
 
     if (phase === "ready") {
@@ -345,42 +376,38 @@ export function Player() {
           </p>
         </div>
 
-        <div className="pointer-events-auto absolute inset-x-1/2 bottom-8 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-16 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur md:bottom-4 *:md:size-12">
+        <div className="pointer-events-auto absolute inset-x-1/2 bottom-4 z-10 hidden w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-12 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur lg:grid">
           <div
-            onTouchStart={() => updateKeys("forward", true)}
-            onTouchEnd={() => updateKeys("forward", false)}
             className={cn(
               "col-start-2 row-start-1 bg-white/20",
-              (getKeys().forward || keysRef.forward) && "bg-white/40 shadow-md"
+              getKeys().forward && "bg-white/40 shadow-md"
             )}
           />
 
           <div
-            onTouchStart={() => updateKeys("leftward", true)}
-            onTouchEnd={() => updateKeys("leftward", false)}
             className={cn(
               "col-start-1 row-start-2 bg-white/20",
-              (getKeys().leftward || keysRef.leftward) &&
-                "bg-white/40 shadow-md"
+              getKeys().leftward && "bg-white/40 shadow-md"
             )}
           />
           <div
-            onTouchStart={() => updateKeys("backward", true)}
-            onTouchEnd={() => updateKeys("backward", false)}
             className={cn(
               "col-start-2 row-start-2 bg-white/20",
-              (getKeys().backward || keysRef.backward) &&
-                "bg-white/40 shadow-md"
+              getKeys().backward && "bg-white/40 shadow-md"
             )}
           />
           <div
-            onTouchStart={() => updateKeys("rightward", true)}
-            onTouchEnd={() => updateKeys("rightward", false)}
             className={cn(
               "col-start-3 row-start-2 bg-white/20",
-              (getKeys().rightward || keysRef.rightward) &&
-                "bg-white/40 shadow-md"
+              getKeys().rightward && "bg-white/40 shadow-md"
             )}
+          />
+        </div>
+
+        <div className="z-10 flex size-full flex-col justify-end p-4">
+          <div
+            {...touchHandlers}
+            className="pointer-events-auto h-1/3 rounded-md border border-white/20 backdrop-blur"
           />
         </div>
       </Html>
