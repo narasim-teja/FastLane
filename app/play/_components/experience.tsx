@@ -27,6 +27,7 @@ export function Experience() {
     segments,
     addObstaclesRow,
     toggleEditor,
+    spawnCheckpoint,
     // ...
   } = useGame();
 
@@ -39,7 +40,11 @@ export function Experience() {
     api.ws.onRevealRow.useSubscription(void function () {}, {
       onStarted: () => {
         logger.info(">>> Fetching Initial Row");
-        revealRow({ chainId: CHAIN_ID, sessionId: SESSION_ID, rowIdx: 0 });
+        revealRow({
+          chainId: CHAIN_ID,
+          sessionId: SESSION_ID,
+          rowIdx: spawnCheckpoint * 10,
+        });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
         logger.info({ obstacles }, `>>> Raw event data for row ${rowIdx}:`);
@@ -78,19 +83,21 @@ export function Experience() {
 
       {segments.map(({ obstacles }, i) => (
         <group key={i}>
-          {obstacles.map((obstacle, j) => {
-            const row = Math.floor(j / 5);
-            const col = j % 5;
+          {[...Array(spawnCheckpoint * 35).fill(0), ...obstacles].map(
+            (obstacle, j) => {
+              const row = Math.floor(j / 5);
+              const col = j % 5;
 
-            return (
-              <ObstaclesSpawner
-                key={j}
-                id={obstacle.toString()}
-                row={row}
-                col={col}
-              />
-            );
-          })}
+              return (
+                <ObstaclesSpawner
+                  key={`${i}-${j}`}
+                  id={obstacle.toString()}
+                  row={row}
+                  col={col}
+                />
+              );
+            }
+          )}
 
           <BlockStart
             //  position={[2, 0.1, 7]}

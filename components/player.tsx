@@ -53,7 +53,10 @@ export function Player() {
     isSpeedReduced,
     isPaused,
     isEditorOpen,
+    spawnCheckpoint,
   } = useGame();
+
+  const playerPosition = -(spawnCheckpoint * 45) - 5 * spawnCheckpoint + 2.5;
 
   // useEffect(() => {
   //   void (async () => {
@@ -73,20 +76,16 @@ export function Player() {
   //   }
   // });
 
-  function reset() {
-    if (body.current) {
-      // TODO: check for the wakeUp parameter
-      body.current.setTranslation({ x: 2, y: 1, z: 2.5 }, true);
-      body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
-      body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
-    }
-  }
-
   useEffect(() => {
     const unsubscribeReset = useGame.subscribe(
       ({ phase }) => phase,
       (value) => {
-        if (value === "ready") reset();
+        if (value === "ready" && body.current) {
+          // TODO: check for the wakeUp parameter
+          body.current.setTranslation({ x: 2, y: 1, z: playerPosition }, true);
+          body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+          body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+        }
       }
     );
 
@@ -98,7 +97,7 @@ export function Player() {
       unsubscribeReset();
       unsubscribeKeys();
     };
-  }, [startGame, subscribeKeys]);
+  }, [startGame, subscribeKeys, playerPosition]);
 
   useFrame((state, delta) => {
     if (!body.current) return;
@@ -124,7 +123,7 @@ export function Player() {
           revealRow({
             chainId: CHAIN_ID,
             sessionId: SESSION_ID,
-            rowIdx: 0,
+            rowIdx: spawnCheckpoint * 10,
           });
 
           lastRow.current = 0;
@@ -306,10 +305,11 @@ export function Player() {
       revealRow({
         chainId: CHAIN_ID,
         sessionId: SESSION_ID,
-        rowIdx: 0,
+        rowIdx: spawnCheckpoint * 10,
       });
 
-      lastRow.current = 0;
+      lastRow.current = spawnCheckpoint * 10;
+
       restartGame();
 
       if (timerRef.current) {
@@ -393,7 +393,7 @@ export function Player() {
         friction={1}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[2, 1, 2.5]}
+        position={[2, 1, playerPosition]}
       >
         {/* <primitive object={ball} scale={0.005} /> */}
 

@@ -11,6 +11,9 @@ type State = {
   rowCount: number;
   setRowCount: (rowCount: number) => void;
 
+  spawnCheckpoint: number;
+  setSpawnCheckpoint: (spawnCheckpoint: number) => void;
+
   segments: { obstacles: Obstacles }[];
   addSegment: (obstacles: Obstacles) => void;
   addObstaclesRow: (obstacles: Obstacles) => void;
@@ -53,6 +56,9 @@ export const useGame = create<State>()(
 
     rowCount: 0,
     setRowCount: (rowCount) => set(() => ({ rowCount })),
+
+    spawnCheckpoint: 1,
+    setSpawnCheckpoint: (spawnCheckpoint) => set(() => ({ spawnCheckpoint })),
 
     segments: [{ obstacles: [] }],
     addSegment: (obstacles) => {
