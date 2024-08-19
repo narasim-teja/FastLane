@@ -5,9 +5,7 @@ import { redirect } from "next/navigation";
 import { siteConfig } from "~/config/site";
 import { isLoggedIn } from "~/lib/actions/auth";
 
-type Props = React.PropsWithChildren<{
-  // ...
-}>;
+type Props = React.PropsWithChildren;
 
 export default async function SigninLayout({ children }: Props) {
   if (await isLoggedIn()) {

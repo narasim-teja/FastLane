@@ -6,11 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEventListener } from "~/hooks/use-event-listner";
 import { cn } from "~/lib/utils";
 
-type HeaderProps = React.PropsWithChildren<{
-  // ...
-}>;
-
-export function Header({ children }: HeaderProps) {
+export function Header({ children }: React.PropsWithChildren) {
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   const pathname = usePathname();

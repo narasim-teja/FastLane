@@ -14,6 +14,7 @@ export function getLogger() {
     return logger;
   }
 
+  /* eslint-disable @typescript-eslint/no-require-imports */
   const pino = require("pino");
 
   logger = pino({
