@@ -30,7 +30,7 @@ export function MobileNavbar() {
 
       <SheetContent showClose={false} className="flex flex-col">
         <SheetHeader className="space-y-0.5 text-start">
-          <SheetTitle className="flex items-center gap-2 font-cal lowercase tracking-wider">
+          <SheetTitle className="font-cal flex items-center gap-2 lowercase tracking-wider">
             <Gamepad className="inline-flex size-6" />
             <span>{siteConfig.name}</span>
           </SheetTitle>

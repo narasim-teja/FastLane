@@ -15,9 +15,9 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1600px",
       },
     },
     extend: {
@@ -65,9 +65,8 @@ const config = {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         mono: ["var(--font-mono)", ...fontFamily.mono],
-        cal: ["var(--font-cal)", ...fontFamily.sans],
-        matter: ["var(--font-matter)", ...fontFamily.sans],
-        virgil: ["var(--font-virgil)", ...fontFamily.sans],
+        inter: ["var(--font-inter)", ...fontFamily.mono],
+        poppins: ["var(--font-poppins)", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
