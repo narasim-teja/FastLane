@@ -41,7 +41,7 @@ export default function TracksPage({ searchParams: { type } }: Props) {
 
   return (
     <div className="container flex flex-col justify-center gap-10">
-      <h1 className="text-center font-cal text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+      <h1 className="font-cal text-center text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
         Choose a track to start your journey
       </h1>
 
@@ -94,7 +94,7 @@ export default function TracksPage({ searchParams: { type } }: Props) {
         ))}
       </div>
 
-      <h2 className="text-center font-cal text-2xl drop-shadow md:text-3xl lg:text-4xl xl:text-5xl">
+      <h2 className="font-cal text-center text-2xl drop-shadow md:text-3xl lg:text-4xl xl:text-5xl">
         Community tracks
       </h2>
 
