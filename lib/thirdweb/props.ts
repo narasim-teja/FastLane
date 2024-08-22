@@ -6,7 +6,7 @@ import { thirdWebclient } from "./client";
 
 export const thirdwebProps: ConnectButtonProps | ConnectEmbedProps = {
   client: thirdWebclient,
-  theme: "light",
+  theme: "dark",
   auth: {
     isLoggedIn,
     doLogin: login,

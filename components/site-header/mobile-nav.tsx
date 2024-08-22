@@ -51,7 +51,7 @@ export function MobileNavbar() {
           ))}
         </nav>
 
-        <ConnectWallet className="mt-auto flex w-full max-w-none rounded-none border-0 border-t" />
+        <ConnectWallet />
       </SheetContent>
     </Sheet>
   );

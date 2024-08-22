@@ -7,7 +7,7 @@ import { ConnectWallet } from "../connect-wallet";
 export function Navbar() {
   return (
     <header className="absolute top-4 z-40 w-full">
-      <nav className="container relative flex w-full items-center justify-between px-7 py-5 md:px-2 md:py-7">
+      <nav className="container relative flex w-full items-center justify-between pl-7 pr-2 md:px-2 md:py-4">
         <Image
           src="/logo-sm.png"
           alt={`${siteConfig.name} logo`}
