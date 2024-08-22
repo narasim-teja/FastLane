@@ -9,16 +9,16 @@ import { siteConfig } from "~/config/site";
 
 export function Tracks() {
   return (
-    <div className="relative mx-auto flex h-full max-w-5xl flex-col items-center gap-10 px-7 pt-10">
-      <h2 className="h-14 bg-gradient-to-b from-foreground to-stone-500 bg-clip-text font-poppins text-5xl font-semibold text-transparent">
+    <div className="relative mx-auto flex h-full max-w-5xl flex-col items-center gap-10 px-7 pt-7 md:pt-10">
+      <h2 className="bg-gradient-to-b from-foreground to-stone-500 bg-clip-text font-poppins text-2xl font-semibold text-transparent md:text-3xl lg:h-14 lg:text-5xl">
         Discover Exiciting tracks
       </h2>
 
-      <div className="flex flex-col gap-7 *:flex *:min-h-[25rem] *:flex-col *:justify-between *:overflow-hidden *:rounded-3xl *:border *:p-2 md:flex-row">
+      <div className="flex flex-col gap-7 *:flex *:min-h-[25rem] *:max-w-xs *:flex-col *:justify-between *:overflow-hidden *:rounded-3xl *:border *:p-2 md:flex-row md:*:max-w-none">
         {/* https://github.com/tailwindlabs/tailwindcss/discussions/6614 */}
-        <div className="group relative z-10 w-full border-[#d09500a2]">
+        <div className="group relative z-30 w-full border-[#d09500a2]">
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#d095001f] to-background duration-500 group-hover:from-[#d09500a2]" />
-          <h3 className="text-sm text-[#D09500]">GOLD</h3>
+          <h3 className="p-2 text-sm text-[#D09500]">GOLD</h3>
           <Image
             src="/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
@@ -51,7 +51,7 @@ export function Tracks() {
 
         <div className="group relative w-full border-[#c2c2c27f]">
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#C2C2C21F] to-background group-hover:from-[#c2c2c254]" />
-          <h3 className="text-sm text-[#C2C2C2]">ETH</h3>
+          <h3 className="p-2 text-sm text-[#C2C2C2]">ETH</h3>
           <Image
             src="/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
@@ -115,7 +115,7 @@ export function Tracks() {
         alt={`${siteConfig.name} ellipse`}
         height={960}
         width={960}
-        className="pointer-events-none absolute -bottom-40 left-36 z-20"
+        className="pointer-events-none absolute -bottom-10 z-20 md:-bottom-40 lg:left-36"
       />
     </div>
   );

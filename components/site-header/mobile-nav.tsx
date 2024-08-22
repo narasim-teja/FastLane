@@ -1,12 +1,9 @@
-import Link from "next/link";
-
 import { Gamepad, Menu } from "lucide-react";
 
 import { siteConfig } from "~/config/site";
-import { cn } from "~/lib/utils";
 
 import { ConnectWallet } from "../connect-wallet";
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import {
   Sheet,
@@ -42,16 +39,15 @@ export function MobileNavbar() {
 
         <nav className="flex flex-col items-center gap-2">
           {navLinks.map(({ label, href, icon: Icon }, i) => (
-            <Link
+            <Button
               key={`${i}-${label}`}
               href={href}
-              className={cn(
-                buttonVariants({ variant: "secondary" }),
-                "flex w-full items-center justify-start gap-2 font-medium"
-              )}
+              block
+              variant="secondary"
+              className="justify-start gap-2 font-medium"
             >
               <Icon strokeWidth={1.5} className="size-5" /> {label}
-            </Link>
+            </Button>
           ))}
         </nav>
 

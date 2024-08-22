@@ -23,14 +23,14 @@ export function RollingBall() {
   }
 
   return (
-    <div>
+    <div className="overflow-hidden">
       <div onClick={moveBall} className="relative">
         <Image
           src="/blue-beam.png"
           alt={`${siteConfig.name} background blue beam`}
           height={1000}
           width={1000}
-          className="mx-auto h-full object-cover"
+          className="mx-auto -mt-10 h-full scale-[2] object-cover sm:scale-125 md:scale-110 lg:scale-100"
         />
 
         <div
@@ -39,7 +39,7 @@ export function RollingBall() {
         />
       </div>
 
-      <div className="-mt-20 flex flex-col items-center gap-2">
+      <div className="mt-20 flex flex-col items-center gap-2 md:-mt-20">
         <p className="mx-auto mb-10 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-0.5 text-xl font-light">
           {siteConfig.url.replace(/https?:\/\//, "")}
         </p>
