@@ -13,6 +13,7 @@ export default function LandingPage() {
       <div className="absolute inset-x-0 top-0 -z-50 h-full">
         <Image
           priority
+          loading="eager"
           src="/planet.png"
           alt={`${siteConfig.name} background planet`}
           height={1000}
@@ -24,6 +25,7 @@ export default function LandingPage() {
 
         <Image
           src="/radial-gradient.png"
+          loading="eager"
           alt={`${siteConfig.name} background radial gradient`}
           height={1276}
           width={800}

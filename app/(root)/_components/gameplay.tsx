@@ -21,6 +21,7 @@ export function Gameplay() {
               <div className="flex items-center">
                 <div className="z-0 size-10 rounded-full bg-white p-1 md:size-16 md:p-3">
                   <Image
+                    loading="eager"
                     src="/cube-3d-line.png"
                     alt={`${siteConfig.name} cube`}
                     height={400}

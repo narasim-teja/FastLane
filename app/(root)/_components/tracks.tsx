@@ -20,6 +20,7 @@ export function Tracks() {
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#d095001f] to-background duration-500 group-hover:from-[#d09500a2]" />
           <h3 className="p-2 text-sm text-[#D09500]">GOLD</h3>
           <Image
+            loading="eager"
             src="/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
             height={600}
@@ -27,6 +28,7 @@ export function Tracks() {
             className="absolute -right-24 -top-20 -z-20 scale-[75%] opacity-10"
           />
           <Image
+            loading="eager"
             src="/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
             height={600}
@@ -34,6 +36,7 @@ export function Tracks() {
             className="my-2 scale-[80%] drop-shadow-[0px_0px_21.1px_6px_#FBBA1540] transition-transform duration-500 group-hover:scale-90"
           />
           <Image
+            loading="eager"
             src="/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
             height={600}
@@ -53,6 +56,7 @@ export function Tracks() {
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#C2C2C21F] to-background group-hover:from-[#c2c2c254]" />
           <h3 className="p-2 text-sm text-[#C2C2C2]">ETH</h3>
           <Image
+            loading="eager"
             src="/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
             height={600}
@@ -60,6 +64,7 @@ export function Tracks() {
             className="absolute -right-24 -top-20 -z-20 scale-[75%] opacity-10"
           />
           <Image
+            loading="eager"
             src="/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
             height={600}
@@ -67,6 +72,7 @@ export function Tracks() {
             className="my-2 scale-[80%] drop-shadow-[0px_0px_23.6px_0px_#FFFFFF26] transition-transform duration-500 group-hover:scale-90"
           />
           <Image
+            loading="eager"
             src="/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
             height={600}
@@ -87,6 +93,7 @@ export function Tracks() {
             Community <br /> Track
           </h3>
           <Image
+            loading="eager"
             src="/gradient-ball-2.png"
             alt={`${siteConfig.name} Community Track`}
             height={600}
@@ -94,6 +101,7 @@ export function Tracks() {
             className="absolute -left-24 -top-20 transition-transform group-hover:rotate-45 group-hover:scale-125"
           />
           <Image
+            loading="eager"
             src="/gradient-ball-1.png"
             alt=""
             height={600}
@@ -111,6 +119,7 @@ export function Tracks() {
       </div>
 
       <Image
+        loading="eager"
         src="/ellipse.png"
         alt={`${siteConfig.name} ellipse`}
         height={960}

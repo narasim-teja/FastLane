@@ -21,6 +21,7 @@ export function Footer() {
       )}
     >
       <Image
+        loading="eager"
         src="/footer-gradient.png"
         alt={`Footer gradient for ${siteConfig.name}`}
         height={1200}
@@ -34,6 +35,7 @@ export function Footer() {
         <div className="flex flex-col items-center justify-center gap-8 bg-[url(/noise.png)] bg-cover bg-repeat-x px-12 py-8 md:flex-row">
           <div className="flex w-full flex-col items-center space-y-4 md:items-start">
             <Image
+              loading="eager"
               src="/logo-lg.png"
               alt={`Logo for ${siteConfig.name}`}
               height={160}

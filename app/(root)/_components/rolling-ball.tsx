@@ -26,6 +26,7 @@ export function RollingBall() {
     <div className="overflow-hidden">
       <div onClick={moveBall} className="relative">
         <Image
+          loading="eager"
           src="/blue-beam.png"
           alt={`${siteConfig.name} background blue beam`}
           height={1000}

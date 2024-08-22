@@ -9,6 +9,7 @@ export function Navbar() {
     <header className="absolute top-4 z-40 w-full">
       <nav className="container relative flex w-full items-center justify-between pl-7 pr-2 md:px-2 md:py-4">
         <Image
+          loading="eager"
           src="/logo-sm.png"
           alt={`${siteConfig.name} logo`}
           height={15}
@@ -17,6 +18,7 @@ export function Navbar() {
         />
 
         <Image
+          loading="eager"
           src="/logo.png"
           alt={`${siteConfig.name} logo`}
           height={200}
