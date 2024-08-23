@@ -2,10 +2,10 @@ import Image from "next/image";
 
 import { siteConfig } from "~/config/site";
 
+import { DiscoverTracks } from "./_components/discover-tracks";
 import { Gameplay } from "./_components/gameplay";
 import { Hero } from "./_components/hero";
 import { RollingBall } from "./_components/rolling-ball";
-import { Tracks } from "./_components/tracks";
 
 export default function LandingPage() {
   return (
@@ -13,6 +13,7 @@ export default function LandingPage() {
       <div className="absolute inset-x-0 top-0 -z-50 h-full">
         <Image
           priority
+          loading="eager"
           src="/planet.png"
           alt={`${siteConfig.name} background planet`}
           height={1000}
@@ -24,6 +25,7 @@ export default function LandingPage() {
 
         <Image
           src="/radial-gradient.png"
+          loading="eager"
           alt={`${siteConfig.name} background radial gradient`}
           height={1276}
           width={800}
@@ -44,7 +46,7 @@ export default function LandingPage() {
 
       <Hero />
       <Gameplay />
-      <Tracks />
+      <DiscoverTracks />
       <RollingBall />
     </main>
   );
