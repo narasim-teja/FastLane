@@ -1,200 +1,59 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
-import { Plus, Rocket } from "lucide-react";
-import { toast } from "sonner";
-
-import { CanvasRevealEffect } from "~/components/aceternity-ui/canvas-reveal-effect";
-import { WobbleCard } from "~/components/aceternity-ui/wobble-card";
-import { Button } from "~/components/ui/button";
+import { Tracks } from "~/components/tracks";
 import { siteConfig } from "~/config/site";
-import { communityTracks, tracks } from "~/config/tracks";
-import { cn } from "~/lib/utils";
 
-import { TrackCard } from "../_components/track-card";
-
-type Props = {
-  searchParams: {
-    type?: string;
-  };
-};
-
-export default function TracksPage({ searchParams: { type } }: Props) {
-  const [selectedTrack, setSelectedTrack] = React.useState(type ?? null);
-
-  const router = useRouter();
-
-  function handleLaunchGame() {
-    if (!selectedTrack) {
-      toast.warning("Hold on!", {
-        description: "Please select a track to start your journey.",
-      });
-
-      return;
-    }
-
-    router.push(`/play?track=${selectedTrack}`);
-  }
-
+export default function TracksPage() {
   return (
-    <div className="container flex flex-col justify-center gap-10">
-      <h1 className="font-cal text-center text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-        Choose a track to start your journey
-      </h1>
-
-      <div className="flex flex-wrap items-center justify-center gap-10">
-        {tracks.map((track, i) => (
-          <WobbleCard
-            key={i}
-            onClick={() => setSelectedTrack(track.title.toLowerCase())}
-            containerClassName={cn(
-              "rounded-4xl border-2 border-dashed bg-transparent p-4 sm:h-[500px] sm:w-[380px]",
-              track.title.toLowerCase() === selectedTrack &&
-                "ring-4 ring-ring ring-offset-8 ring-offset-background"
-            )}
-            className="relative flex cursor-pointer flex-col bg-[#ebebeb] py-10 sm:!p-0"
-          >
-            <TrackCard
-              canvas={
-                <CanvasRevealEffect
-                  showGradient={false}
-                  dotSize={3}
-                  animationSpeed={5.1}
-                  containerClassName="bg-transparent"
-                  colors={[track.color]}
-                />
-              }
-            >
-              <div className="text-center">
-                <h3 className="font-matter text-3xl font-semibold">
-                  {track.title}
-                </h3>
-                <p className="text-lg font-medium">{track.description}</p>
-              </div>
-
-              <Image
-                src={track.image}
-                alt={track.title}
-                width={300}
-                height={400}
-                className={track.className}
-              />
-
-              <div className="text-center">
-                <p>Join the fun for just</p>
-                <p className="font-matter text-lg font-medium">
-                  {track.entryFee}
-                </p>
-              </div>
-            </TrackCard>
-          </WobbleCard>
-        ))}
+    <div className="relative z-0 grid min-h-screen place-items-center">
+      <div className="absolute inset-0 -z-30 h-[30rem] w-full bg-[linear-gradient(180deg,_rgba(57,_53,_255,_0.7)_9.33%,_rgba(108,_105,_255,_0)_100%)]">
+        <h2 className="bg-[linear-gradient(180deg,_rgba(255,_255,_255,_0.28)_0%,_rgba(255,_255,_255,_0)_77.72%)] bg-clip-text text-center font-poppins text-[28vw] font-semibold uppercase text-transparent md:-m-12 md:leading-none">
+          Track
+        </h2>
       </div>
 
-      <h2 className="font-cal text-center text-2xl drop-shadow md:text-3xl lg:text-4xl xl:text-5xl">
-        Community tracks
-      </h2>
+      <Image
+        priority
+        src="/gradient-ball-1.png"
+        width={220}
+        height={220}
+        alt={`${siteConfig.name} Gradient Ball`}
+        className="absolute left-[53%] top-1/3 -z-20 blur-[2px] lg:scale-[2]"
+      />
 
-      <div className="flex flex-wrap items-center justify-center gap-10">
-        {communityTracks.map((track, i) => (
-          <WobbleCard
-            key={i}
-            onClick={() => setSelectedTrack(track.title.toLowerCase())}
-            containerClassName={cn(
-              "rounded-4xl border-2 border-dashed bg-transparent p-4 sm:h-[500px] sm:w-[380px]",
-              track.title.toLowerCase() === selectedTrack &&
-                "ring-4 ring-ring ring-offset-8 ring-offset-background"
-            )}
-            className="relative flex cursor-pointer flex-col bg-[#ebebeb] py-10 sm:!p-0"
-          >
-            <TrackCard
-              canvas={
-                <CanvasRevealEffect
-                  showGradient={false}
-                  dotSize={3}
-                  animationSpeed={5.1}
-                  containerClassName="bg-indigo-100"
-                  colors={[track.color]}
-                />
-              }
+      <Image
+        priority
+        src="/gradient-ball-2.png"
+        width={328}
+        height={328}
+        alt={`${siteConfig.name} Gradient Ball`}
+        className="absolute -left-1/4 top-10 -z-20 scale-125 blur-[1px] sm:left-0 md:left-[32%] lg:scale-150"
+      />
+
+      <div className="flex max-w-5xl flex-col items-center justify-center gap-10 md:mt-20">
+        <h1 className="pb-10 text-center font-poppins text-2xl font-semibold sm:text-3xl md:text-4xl lg:text-5xl">
+          Choose a track to start your journey
+        </h1>
+
+        <Tracks />
+
+        <p className="text-xl">or</p>
+
+        <div className="mx-4 rounded-lg bg-foreground/10 px-6 py-2.5 sm:mx-0">
+          <p className="text-center text-xl">
+            Have any track ideas? Join our{" "}
+            <a
+              href={siteConfig.links.discord}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-blue-500 underline underline-offset-4 transition-colors hover:text-blue-600"
             >
-              <div className="text-center">
-                <h3 className="font-matter text-3xl font-semibold">
-                  {track.title}
-                </h3>
-                <p className="text-lg font-medium">{track.description}</p>
-              </div>
-
-              <Image
-                src={track.image}
-                alt={track.title}
-                width={300}
-                height={400}
-                className={track.className}
-              />
-
-              <div className="text-center">
-                <p>Join the fun for just</p>
-                <p className="font-matter text-lg font-medium">
-                  {track.entryFee}
-                </p>
-              </div>
-            </TrackCard>
-          </WobbleCard>
-        ))}
-
-        <WobbleCard
-          containerClassName="rounded-4xl bg-transparent border-2 p-4 border-dashed h-[500px] w-[380px]"
-          className="flex max-w-fit flex-col bg-[#ebebeb] py-10"
-        >
-          <TrackCard
-            canvas={
-              <CanvasRevealEffect
-                showGradient={false}
-                dotSize={3}
-                animationSpeed={5.1}
-                containerClassName="bg-transparent"
-                colors={[[180, 180, 180]]}
-              />
-            }
-          >
-            <div className="flex size-full h-full flex-col items-center justify-center gap-4">
-              <Plus
-                size={64}
-                className="rounded-full border border-dashed bg-muted p-1"
-              />
-
-              <p className="text-center text-lg font-medium">
-                Have a track idea?
-                <br />
-                <a
-                  href={siteConfig.links.discord}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-blue-500 underline-offset-4 hover:text-blue-600 hover:underline"
-                >
-                  Join our Discord
-                </a>{" "}
-                and let us know!
-              </p>
-            </div>
-          </TrackCard>
-        </WobbleCard>
+              Discord
+            </a>{" "}
+            server!
+          </p>
+        </div>
       </div>
-
-      <Button
-        variant="outline"
-        onClick={handleLaunchGame}
-        className={cn(
-          "fixed bottom-10 left-1/2 h-[54px] -translate-x-1/2 rounded-4xl border-2 px-8 py-4 text-lg font-semibold uppercase shadow-md transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:[box-shadow:_2px_4px_0_#000] active:translate-y-0"
-        )}
-      >
-        <Rocket className="mr-2" />
-        Launch Game
-      </Button>
     </div>
   );
 }

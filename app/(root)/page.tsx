@@ -2,10 +2,10 @@ import Image from "next/image";
 
 import { siteConfig } from "~/config/site";
 
+import { DiscoverTracks } from "./_components/discover-tracks";
 import { Gameplay } from "./_components/gameplay";
 import { Hero } from "./_components/hero";
 import { RollingBall } from "./_components/rolling-ball";
-import { Tracks } from "./_components/tracks";
 
 export default function LandingPage() {
   return (
@@ -46,7 +46,7 @@ export default function LandingPage() {
 
       <Hero />
       <Gameplay />
-      <Tracks />
+      <DiscoverTracks />
       <RollingBall />
     </main>
   );
