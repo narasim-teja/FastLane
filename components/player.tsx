@@ -337,7 +337,7 @@ export function Player() {
           <p
             ref={timerRef}
             className={cn(
-              "grid size-20 min-w-fit place-items-center rounded-full border border-white/20 bg-white/20 p-4 font-matter text-5xl font-semibold shadow backdrop-blur",
+              "font-matter grid size-20 min-w-fit place-items-center rounded-full border border-white/20 bg-white/20 p-4 text-5xl font-semibold shadow backdrop-blur",
               isEditorOpen && "hidden"
             )}
           >

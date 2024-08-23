@@ -9,13 +9,13 @@ export default function NotFoundPage() {
   return (
     <div className="grid h-screen place-items-center">
       <div className="space-y-4 rounded-4xl border-dashed bg-white p-4 sm:border md:p-8 md:py-12">
-        <p className="inline-flex items-center gap-2 font-cal text-4xl lowercase">
+        <p className="font-cal inline-flex items-center gap-2 text-4xl lowercase">
           <Gamepad className="size-10" /> {siteConfig.name}
         </p>
         <Separator />
 
         <h1 className="font-cal text-3xl md:text-4xl">404 - Page Not Found</h1>
-        <p className="max-w-2xl font-matter">
+        <p className="font-matter max-w-2xl">
           The page you are looking for might have been removed, had its name
           changed, or is temporarily unavailable.
         </p>

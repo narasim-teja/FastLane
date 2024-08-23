@@ -13,13 +13,7 @@ import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { siteConfig } from "~/config/site";
 import { env } from "~/lib/env";
-import {
-  fontCal,
-  fontMatter,
-  fontMono,
-  fontSans,
-  fontVirgil,
-} from "~/lib/fonts";
+import * as fonts from "~/lib/fonts";
 import { ReactLenis } from "~/lib/lenis";
 import { absoluteUrl, cn } from "~/lib/utils";
 
@@ -41,11 +35,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  authors: siteConfig.authors.map(({ name, url }) => ({
-    name,
-    url,
-  })),
-  creator: siteConfig.authors.map(({ name }) => name).join(", "),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -53,12 +42,6 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    creator: siteConfig.links.x,
   },
   icons: {
     icon: [
@@ -77,12 +60,8 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          fontSans.variable,
-          fontMono.variable,
-          fontCal.variable,
-          fontMatter.variable,
-          fontVirgil.variable,
-          "min-h-screen scroll-smooth font-sans antialiased"
+          Object.values(fonts).map((font) => font.variable),
+          "relative min-h-[dvh] scroll-smooth font-sans antialiased"
         )}
       >
         <ReactLenis root>

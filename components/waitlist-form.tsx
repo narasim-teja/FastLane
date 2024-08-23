@@ -3,23 +3,18 @@
 import React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Loader, Mail } from "lucide-react";
+import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import type { z } from "zod";
 
 import { addToWaitlistAction } from "~/lib/actions/waitlist";
-import { cn } from "~/lib/utils";
 import { waitlistSchema } from "~/lib/validations";
 
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
-
-type WaitlistFormProps = {
-  isFooter?: boolean;
-};
 
 type FormData = z.infer<typeof waitlistSchema>;
 
@@ -27,7 +22,7 @@ const defaultValues = {
   email: "",
 };
 
-export function WaitlistForm({ isFooter = false }: WaitlistFormProps) {
+export function WaitlistForm() {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const form = useForm<FormData>({
@@ -43,39 +38,37 @@ export function WaitlistForm({ isFooter = false }: WaitlistFormProps) {
 
     setSubmitting(true);
 
-    toast.promise(() => addToWaitlistAction(data), {
-      loading: "Adding to waitlist...",
-      success: "Added to waitlist!",
-      error: (e) => (e as Error).message,
-      finally: () => setSubmitting(false),
-    });
+    toast.promise(
+      () =>
+        addToWaitlistAction(data).then((res) => {
+          if (res?.error) throw new Error(res.error);
+        }),
+      {
+        loading: "Adding to waitlist...",
+        success: "Added to waitlist!",
+        error: (e) => (e as Error).message,
+        finally: () => setSubmitting(false),
+      }
+    );
   };
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(
-          "flex flex-col gap-4 md:flex-row",
-          isFooter ? "w-full" : "duration-1000 animate-in slide-in-from-top-1/4"
-        )}
+        className="mt-14 flex items-center gap-2 md:gap-3 lg:gap-4"
       >
         <FormField
           name="email"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="w-full">
+            <FormItem>
               <FormControl>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2" />
-
+                <div className="h-7 rounded-full bg-gradient-to-r from-transparent via-white/80 to-transparent pt-px lg:h-full">
                   <Input
                     disabled={isSubmitting}
-                    placeholder="Enter your email address"
-                    className={cn(
-                      "h-12 w-full rounded-4xl border-2 pl-12 font-matter transition-shadow hover:shadow-md focus-visible:ring-4",
-                      !isFooter && "sm:h-16 sm:text-2xl"
-                    )}
+                    placeholder="example@gmail.com"
+                    className="h-full rounded-full bg-gradient-to-b from-zinc-800 to-zinc-900 px-5 py-2 text-xs font-light placeholder:text-neutral-300 disabled:opacity-100 sm:text-base lg:text-lg"
                     {...field}
                   />
                 </div>
@@ -88,25 +81,23 @@ export function WaitlistForm({ isFooter = false }: WaitlistFormProps) {
           )}
         />
 
-        <Button
-          disabled={isSubmitting}
-          className={cn(
-            "h-12 rounded-4xl p-4 text-lg font-semibold uppercase transition-all duration-200 ease-in-out hover:rounded-2xl",
-            !isFooter && "px-8 sm:h-16 sm:text-xl"
-          )}
-        >
-          {isSubmitting ?
-            <span>
-              <Loader className="mr-2 inline-block animate-spin" />
-              Adding to Waitlist...
-            </span>
-          : form.formState.isSubmitSuccessful ?
-            <span>
-              <Check className="mr-2 inline-block" />
-              Added to Waitlist!
-            </span>
-          : "Join Waitlist"}
-        </Button>
+        <div className="overflow-hidden rounded-full bg-gradient-to-r from-blue-600 via-violet-600 to-violet-500 p-px md:h-full lg:p-0.5">
+          <Button
+            variant="custom"
+            round
+            loading={isSubmitting}
+            className="h-7 bg-background text-xs text-foreground transition-colors duration-300 hover:bg-transparent hover:text-background sm:text-base lg:h-full lg:px-5 lg:text-lg"
+          >
+            {isSubmitting ?
+              "Adding to Waitlist..."
+            : form.formState.isSubmitSuccessful ?
+              <>
+                <Check className="mr-2 inline-block" />
+                Added to Waitlist!
+              </>
+            : "Join Waitlist"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

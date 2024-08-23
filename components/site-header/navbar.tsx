@@ -1,72 +1,31 @@
-import React from "react";
-import Link from "next/link";
-
-import { Gamepad } from "lucide-react";
+import Image from "next/image";
 
 import { siteConfig } from "~/config/site";
-import { cn } from "~/lib/utils";
 
 import { ConnectWallet } from "../connect-wallet";
-import { Badge } from "../ui/badge";
-import { buttonVariants } from "../ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Header } from "./header";
-import { MobileNavbar } from "./mobile-nav";
-import { navLinks } from "./nav-links";
 
 export function Navbar() {
   return (
-    <Header>
-      <div className="relative flex w-full items-center justify-between rounded-full py-2">
-        <div className="flex w-full items-center gap-2">
-          <Gamepad className="size-6" />
+    <header className="absolute top-4 z-40 w-full">
+      <nav className="container relative flex w-full items-center justify-between pl-7 pr-2 md:px-2 md:py-4">
+        <Image
+          src="/logo-sm.png"
+          alt={`${siteConfig.name} logo`}
+          height={15}
+          width={26}
+          className="h-7 w-fit md:hidden"
+        />
 
-          <Link href="/" className="font-cal text-xl sm:text-2xl md:text-3xl">
-            <span>{siteConfig.url.replace(/^https:\/\/(www\.)?/, "")}</span>
-          </Link>
-          <Badge className="hidden text-xs md:block">WIP</Badge>
-        </div>
+        <Image
+          src="/logo.png"
+          alt={`${siteConfig.name} logo`}
+          height={200}
+          width={360}
+          className="hidden h-[38px] w-fit scale-110 md:block"
+        />
 
-        {/* <nav className="hidden w-full items-center justify-center gap-4 md:flex">
-          {navLinks.map(({ label, href }) => (
-            <Link
-              key={label}
-              href={href}
-              className="group font-cal lowercase tracking-wider"
-            >
-              <span>{label}</span>
-              <div className="h-px w-0 bg-foreground transition-[width] duration-500 group-hover:w-full" />
-            </Link>
-          ))}
-        </nav> */}
-
-        <nav className="hidden w-full items-center justify-end gap-2 md:flex">
-          <ConnectWallet from="navbar" />
-
-          {navLinks.map(({ label, href, icon: Icon }, i) => (
-            <Tooltip key={`${i}-${label}`} delayDuration={0}>
-              <TooltipTrigger asChild>
-                <Link
-                  href={href}
-                  aria-label={label}
-                  className={cn(
-                    buttonVariants(),
-                    "h-[54px] rounded-4xl p-4 text-lg font-semibold uppercase transition-all duration-200 ease-in-out hover:rounded-2xl"
-                  )}
-                >
-                  <Icon strokeWidth={1.5} />
-                </Link>
-              </TooltipTrigger>
-
-              <TooltipContent side="bottom" className="text-base">
-                {label}
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </nav>
-
-        <MobileNavbar />
-      </div>
-    </Header>
+        <ConnectWallet from="navbar" />
+      </nav>
+    </header>
   );
 }

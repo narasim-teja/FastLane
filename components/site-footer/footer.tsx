@@ -1,85 +1,99 @@
+"use client";
+
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+
 import { siteConfig } from "~/config/site";
+import { cn } from "~/lib/utils";
 
 import { DiscordIcon, InstagramIcon, LinkedInIcon, XIcon } from "../icons";
-import { WaitlistForm } from "../waitlist-form";
+
+const excludePaths = ["/signin", "/tracks"];
 
 export function Footer() {
+  const pathname = usePathname();
+
   return (
-    <footer className="z-2 mx-auto my-10 flex h-min w-full max-w-screen-lg flex-col items-center justify-center gap-2.5 px-5 *:flex *:size-full *:flex-col *:items-center *:justify-center *:gap-2.5 sm:h-[516px] sm:flex-row sm:gap-10 sm:px-0">
-      <div className="flex-[1_1_0px] *:flex *:w-full *:flex-col *:justify-center *:gap-5 *:rounded-3xl *:border-2 *:border-l-[16px] *:bg-background *:p-10">
-        <div>
-          <div>
-            <h3 className="font-cal text-2xl">Join the waitlist!</h3>
-            <p>Be the first to know when we launch!</p>
+    <footer
+      className={cn(
+        "px-10 pb-10 lg:mx-auto lg:w-[70vw] lg:px-0",
+        excludePaths.includes(pathname) && "hidden"
+      )}
+    >
+      <Image
+        src="/footer-gradient.png"
+        alt={`Footer gradient for ${siteConfig.name}`}
+        height={1200}
+        width={1200}
+        className="absolute inset-x-0 bottom-0 -z-10"
+      />
+
+      <div className="overflow-hidden rounded-3xl border border-white/20 backdrop-blur">
+        <div className="h-px bg-[linear-gradient(90deg,_rgba(0,_0,_0,_0)_0%,_#05D7DA_52.61%,_rgba(0,_0,_0,_0)_100%)]" />
+
+        <div className="flex flex-col items-center justify-center gap-8 bg-[url(/noise.png)] bg-cover bg-repeat-x px-12 py-8 md:flex-row">
+          <div className="flex w-full flex-col items-center space-y-4 md:items-start">
+            <Image
+              src="/logo-lg.png"
+              alt={`Logo for ${siteConfig.name}`}
+              height={160}
+              width={240}
+              className="h-20 max-h-24 w-fit"
+            />
+            <p className="text-start font-poppins text-sm text-[#a4a4a4]">
+              &copy; {new Date().getFullYear()} {siteConfig.name}
+            </p>
           </div>
 
-          <div className="flex w-full gap-4">
-            <WaitlistForm isFooter />
-          </div>
-        </div>
+          {/* <div className="font-kanit flex w-full items-center justify-center gap-8 text-xl font-light *:text-[#a4a4a4]">
+            <Link href="/pricing">Pricings</Link>
+            <Link href="/about-us">About us</Link>
+            <Link href="/our-team">Our team</Link>
+          </div> */}
 
-        <div className="flex-[1_1_0px]">
-          <div className="size-full rounded-[inherit] border-2 border-dashed p-2">
-            <div className="flex size-full flex-col items-center justify-center gap-4 rounded-[inherit] bg-primary p-4 text-center text-xl text-primary-foreground sm:text-3xl">
-              <p className="aspect-square rounded-full border-[3px] border-background p-2 font-cal">
-                01
-              </p>
-              <p className="font-virgil">various links goes here</p>
+          <div className="z-0 w-full">
+            <div className="relative mx-auto aspect-square size-fit overflow-hidden rounded-xl border p-px md:mx-0 md:ml-auto">
+              <div className="absolute inset-0 right-px -z-10 bg-gradient-to-r from-[#014D81] to-zinc-900" />
+
+              <div className="z-10 grid grid-cols-2 gap-5 rounded-xl bg-zinc-900 p-5 *:size-8 *:fill-white">
+                <a
+                  href={siteConfig.links.discord}
+                  aria-label="Discord"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <DiscordIcon />
+                </a>
+
+                <a
+                  href={siteConfig.links.x}
+                  aria-label="Instagram"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <InstagramIcon />
+                </a>
+
+                <a
+                  href={siteConfig.links.x}
+                  aria-label="LinkedIn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <LinkedInIcon />
+                </a>
+
+                <a
+                  href={siteConfig.links.x}
+                  aria-label="X"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <XIcon />
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="flex-[0.75_0_0px] *:flex *:w-full *:justify-center *:gap-5 *:rounded-3xl *:border-2 *:border-l-[16px] *:bg-background">
-        <div className="flex-[1_1_0px] flex-col p-10">
-          <div className="size-full rounded-[inherit] border-2 border-dashed p-2">
-            <div className="flex size-full flex-col items-center justify-center gap-4 rounded-[inherit] bg-primary p-4 text-center text-xl text-primary-foreground sm:text-3xl">
-              <p className="aspect-square rounded-full border-[3px] border-background p-2 font-cal">
-                02
-              </p>
-              <p className="font-virgil">various links goes here</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="gap-2.5 *:flex *:aspect-square *:w-full *:items-center *:justify-center *:gap-2.5 *:transition-transform hover:*:scale-105 hover:*:drop-shadow-md">
-          <a
-            href={siteConfig.links.x}
-            aria-label="Twitter"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <XIcon className="size-12 sm:size-16" />
-          </a>
-
-          <a
-            // TODO: Update href to LinkedIn
-            href={siteConfig.links.x}
-            aria-label="LinkedIn"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <LinkedInIcon className="size-12 sm:size-16" />
-          </a>
-
-          <a
-            href={siteConfig.links.discord}
-            aria-label="Twitter"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <DiscordIcon className="size-12 sm:size-[4.5rem]" />
-          </a>
-
-          <a
-            // TODO: Update href to Instagram
-            href={siteConfig.links.x}
-            aria-label="Instagram"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <InstagramIcon className="size-12 sm:size-16" />
-          </a>
         </div>
       </div>
     </footer>

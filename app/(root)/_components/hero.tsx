@@ -1,30 +1,27 @@
-import { Construction } from "lucide-react";
-
-import { Badge } from "~/components/ui/badge";
+import { WaitlistForm } from "~/components/waitlist-form";
 import { siteConfig } from "~/config/site";
 
 export function Hero() {
   return (
-    <section className="flex flex-col items-center gap-4 p-4 text-center">
-      <Badge variant="outline" className="text-xs md:text-sm">
-        <Construction className="mr-2 size-4" /> Currently in development
-      </Badge>
+    <div className="mt-36 space-y-10 lg:mt-0 lg:grid lg:h-[calc(100dvh-10rem)] lg:place-items-center">
+      <div className="flex flex-col items-center justify-center">
+        <div className="space-x-4 *:rounded-3xl *:px-4 *:text-xs md:*:text-sm lg:*:text-base">
+          <span className="border-2 bg-foreground text-background">
+            3d Game
+          </span>
+          <span className="border-2">Web3</span>
+        </div>
 
-      <h1 className="group font-cal text-5xl font-bold duration-1000 ease-out animate-in fade-in-0 slide-in-from-top-1/4 sm:text-6xl md:text-7xl lg:text-8xl">
-        <span className="duration-150 [text-shadow:_2px_6px_0_#d1d1d1] group-hover:[text-shadow:_4px_8px_0_#d1d1d1]">
-          Welcome to
-        </span>{" "}
-        <span
-          className="block text-background duration-150 [text-shadow:_2px_6px_0_#000] group-hover:[text-shadow:_4px_8px_0_#000] sm:inline-flex"
-          style={{ WebkitTextStroke: "2px #000" }}
-        >
-          {siteConfig.name}
-        </span>
-      </h1>
+        <h1 className="bg-gradient-to-r from-white/10 from-15% via-white to-white/5 to-100% bg-clip-text text-center text-4xl font-semibold leading-[3.5rem] text-transparent [-webkit-text-stroke:_1px_rgba(255,_255,_255,_0.25)] md:text-[6rem] md:leading-[9rem] lg:text-[8rem]">
+          Welcome to {siteConfig.name}
+        </h1>
 
-      <p className="font-matter text-xl font-semibold duration-1000 animate-in slide-in-from-top-1/4 sm:text-2xl md:text-4xl">
-        {siteConfig.description}
-      </p>
-    </section>
+        <p className="text-[13px] font-light text-neutral-400 md:text-xl lg:text-[26px]">
+          {siteConfig.description}
+        </p>
+
+        <WaitlistForm />
+      </div>
+    </div>
   );
 }

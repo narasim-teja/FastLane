@@ -32,9 +32,13 @@ export async function addToWaitlistAction({ email }: FormData) {
     }
   } catch (error) {
     if (error instanceof pg.PostgresError && error.code === "23505") {
-      throw new Error("You're already on the waitlist!");
+      return {
+        error: "You're already on the waitlist!",
+      };
     }
 
-    throw new Error("An error occurred while adding you to the waitlist.");
+    return {
+      error: "An error occurred while adding you to the waitlist.",
+    };
   }
 }

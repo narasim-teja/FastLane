@@ -14,7 +14,7 @@ export default async function ConnectWalletPage() {
       <div className="flex flex-col items-center gap-2">
         <Gamepad size={44} />
 
-        <h1 className="text-center font-cal text-2xl drop-shadow sm:text-3xl md:text-4xl lg:text-5xl">
+        <h1 className="font-cal text-center text-2xl drop-shadow sm:text-3xl md:text-4xl lg:text-5xl">
           Signin
         </h1>
 
