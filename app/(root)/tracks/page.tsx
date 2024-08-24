@@ -5,7 +5,7 @@ import { siteConfig } from "~/config/site";
 
 export default function TracksPage() {
   return (
-    <div className="relative z-0 grid min-h-screen place-items-center">
+    <div className="relative z-0 grid min-h-screen place-items-center py-28 md:py-0">
       <div className="absolute inset-0 -z-30 h-[30rem] w-full bg-[linear-gradient(180deg,_rgba(57,_53,_255,_0.7)_9.33%,_rgba(108,_105,_255,_0)_100%)]">
         <h2 className="bg-[linear-gradient(180deg,_rgba(255,_255,_255,_0.28)_0%,_rgba(255,_255,_255,_0)_77.72%)] bg-clip-text text-center font-poppins text-[28vw] font-semibold uppercase text-transparent md:-m-12 md:leading-none">
           Track
@@ -18,7 +18,7 @@ export default function TracksPage() {
         width={220}
         height={220}
         alt={`${siteConfig.name} Gradient Ball`}
-        className="absolute left-[53%] top-1/3 -z-20 blur-[2px] lg:scale-[2]"
+        className="absolute left-[53%] top-1/3 -z-20 hidden blur-[2px] md:block lg:scale-[2]"
       />
 
       <Image
@@ -31,11 +31,13 @@ export default function TracksPage() {
       />
 
       <div className="flex max-w-5xl flex-col items-center justify-center gap-10 md:mt-20">
-        <h1 className="pb-10 text-center font-poppins text-2xl font-semibold sm:text-3xl md:text-4xl lg:text-5xl">
+        <h1 className="pb-10 text-center font-poppins text-3xl font-semibold sm:text-3xl md:text-4xl lg:text-5xl">
           Choose a track to start your journey
         </h1>
 
-        <Tracks />
+        <div className="flex w-full justify-center">
+          <Tracks />
+        </div>
 
         <p className="text-xl">or</p>
 

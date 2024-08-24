@@ -8,7 +8,7 @@ import { cn } from "~/lib/utils";
 
 import { DiscordIcon, InstagramIcon, LinkedInIcon, XIcon } from "../icons";
 
-const excludePaths = ["/signin", "/tracks"];
+const excludePaths = ["/signin"];
 
 export function Footer() {
   const pathname = usePathname();
