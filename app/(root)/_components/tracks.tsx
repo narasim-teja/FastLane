@@ -1,10 +1,8 @@
-"use client";
-
 import Image from "next/image";
 
 import { ArrowUpRight } from "lucide-react";
 
-import Button from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { siteConfig } from "~/config/site";
 
 export function Tracks() {

@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HeroRadialGradient } from "~/components/icons";
 import { siteConfig } from "~/config/site";
 
 import { DiscoverTracks } from "./_components/discover-tracks";
@@ -23,10 +24,7 @@ export default function LandingPage() {
 
         <div className="absolute inset-0 h-[130vh] bg-[linear-gradient(106.17deg,_#020203_36.71%,_rgba(0,_0,_0,_0)_100%)]" />
 
-        <Image
-          src="/radial-gradient.png"
-          loading="eager"
-          alt={`${siteConfig.name} background radial gradient`}
+        <HeroRadialGradient
           height={1276}
           width={800}
           className="absolute right-0 top-0 object-cover"

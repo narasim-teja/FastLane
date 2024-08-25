@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 
+import { BlueBeam } from "~/components/icons";
 import { siteConfig } from "~/config/site";
 
 export function RollingBall() {
@@ -25,14 +25,7 @@ export function RollingBall() {
   return (
     <div className="overflow-hidden">
       <div onClick={moveBall} className="relative">
-        <Image
-          loading="eager"
-          src="/blue-beam.png"
-          alt={`${siteConfig.name} background blue beam`}
-          height={1000}
-          width={1000}
-          className="mx-auto -mt-10 h-full scale-[2] object-cover sm:scale-125 md:scale-110 lg:scale-100"
-        />
+        <BlueBeam className="mx-auto -mt-10 h-[30vh] w-screen scale-[2] object-cover sm:-mt-16 sm:h-[40vh] sm:scale-150 md:-mt-20 md:h-[70vh] md:scale-110 lg:-mt-24 lg:h-[625px] lg:w-[1022px] lg:scale-100" />
 
         <div
           ref={ballRef}
@@ -46,10 +39,6 @@ export function RollingBall() {
         </p>
 
         <p className="text-5xl font-light">Mint and Play</p>
-
-        <p className="text-sm font-light text-white/40">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-        </p>
 
         <div className="mt-6 size-5 rounded-full bg-foreground" />
 

@@ -4,7 +4,8 @@ import { ArrowUpRight } from "lucide-react";
 
 import { siteConfig } from "~/config/site";
 
-import Button from "./ui/button";
+import { GradientBall1, GradientBall2 } from "./icons";
+import { Button } from "./ui/button";
 
 export function Tracks() {
   return (
@@ -86,22 +87,11 @@ export function Tracks() {
         <h3 className="z-10 p-2 text-right font-poppins font-semibold uppercase transition-colors group-hover:text-background">
           Community <br /> Track
         </h3>
-        <Image
-          loading="eager"
-          src="/gradient-ball-2.png"
-          alt={`${siteConfig.name} Community Track`}
-          height={600}
-          width={600}
-          className="absolute -left-24 -top-20 transition-transform group-hover:rotate-45 group-hover:scale-125"
-        />
-        <Image
-          loading="eager"
-          src="/gradient-ball-1.png"
-          alt={`${siteConfig.name} Community Track`}
-          height={600}
-          width={600}
-          className="absolute -bottom-20 -right-20 transition-transform group-hover:rotate-45 group-hover:scale-125"
-        />
+
+        <GradientBall2 className="absolute -left-24 -top-20 size-72 transition-transform group-hover:rotate-45 group-hover:scale-125" />
+
+        <GradientBall1 className="absolute -bottom-20 -right-20 size-80 transition-transform group-hover:rotate-45 group-hover:scale-125" />
+
         <Button
           variant="custom"
           href="/play?track=community"

@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import React from "react";
 import Link from "next/link";
 
 import { cva } from "class-variance-authority";
@@ -62,7 +62,7 @@ export type ButtonProps = {
 const defaultSize: Size = `default`;
 const defaultVariant = `default`;
 
-const Button: React.FCC<ButtonProps> = forwardRef<
+export const Button: React.FCC<ButtonProps> = React.forwardRef<
   React.ElementRef<"button">,
   ButtonProps
 >(function ButtonComponent(
@@ -130,7 +130,3 @@ function InnerButtonContainerElement({
 
   return <span className={className}>{children}</span>;
 }
-
-export default Button;
-
-export { Button };

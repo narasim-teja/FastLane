@@ -1,9 +1,5 @@
-"use client";
-
-import Image from "next/image";
-
+import { Ellipse } from "~/components/icons";
 import { Tracks } from "~/components/tracks";
-import { siteConfig } from "~/config/site";
 
 export function DiscoverTracks() {
   return (
@@ -14,14 +10,16 @@ export function DiscoverTracks() {
 
       <Tracks />
 
-      <Image
+      {/* <Image
         loading="eager"
         src="/ellipse.png"
         alt={`${siteConfig.name} ellipse`}
         height={960}
         width={960}
         className="pointer-events-none absolute -bottom-10 z-20 md:-bottom-40 lg:left-36"
-      />
+      /> */}
+
+      <Ellipse className="pointer-events-none absolute -bottom-10 z-20 h-fit w-screen md:-bottom-40 md:h-[422px] lg:left-36 lg:h-[422px] lg:w-[942px]" />
     </div>
   );
 }

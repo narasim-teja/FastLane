@@ -1,12 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
 
-import { DiscordIcon, InstagramIcon, LinkedInIcon, XIcon } from "../icons";
+import {
+  DiscordIcon,
+  FooterGradient,
+  InstagramIcon,
+  LinkedInIcon,
+  LogoLG,
+  XIcon,
+} from "../icons";
 
 const excludePaths = ["/signin"];
 
@@ -20,28 +26,15 @@ export function Footer() {
         excludePaths.includes(pathname) && "hidden"
       )}
     >
-      <Image
-        loading="eager"
-        src="/footer-gradient.png"
-        alt={`Footer gradient for ${siteConfig.name}`}
-        height={1200}
-        width={1200}
-        className="absolute inset-x-0 bottom-0 -z-10"
-      />
+      <FooterGradient className="absolute inset-x-0 bottom-0 -z-10 h-[576px] w-[1200px] max-w-[100vw]" />
 
       <div className="overflow-hidden rounded-3xl border border-white/20 backdrop-blur">
         <div className="h-px bg-[linear-gradient(90deg,_rgba(0,_0,_0,_0)_0%,_#05D7DA_52.61%,_rgba(0,_0,_0,_0)_100%)]" />
 
         <div className="flex flex-col items-center justify-center gap-8 bg-[url(/noise.png)] bg-cover bg-repeat-x px-12 py-8 md:flex-row">
-          <div className="flex w-full flex-col items-center space-y-4 md:items-start">
-            <Image
-              loading="eager"
-              src="/logo-lg.png"
-              alt={`Logo for ${siteConfig.name}`}
-              height={160}
-              width={240}
-              className="h-20 max-h-24 w-fit"
-            />
+          <div className="flex w-full flex-col items-center space-y-2 md:items-start">
+            <LogoLG height={78} width={178} />
+
             <p className="text-start font-poppins text-sm text-[#a4a4a4]">
               &copy; {new Date().getFullYear()} {siteConfig.name}
             </p>
@@ -57,7 +50,7 @@ export function Footer() {
             <div className="relative mx-auto aspect-square size-fit overflow-hidden rounded-xl border p-px md:mx-0 md:ml-auto">
               <div className="absolute inset-0 right-px -z-10 bg-gradient-to-r from-[#014D81] to-zinc-900" />
 
-              <div className="z-10 grid grid-cols-2 gap-5 rounded-xl bg-zinc-900 p-5 *:size-8 *:fill-white">
+              <div className="z-10 grid grid-cols-2 gap-5 rounded-xl bg-zinc-900 p-5 *:size-8 *:fill-white *:transition-transform *:duration-300 hover:*:scale-110 hover:*:drop-shadow">
                 <a
                   href={siteConfig.links.discord}
                   aria-label="Discord"

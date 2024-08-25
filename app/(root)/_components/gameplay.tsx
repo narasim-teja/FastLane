@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { Cube3DLine } from "~/components/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
@@ -20,14 +19,7 @@ export function Gameplay() {
             <div className="mb-4 flex justify-between px-2">
               <div className="flex items-center">
                 <div className="z-0 size-10 rounded-full bg-white p-1 md:size-16 md:p-3">
-                  <Image
-                    loading="eager"
-                    src="/cube-3d-line.png"
-                    alt={`${siteConfig.name} cube`}
-                    height={400}
-                    width={400}
-                    className="z-10"
-                  />
+                  <Cube3DLine height={40} width={40} className="z-10" />
                 </div>
 
                 <p className="-ml-4 rounded-r-3xl bg-zinc-800 py-2 pl-6 pr-4 text-xs md:text-base">
