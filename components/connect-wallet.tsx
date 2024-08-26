@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ConnectButton } from "thirdweb/react";
 
 import { thirdwebProps } from "~/lib/thirdweb/props";
+import { cn } from "~/lib/utils";
 
 type ConnectWalletProps = {
   from?: "navbar";
@@ -22,16 +23,19 @@ export function ConnectWallet({ from }: ConnectWalletProps) {
       {...thirdwebProps}
       connectButton={{
         label: <span>Connect Wallet</span>,
-        className:
-          "!px-3 !py-0 !text-lg !font-normal !bg-foreground !text-background !rounded-full",
+        className: cn(
+          "!rounded-full !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background !shadow-md !transition-colors hover:!bg-foreground/90"
+        ),
       }}
       signInButton={{
-        className:
-          "!px-3 !py-0 !text-lg !font-normal !bg-foreground !text-background !rounded-full",
+        className: cn(
+          "!rounded-full !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background !shadow-md !transition-colors hover:!bg-foreground/90"
+        ),
       }}
       detailsButton={{
-        className:
-          "!px-3 !py-0 !text-lg !font-normal !bg-foreground !text-background !rounded-full !border-none",
+        className: cn(
+          "!rounded-full !border-none !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background"
+        ),
       }}
     />
   );

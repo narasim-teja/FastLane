@@ -1,4 +1,5 @@
 import { Cube3DLine } from "~/components/icons";
+import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
@@ -10,15 +11,15 @@ enum TabsValue {
 
 export function Gameplay() {
   return (
-    <div className="mx-auto h-full max-w-5xl overflow-hidden rounded-3xl shadow-[0px_0px_98.9px_1px_#B400FF33]">
+    <div className="mx-auto size-full max-w-5xl overflow-hidden rounded-3xl shadow-[0px_0px_98.9px_1px_#B400FF33]">
       <div className="h-0.5 w-full bg-gradient-to-r from-transparent from-20% via-violet-500 via-50% to-transparent to-80%" />
 
-      <div className="h-full bg-gradient-to-r from-background/50 via-zinc-900 to-zinc-900/50 p-4 md:p-8">
-        <div className="rounded-2xl border border-border p-2 md:p-4">
+      <div className="size-full bg-gradient-to-r from-background/50 via-zinc-900 to-zinc-900/50 p-4 md:p-8">
+        <div className="w-full rounded-2xl border border-border p-2 md:p-4">
           <Tabs defaultValue={TabsValue.Gameplay}>
             <div className="mb-4 flex justify-between px-2">
               <div className="flex items-center">
-                <div className="z-0 size-10 rounded-full bg-white p-1 md:size-16 md:p-3">
+                <div className="z-0 flex size-10 items-center justify-center rounded-full bg-white p-1 md:size-16 md:p-3">
                   <Cube3DLine height={40} width={40} className="z-10" />
                 </div>
 
@@ -39,7 +40,10 @@ export function Gameplay() {
               </TabsList>
             </div>
 
-            <TabsContent value={TabsValue.Gameplay} className="p-3">
+            <TabsContent
+              value={TabsValue.Gameplay}
+              className="relative aspect-video w-full overflow-hidden rounded-3xl p-3"
+            >
               <video
                 src="/gameplay.mp4"
                 preload="auto"
@@ -47,11 +51,15 @@ export function Gameplay() {
                 autoPlay
                 muted
                 loop
-                className="aspect-video w-full rounded-3xl object-cover"
+                className="rounded-3xl"
               />
+              <Skeleton className="absolute inset-3 -z-10 rounded-3xl" />
             </TabsContent>
 
-            <TabsContent value={TabsValue.Rules} className="p-3">
+            <TabsContent
+              value={TabsValue.Rules}
+              className="relative aspect-video w-full overflow-hidden rounded-3xl p-3"
+            >
               <video
                 src="/gameplay.mp4"
                 preload="auto"
@@ -59,8 +67,9 @@ export function Gameplay() {
                 autoPlay
                 muted
                 loop
-                className="aspect-video w-full rounded-3xl object-cover"
+                className="rounded-3xl"
               />
+              <Skeleton className="absolute inset-3 -z-10 rounded-3xl" />
             </TabsContent>
           </Tabs>
         </div>

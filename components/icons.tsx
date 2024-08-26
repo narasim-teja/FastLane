@@ -623,7 +623,7 @@ export const Ellipse = ({ size = 24, width, height, ...props }: IconProps) => (
         y2="373.164"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-opacity="0" />
+        <stop stopOpacity="0" />
         <stop offset="1" stopColor="white" />
       </linearGradient>
     </defs>

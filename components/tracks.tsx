@@ -90,7 +90,7 @@ export function Tracks() {
 
         <GradientBall2 className="absolute -left-24 -top-20 size-72 transition-transform group-hover:rotate-45 group-hover:scale-125" />
 
-        <GradientBall1 className="absolute -bottom-20 -right-20 size-80 transition-transform group-hover:rotate-45 group-hover:scale-125" />
+        <GradientBall1 className="absolute -bottom-20 -right-20 size-80 rounded-full transition-transform group-hover:rotate-45 group-hover:scale-125" />
 
         <Button
           variant="custom"

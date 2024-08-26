@@ -1,6 +1,9 @@
+import { TrafficCone } from "lucide-react";
+
 import { ConnectWallet } from "../connect-wallet";
 import { Logo, LogoSM } from "../icons";
 import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function Navbar() {
   return (
@@ -24,7 +27,23 @@ export function Navbar() {
           <Logo className="h-[38px] w-[72px] scale-125" />
         </Button>
 
-        <ConnectWallet from="navbar" />
+        <div className="flex items-center gap-4">
+          <ConnectWallet from="navbar" />
+
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Button
+                href="/tracks"
+                size="icon"
+                className="size-[3.25rem] rounded-full"
+              >
+                <TrafficCone />
+              </Button>
+            </TooltipTrigger>
+
+            <TooltipContent>Tracks</TooltipContent>
+          </Tooltip>
+        </div>
       </nav>
     </header>
   );
