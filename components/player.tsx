@@ -17,6 +17,9 @@ import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "./icons";
+import { Button } from "./ui/button";
+
 const TIME_LIMIT = 10; // in seconds
 
 export function Player() {
@@ -41,6 +44,7 @@ export function Player() {
   const timerRef = useRef<HTMLParagraphElement>(null);
 
   const [_recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
+  const [switchControls, setSwitchControls] = useState(false);
   // const [_, setSimulationData] = useState<GamePlayAction[]>([]);
   // const [simulationIndex, setSimulationIndex] = useState(0);
 
@@ -345,7 +349,136 @@ export function Player() {
           </p>
         </div>
 
-        <div className="pointer-events-auto absolute inset-x-1/2 bottom-8 z-10 grid w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-16 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur md:bottom-4 *:md:size-12">
+        <div className="pointer-events-auto absolute bottom-0 h-[33.33dvh] w-full bg-[#363636] lg:hidden">
+          {switchControls && (
+            <div className="relative size-full">
+              <div className="absolute right-4 top-4 space-y-1">
+                <button
+                  onClick={() => setSwitchControls(false)}
+                  className="flex h-10 w-14 items-center justify-center gap-2 rounded-md bg-zinc-900 p-2 shadow-md"
+                >
+                  <div className="flex w-1/3 flex-col justify-evenly gap-0.5 *:size-2 *:rounded-full *:bg-zinc-500">
+                    <div />
+                    <div />
+                  </div>
+
+                  <div className="flex w-2/3 justify-evenly gap-0.5 *:size-2 *:rounded-full *:bg-zinc-500">
+                    <div />
+                    <div />
+                  </div>
+                </button>
+
+                <p className="text-center text-xs text-muted-foreground">
+                  Controls
+                </p>
+              </div>
+
+              <div className="grid size-full grid-cols-3 place-items-center">
+                <Button
+                  size="custom"
+                  variant="custom"
+                  onTouchStart={() => updateKeys("forward", true)}
+                  onTouchEnd={() => updateKeys("forward", false)}
+                  className="col-start-2 row-start-1"
+                >
+                  <ArrowUp className="size-20" />
+                </Button>
+                <Button
+                  size="custom"
+                  variant="custom"
+                  onTouchStart={() => updateKeys("leftward", true)}
+                  onTouchEnd={() => updateKeys("leftward", false)}
+                  className="col-start-1 row-start-2"
+                >
+                  <ArrowLeft className="size-20" />
+                </Button>
+                <Button
+                  size="custom"
+                  variant="custom"
+                  onTouchStart={() => updateKeys("backward", true)}
+                  onTouchEnd={() => updateKeys("backward", false)}
+                  className="col-start-2 row-start-2"
+                >
+                  <ArrowDown className="size-20" />
+                </Button>
+                <Button
+                  size="custom"
+                  variant="custom"
+                  onTouchStart={() => updateKeys("rightward", true)}
+                  onTouchEnd={() => updateKeys("rightward", false)}
+                  className="col-start-3 row-start-2"
+                >
+                  <ArrowRight className="size-20" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {!switchControls && (
+            <div className="relative size-full">
+              <div className="absolute right-4 top-4 space-y-1">
+                <button
+                  onClick={() => setSwitchControls(true)}
+                  className="grid h-10 w-14 grid-cols-3 gap-1 rounded-md bg-zinc-900 p-2 shadow-md *:size-2 *:rounded-full *:bg-zinc-500"
+                >
+                  <div className="col-start-2 row-start-1" />
+                  <div className="col-start-1 row-start-2" />
+                  <div className="col-start-2 row-start-2" />
+                  <div className="col-start-3 row-start-2" />
+                </button>
+                <p className="text-center text-xs text-muted-foreground">
+                  Controls
+                </p>
+              </div>
+
+              <div className="flex size-full">
+                <div className="flex h-full w-1/3 flex-col items-center justify-evenly">
+                  <Button
+                    size="custom"
+                    variant="custom"
+                    onTouchStart={() => updateKeys("forward", true)}
+                    onTouchEnd={() => updateKeys("forward", false)}
+                    className="col-start-2 row-start-1"
+                  >
+                    <ArrowUp className="size-20" />
+                  </Button>
+                  <Button
+                    size="custom"
+                    variant="custom"
+                    onTouchStart={() => updateKeys("backward", true)}
+                    onTouchEnd={() => updateKeys("backward", false)}
+                    className="col-start-2 row-start-3"
+                  >
+                    <ArrowDown className="size-20" />
+                  </Button>
+                </div>
+
+                <div className="flex w-2/3 justify-evenly">
+                  <Button
+                    size="custom"
+                    variant="custom"
+                    onTouchStart={() => updateKeys("leftward", true)}
+                    onTouchEnd={() => updateKeys("leftward", false)}
+                    className="col-start-1 row-start-2"
+                  >
+                    <ArrowLeft className="size-20" />
+                  </Button>
+                  <Button
+                    size="custom"
+                    variant="custom"
+                    onTouchStart={() => updateKeys("rightward", true)}
+                    onTouchEnd={() => updateKeys("rightward", false)}
+                    className="col-start-3 row-start-2"
+                  >
+                    <ArrowRight className="size-20" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="pointer-events-auto absolute inset-x-1/2 bottom-8 z-10 hidden w-full -translate-x-1/2 grid-flow-col grid-rows-2 items-center justify-center gap-2 *:size-16 *:cursor-pointer *:rounded-md *:border *:border-white/20 *:backdrop-blur md:bottom-4 *:md:size-12 lg:grid">
           <div
             onTouchStart={() => updateKeys("forward", true)}
             onTouchEnd={() => updateKeys("forward", false)}

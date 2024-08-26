@@ -34,7 +34,7 @@ export function ConnectWallet({ from }: ConnectWalletProps) {
       }}
       detailsButton={{
         className: cn(
-          "!rounded-full !border-none !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background"
+          "!rounded-full !border-none !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background *:!border-none"
         ),
       }}
     />
