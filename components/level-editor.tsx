@@ -37,7 +37,8 @@ type Selection = {
 export function LevelEditor() {
   const contract = useContract();
 
-  const { addSegment, isEditorOpen, toggleEditor, togglePause } = useGame();
+  const { addSegment, setRowCount, isEditorOpen, toggleEditor, togglePause } =
+    useGame();
 
   const { mutate: updateObstacles } = api.ws.updateObstacles.useMutation();
 
@@ -117,8 +118,9 @@ export function LevelEditor() {
         await contract.addSegment(CHAIN_ID, extendedResultArray);
 
         updateObstacles(undefined, {
-          onSuccess: () => {
-            addSegment(extendedResultArray);
+          onSuccess: ({ obstacles, rowCount }) => {
+            setRowCount(rowCount);
+            addSegment(obstacles);
             toggleEditor(false);
             togglePause(false);
           },
@@ -165,7 +167,7 @@ export function LevelEditor() {
                       alt={label}
                       width={width}
                       height={height}
-                      className="aspect-square w-full rounded-md border border-black/15 object-cover"
+                      className="aspect-square w-full rounded-md border object-cover"
                     />
                   );
 
@@ -176,7 +178,7 @@ export function LevelEditor() {
                       className={cn(
                         "relative size-20",
                         selections[currentRow].obstacle === value &&
-                          "rounded-md ring-2 ring-ring ring-offset-2"
+                          "rounded-md ring-2 ring-ring ring-offset-2 ring-offset-background"
                       )}
                     >
                       <Img />
@@ -210,8 +212,8 @@ export function LevelEditor() {
                       <div
                         key={j}
                         className={cn(
-                          "rounded border border-black/20",
-                          i === j && "bg-secondary group-hover:animate-bounce",
+                          "rounded border",
+                          i === j && "bg-muted group-hover:animate-bounce",
                           className
                         )}
                       />
@@ -222,9 +224,9 @@ export function LevelEditor() {
                       key={i}
                       onClick={() => handleColumnSelection(i)}
                       className={cn(
-                        "group flex size-20 cursor-pointer items-center justify-center gap-px overflow-hidden rounded-md border border-black/15",
+                        "group flex size-20 cursor-pointer items-center justify-center gap-px overflow-hidden rounded-md border",
                         selections[currentRow].column === i &&
-                          "ring-2 ring-ring ring-offset-2"
+                          "ring-2 ring-ring ring-offset-2 ring-offset-background"
                       )}
                     >
                       <Segments className="size-3" />
@@ -264,11 +266,12 @@ export function LevelEditor() {
                   key={i}
                   onClick={() => setCurrentRow(i)}
                   className={cn(
-                    "cursor-pointer rounded-md border border-black/15 bg-black/10 px-1 py-2 text-center",
+                    "cursor-pointer rounded-md border bg-black/10 px-1 py-2 text-center",
                     selections[i].obstacle !== null &&
                       selections[i].column !== null &&
-                      "border-green-500 bg-green-400",
-                    currentRow === i && "ring-2 ring-ring ring-offset-2"
+                      "border-green-500 bg-green-400 text-background",
+                    currentRow === i &&
+                      "ring-2 ring-ring ring-offset-2 ring-offset-background"
                   )}
                 >
                   <p className="font-matter">Row {i + 1}</p>

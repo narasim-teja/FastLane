@@ -29,7 +29,7 @@ export function Player() {
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
-  const { mutate: revealRow } = api.ws.revealRow.useMutation({});
+  const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;

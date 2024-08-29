@@ -57,13 +57,16 @@ export const useGame = create<State>()(
     rowCount: 0,
     setRowCount: (rowCount) => set(() => ({ rowCount })),
 
-    spawnCheckpoint: 1,
+    spawnCheckpoint: 0,
     setSpawnCheckpoint: (spawnCheckpoint) => set(() => ({ spawnCheckpoint })),
 
     segments: [{ obstacles: [] }],
     addSegment: (obstacles) => {
-      set((state) => ({
-        segments: [...state.segments, { obstacles }],
+      // set((state) => ({
+      //   segments: [...state.segments, { obstacles }],
+      // }));
+      set(() => ({
+        segments: [{ obstacles }],
       }));
     },
     addObstaclesRow: (obstacles) =>

@@ -30,6 +30,16 @@ export function BlockEnd({ position = [0, 0, 0], checkpoint }: BlockProps) {
 
   return (
     <group position={position as Position}>
+      <Text
+        font="/fonts/bebas-neue-v9-latin-regular.woff"
+        scale={0.5}
+        // position={[0, 1.25, 2]}
+        position={[2, 1, 2]}
+      >
+        Checkpoint {checkpoint}
+        <meshBasicMaterial toneMapped={false} />
+      </Text>
+
       <RigidBody
         type="fixed"
         colliders="trimesh"
@@ -38,16 +48,6 @@ export function BlockEnd({ position = [0, 0, 0], checkpoint }: BlockProps) {
         friction={1}
         onCollisionEnter={handleCollision}
       >
-        <Text
-          font="/fonts/bebas-neue-v9-latin-regular.woff"
-          scale={0.5}
-          // position={[0, 1.25, 2]}
-          position={[2, 1, 2]}
-        >
-          Checkpoint {checkpoint}
-          <meshBasicMaterial toneMapped={false} />
-        </Text>
-
         <mesh receiveShadow position={[2, 0, 2]}>
           <boxGeometry
             // args={[5, 0.1, 5]}

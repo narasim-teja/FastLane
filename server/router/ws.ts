@@ -1,6 +1,6 @@
 import { on } from "events";
 
-import { sse } from "@trpc/server";
+import { tracked } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
@@ -38,10 +38,7 @@ export const wsRouter = createRouter({
     for await (const [data] of on(ee, "revealRow")) {
       const revealRowData = data as RevealRowData;
 
-      yield sse({
-        id: revealRowData.rowIdx.toString(),
-        data: revealRowData,
-      });
+      yield tracked(revealRowData.rowIdx.toString(), revealRowData);
     }
   }),
 
@@ -76,5 +73,10 @@ export const wsRouter = createRouter({
     );
 
     ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
+
+    return {
+      rowCount,
+      obstacles,
+    };
   }),
 });
