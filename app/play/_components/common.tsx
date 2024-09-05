@@ -1,19 +1,16 @@
 "use client";
 
 import React from "react";
-import { useSearchParams } from "next/navigation";
 
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stats } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 
 import type { DirectionalLight } from "three";
 
 export default function Common({ children }: React.PropsWithChildren) {
   const light = React.useRef<DirectionalLight>(null);
-
-  const searchParams = useSearchParams();
-  const showPerf = searchParams.has("perf");
 
   useFrame((state) => {
     if (!light.current) return;
@@ -22,11 +19,19 @@ export default function Common({ children }: React.PropsWithChildren) {
     light.current.target.position.z = state.camera.position.z - 4;
     light.current.target.updateMatrixWorld();
   });
+
+  const { showPerf, showStats } = useControls("Debug Tools", {
+    showPerf: false,
+    showStats: false,
+  });
+
   return (
     <>
       <color args={["#bdedfc"]} attach="background" />
       <OrbitControls makeDefault />
+
       {showPerf && <Perf />}
+      {showStats && <Stats />}
 
       <directionalLight
         ref={light}
