@@ -43,7 +43,7 @@ export function Experience() {
         revealRow({
           chainId: CHAIN_ID,
           sessionId: SESSION_ID,
-          rowIdx: spawnCheckpoint * 10,
+          rowIdx: spawnCheckpoint * 9,
         });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
@@ -81,10 +81,17 @@ export function Experience() {
     <Physics>
       <Common />
 
-      {segments.map(({ obstacles }, i) => (
-        <group key={i}>
-          {[...Array(spawnCheckpoint * 35).fill(0), ...obstacles].map(
-            (obstacle, j) => {
+      {segments.map(({ obstacles }, i) => {
+        const combinedArray = [
+          ...Array(
+            5 * spawnCheckpoint * spawnCheckpoint + 35 * spawnCheckpoint
+          ).fill(0),
+          ...obstacles,
+        ];
+        console.log(`Combined array for segment ${i}:`, combinedArray);
+        return (
+          <group key={i}>
+            {combinedArray.map((obstacle, j) => {
               const row = Math.floor(j / 5);
               const col = j % 5;
 
@@ -96,27 +103,27 @@ export function Experience() {
                   col={col}
                 />
               );
-            }
-          )}
+            })}
 
-          <BlockStart
-            //  position={[2, 0.1, 7]}
-            position={[2, 0, 2]}
-          />
-          {generateBlockEnds()}
-          <Bounds
-            length={rowCount}
-            rowCount={rowCount}
-            onCollison={() => {
-              if (i === segments.length - 1) {
-                logger.info(">>> Opening editor...");
-                toggleEditor(true);
-              }
-            }}
-          />
-          <Environment preset="dawn" background />
-        </group>
-      ))}
+            <BlockStart
+              //  position={[2, 0.1, 7]}
+              position={[2, 0, 2]}
+            />
+            {generateBlockEnds()}
+            <Bounds
+              length={rowCount}
+              rowCount={rowCount}
+              onCollison={() => {
+                if (i === segments.length - 1) {
+                  logger.info(">>> Opening editor...");
+                  toggleEditor(true);
+                }
+              }}
+            />
+            <Environment preset="dawn" background />
+          </group>
+        );
+      })}
 
       <Player />
     </Physics>
