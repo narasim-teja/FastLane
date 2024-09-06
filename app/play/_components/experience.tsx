@@ -83,7 +83,7 @@ export function Experience() {
 
       {segments.map(({ obstacles }, i) => {
         const combinedArray = [
-          ...Array(50 * spawnCheckpoint - 10).fill(0),
+          ...Array(Math.max(0, 50 * spawnCheckpoint - 10)).fill(0),
           ...obstacles,
         ];
         console.log(`Combined array for segment ${i}:`, combinedArray);
