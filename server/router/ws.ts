@@ -65,18 +65,21 @@ export const wsRouter = createRouter({
 
   updateObstacles: publicProcedure.mutation(async ({ ctx: { ee } }) => {
     // 5 sec delay to allow for the blockchain to update
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 12000));
 
     const { rowCount, obstacles } = await fetchAllObstacles(
       CHAIN_ID,
       SESSION_ID
     );
 
+    logger.info({ rowCount, obstacles }, "Full available obstacles:");
+
     ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
 
     return {
       rowCount,
       obstacles,
+      refresh: true,
     };
   }),
 });

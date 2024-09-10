@@ -290,7 +290,7 @@ export function Player() {
     // logger.info(zPosition)
 
     const currentRow = Math.floor((-zPosition - 2) / 5);
-    console.log("currentRow", currentRow); // when to reveal the obstacle
+    // console.log("currentRow", currentRow); // when to reveal the obstacle
     // logger.info(currentRow)
     // Assuming each unit in Z represents a row
 

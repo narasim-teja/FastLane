@@ -118,11 +118,14 @@ export function LevelEditor() {
         await contract.addSegment(CHAIN_ID, extendedResultArray);
 
         updateObstacles(undefined, {
-          onSuccess: ({ obstacles, rowCount }) => {
+          onSuccess: ({ obstacles, rowCount, refresh }) => {
             setRowCount(rowCount);
             addSegment(obstacles);
             toggleEditor(false);
             togglePause(false);
+            if (refresh) {
+              window.location.reload(); // Refresh the page
+            }
           },
         });
       }
