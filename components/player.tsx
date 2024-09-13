@@ -20,7 +20,7 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "./icons";
 import { Button } from "./ui/button";
 
-const TIME_LIMIT = 10; // in seconds
+const TIME_LIMIT = 50; // in seconds
 
 export function Player() {
   const logger = getLogger();
@@ -29,7 +29,7 @@ export function Player() {
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
-  const { mutate: revealRow } = api.ws.revealRow.useMutation({});
+  const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -60,7 +60,7 @@ export function Player() {
     spawnCheckpoint,
   } = useGame();
 
-  const playerPosition = -(spawnCheckpoint * 45) - 5 * spawnCheckpoint + 2.5;
+  const playerPosition = -(spawnCheckpoint * 50) + 2.5;
 
   // useEffect(() => {
   //   void (async () => {
@@ -289,7 +289,8 @@ export function Player() {
     const zPosition = body.current.translation().z;
     // logger.info(zPosition)
 
-    const currentRow = Math.floor((-zPosition - 3) / 5); // when to reveal the obstacle
+    const currentRow = Math.floor((-zPosition - 2) / 5);
+    // console.log("currentRow", currentRow); // when to reveal the obstacle
     // logger.info(currentRow)
     // Assuming each unit in Z represents a row
 
@@ -309,10 +310,11 @@ export function Player() {
       revealRow({
         chainId: CHAIN_ID,
         sessionId: SESSION_ID,
-        rowIdx: spawnCheckpoint * 10,
+        rowIdx: spawnCheckpoint * 9,
       });
 
-      lastRow.current = spawnCheckpoint * 10;
+      // lastRow.current = spawnCheckpoint * 10;
+      lastRow.current = 0;
 
       restartGame();
 
