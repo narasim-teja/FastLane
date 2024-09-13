@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 export function Navbar() {
   return (
     <header className="absolute top-4 z-40 w-full">
-      <nav className="container relative flex w-full items-center justify-between pl-7 pr-2 md:px-8 md:py-4 lg:px-2">
+      <nav className="container relative flex w-full items-center justify-between pl-7 pr-2 md:px-8 md:py-4">
         <Button
           href="/"
           size="custom"

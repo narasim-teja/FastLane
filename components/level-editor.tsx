@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { Info, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -36,6 +37,7 @@ type Selection = {
 
 export function LevelEditor() {
   const contract = useContract();
+  const router = useRouter();
 
   const { addSegment, setRowCount, isEditorOpen, toggleEditor, togglePause } =
     useGame();
@@ -124,7 +126,7 @@ export function LevelEditor() {
             toggleEditor(false);
             togglePause(false);
             if (refresh) {
-              window.location.reload(); // Refresh the page
+              router.refresh(); // Refresh the page
             }
           },
         });

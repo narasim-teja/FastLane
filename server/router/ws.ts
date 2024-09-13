@@ -64,7 +64,7 @@ export const wsRouter = createRouter({
   ),
 
   updateObstacles: publicProcedure.mutation(async ({ ctx: { ee } }) => {
-    // 5 sec delay to allow for the blockchain to update
+    // 12 sec delay to allow for the blockchain to update
     await new Promise((resolve) => setTimeout(resolve, 12000));
 
     const { rowCount, obstacles } = await fetchAllObstacles(

@@ -22,7 +22,7 @@ export function Footer() {
   return (
     <footer
       className={cn(
-        "px-10 pb-10 lg:mx-auto lg:w-[70vw] lg:px-0",
+        "px-10 pb-10 lg:mx-auto xl:w-[70vw] xl:px-0",
         excludePaths.includes(pathname) && "hidden"
       )}
     >
