@@ -43,7 +43,7 @@ export default function LandingPage() {
       </div>
 
       <Hero />
-      <Gameplay />
+      <Gameplay from="landing" />
       <DiscoverTracks />
       <RollingBall />
     </main>

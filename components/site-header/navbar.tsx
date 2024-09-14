@@ -37,7 +37,7 @@ export function Navbar() {
                 size="icon"
                 className="size-[3.25rem] rounded-full"
               >
-                <TrafficCone />
+                <TrafficCone strokeWidth={1.5} />
               </Button>
             </TooltipTrigger>
 

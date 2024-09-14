@@ -1,9 +1,4 @@
-"use client";
-
-import { usePathname } from "next/navigation";
-
 import { siteConfig } from "~/config/site";
-import { cn } from "~/lib/utils";
 
 import {
   DiscordIcon,
@@ -14,18 +9,9 @@ import {
   XIcon,
 } from "../icons";
 
-const excludePaths = ["/signin"];
-
 export function Footer() {
-  const pathname = usePathname();
-
   return (
-    <footer
-      className={cn(
-        "px-10 pb-10 lg:mx-auto xl:w-[70vw] xl:px-0",
-        excludePaths.includes(pathname) && "hidden"
-      )}
-    >
+    <footer className="px-10 pb-10 lg:mx-auto xl:w-[70vw] xl:px-0">
       <FooterGradient className="absolute inset-x-0 bottom-0 -z-10 h-[576px] w-[1200px] max-w-[99vw]" />
 
       <div className="overflow-hidden rounded-3xl border border-white/20 backdrop-blur">

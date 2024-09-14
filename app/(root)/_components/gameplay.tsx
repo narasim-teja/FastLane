@@ -1,3 +1,4 @@
+import React from "react";
 import dynamic from "next/dynamic";
 
 import { Cube3DLine } from "~/components/icons";
@@ -19,21 +20,28 @@ enum TabsValue {
   Rules = "rules",
 }
 
-export function Gameplay() {
+export const Gameplay: React.FC<{ from: "signin" | "landing" }> = ({
+  from,
+}) => {
   return (
     <div className="mx-auto size-full max-w-5xl overflow-hidden rounded-3xl shadow-[0px_0px_98.9px_1px_#B400FF33]">
       <div className="h-0.5 w-full bg-gradient-to-r from-transparent from-20% via-violet-500 via-50% to-transparent to-80%" />
 
-      <div className="size-full bg-gradient-to-r from-background/50 via-zinc-900 to-zinc-900/50 p-4 md:p-8">
+      <div
+        className={cn(
+          "size-full bg-gradient-to-r from-background/50 via-zinc-900 to-zinc-900/50 p-4",
+          from === "landing" && "md:p-8"
+        )}
+      >
         <div className="w-full rounded-2xl border border-border p-2 md:p-4">
           <Tabs defaultValue={TabsValue.Gameplay}>
-            <div className="mb-4 flex justify-between px-2">
+            <div className="mb-4 flex items-center justify-between px-2">
               <div className="flex items-center">
                 <div className="z-0 flex size-10 items-center justify-center rounded-full bg-white p-1 md:size-16 md:p-3">
                   <Cube3DLine height={40} width={40} className="z-10" />
                 </div>
 
-                <p className="-ml-4 rounded-r-3xl bg-zinc-800 py-2 pl-6 pr-4 text-xs md:text-base">
+                <p className="-ml-4 rounded-r-3xl bg-zinc-800 py-2 pl-6 pr-4 text-xs md:text-sm lg:text-base">
                   {siteConfig.url.replace(/https?:\/\//, "")}
                 </p>
               </div>
@@ -52,7 +60,10 @@ export function Gameplay() {
 
             <TabsContent
               value={TabsValue.Gameplay}
-              className="relative aspect-video w-full overflow-hidden rounded-3xl p-3"
+              className={cn(
+                "relative aspect-video w-full overflow-hidden rounded-3xl",
+                from === "landing" && "p-3"
+              )}
             >
               <View className="size-full rounded-3xl border">
                 <GamePlayModel
@@ -65,7 +76,10 @@ export function Gameplay() {
 
             <TabsContent
               value={TabsValue.Rules}
-              className="relative aspect-video w-full overflow-hidden rounded-3xl p-3"
+              className={cn(
+                "relative aspect-video w-full overflow-hidden rounded-3xl",
+                from === "landing" && "p-3"
+              )}
             >
               <video
                 src="/gameplay.mp4"
@@ -83,4 +97,4 @@ export function Gameplay() {
       </div>
     </div>
   );
-}
+};
