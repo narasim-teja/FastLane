@@ -26,7 +26,7 @@ export function Footer() {
         excludePaths.includes(pathname) && "hidden"
       )}
     >
-      <FooterGradient className="absolute inset-x-0 bottom-0 -z-10 h-[576px] w-[1200px] max-w-[100vw]" />
+      <FooterGradient className="absolute inset-x-0 bottom-0 -z-10 h-[576px] w-[1200px] max-w-[99vw]" />
 
       <div className="overflow-hidden rounded-3xl border border-white/20 backdrop-blur">
         <div className="h-px bg-[linear-gradient(90deg,_rgba(0,_0,_0,_0)_0%,_#05D7DA_52.61%,_rgba(0,_0,_0,_0)_100%)]" />

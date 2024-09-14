@@ -1,8 +1,18 @@
+import dynamic from "next/dynamic";
+
 import { Cube3DLine } from "~/components/icons";
+import { Spinner } from "~/components/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
+
+import { GamePlayModel } from "./gameplay-model";
+
+const View = dynamic(() => import("~/components/canvas/view"), {
+  ssr: false,
+  loading: () => <Spinner />,
+});
 
 enum TabsValue {
   Gameplay = "gameplay",
@@ -44,16 +54,13 @@ export function Gameplay() {
               value={TabsValue.Gameplay}
               className="relative aspect-video w-full overflow-hidden rounded-3xl p-3"
             >
-              <video
-                src="/gameplay.mp4"
-                preload="auto"
-                playsInline
-                autoPlay
-                muted
-                loop
-                className="rounded-3xl"
-              />
-              <Skeleton className="absolute inset-3 -z-10 rounded-3xl" />
+              <View className="size-full rounded-3xl border">
+                <GamePlayModel
+                  scale={0.8}
+                  position={[-0.5, 0.4, 0]}
+                  rotation={[0.55, -5.7, -0.1]}
+                />
+              </View>
             </TabsContent>
 
             <TabsContent
