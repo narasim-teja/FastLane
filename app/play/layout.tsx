@@ -29,7 +29,7 @@ export default async function GameLayout(props: React.PropsWithChildren) {
             // NOTE: Use ints instead of floats for cost efficiency and full on-chain implementation
             // near: 0.1,
             near: 1,
-            far: 200,
+            far: 500,
           }}
           style={{
             position: "fixed",

@@ -4,22 +4,25 @@ import React from "react";
 
 import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
+import { useControls } from "leva";
 
 import { BlockEnd, BlockStart } from "~/components/block";
 import { Bounds } from "~/components/bounds";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
-import { Player } from "~/components/player";
+import { Player } from "~/components/players/single-player";
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
-import Common from "./common";
-
-export function Experience() {
+export function GoldTrack() {
   const logger = getLogger();
 
   const isGameReady = React.useRef(false);
+
+  const { debugPhysics } = useControls("Debug Tools", {
+    debugPhysics: false,
+  });
 
   const {
     rowCount,
@@ -78,9 +81,7 @@ export function Experience() {
   };
 
   return (
-    <Physics>
-      <Common />
-
+    <Physics debug={debugPhysics}>
       {segments.map(({ obstacles }, i) => {
         const combinedArray = [
           ...Array(Math.max(0, 50 * spawnCheckpoint - 10)).fill(0),

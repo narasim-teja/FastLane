@@ -17,8 +17,8 @@ import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "./icons";
-import { Button } from "./ui/button";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
+import { Button } from "../ui/button";
 
 const TIME_LIMIT = 50; // in seconds
 
