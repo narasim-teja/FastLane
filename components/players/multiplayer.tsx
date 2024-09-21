@@ -113,6 +113,18 @@ export function Multiplayer() {
     cameraTarget.copy(bodyPosition);
     cameraTarget.y += 0.25;
 
+    if (leftward) {
+      cameraPosition.x += 10;
+      cameraPosition.z -= 10;
+      cameraTarget.x -= 20;
+    }
+
+    if (rightward) {
+      cameraPosition.x -= 10;
+      cameraPosition.z -= 10;
+      cameraTarget.x += 20;
+    }
+
     smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
     smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
