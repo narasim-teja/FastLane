@@ -1,30 +1,47 @@
 import { useEffect, useRef } from "react";
 
-import { useKeyboardControls, useTexture } from "@react-three/drei";
+import { useGLTF, useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
+import { useGame } from "~/hooks/use-game";
+
 export function Multiplayer() {
+  const { nodes, materials } = useGLTF("/marble.glb");
+
   const body = useRef<RapierRigidBody>(null);
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
 
-  const texture = useTexture("/marbel-04.png");
-
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
+  const { startGame, restartGame, isPaused } = useGame();
+
   useEffect(() => {
+    const unsubscribeReset = useGame.subscribe(
+      ({ phase }) => phase,
+      (value) => {
+        if (value === "ready" && body.current) {
+          // TODO: check for the wakeUp parameter
+          body.current.setTranslation({ x: 2, y: 1, z: 0 }, true);
+          body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+          body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+        }
+      }
+    );
+
     const unsubscribeKeys = subscribeKeys(() => {
-      // ...
+      startGame();
     });
 
     return () => {
+      unsubscribeReset();
       unsubscribeKeys();
     };
-  }, [subscribeKeys]);
+  }, [subscribeKeys, startGame]);
 
   useFrame((state, delta) => {
     if (!body.current) return;
@@ -33,6 +50,12 @@ export function Multiplayer() {
      * controls
      * -----------------------------------------------------------------------------------------------*/
 
+    if (isPaused) {
+      // optionally reset linear and angular velocity to 0 to stop all movement immediately
+      body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+      body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+    }
+
     const { forward, backward, leftward, rightward } = getKeys();
     const bodyPosition = body.current.translation();
 
@@ -40,12 +63,12 @@ export function Multiplayer() {
     const torque = { x: 0, y: 0, z: 0 };
 
     // define base impulse and torque strengths
-    const baseImpulseStrength = 0.3;
-    const baseTorqueStrength = 0.2;
+    const baseImpulseStrength = 0.5;
+    const baseTorqueStrength = 0.5;
 
     // calculate impulse and torque strengths
-    const impulseStrength = baseImpulseStrength * 0.3;
-    const torqueStrength = baseTorqueStrength * 0.3;
+    const impulseStrength = baseImpulseStrength * 0.5;
+    const torqueStrength = baseTorqueStrength * 0.5;
 
     if (forward) {
       impulse.z -= impulseStrength;
@@ -68,9 +91,14 @@ export function Multiplayer() {
     }
 
     // only apply impulse and torque if the player is not below the base level
-    if (!(bodyPosition.y < -0.5)) {
+    if (!(bodyPosition.y < -0.5) && !isPaused) {
       body.current.applyImpulse(impulse, true);
       body.current.applyTorqueImpulse(torque, true);
+    }
+
+    // restart the game if the player is below the base level
+    if (bodyPosition.y < -2) {
+      restartGame();
     }
 
     /* -----------------------------------------------------------------------------------------------
@@ -78,8 +106,8 @@ export function Multiplayer() {
      * -----------------------------------------------------------------------------------------------*/
     const cameraPosition = new THREE.Vector3();
     cameraPosition.copy(bodyPosition);
-    cameraPosition.z += 4.25;
-    cameraPosition.y += 0.95;
+    cameraPosition.z += 10;
+    cameraPosition.y += 3;
 
     const cameraTarget = new THREE.Vector3();
     cameraTarget.copy(bodyPosition);
@@ -93,22 +121,21 @@ export function Multiplayer() {
   });
 
   return (
-    <>
-      <RigidBody
-        ref={body}
-        canSleep={false}
-        colliders="ball"
-        restitution={0.2}
-        friction={1}
-        linearDamping={0.5}
-        angularDamping={0.5}
-        position={[0, 0, 0]}
-      >
-        <mesh castShadow>
-          <sphereGeometry args={[0.75, 25, 25]} />
-          <meshStandardMaterial attach="material" map={texture} />
-        </mesh>
-      </RigidBody>
-    </>
+    <RigidBody
+      ref={body}
+      canSleep={false}
+      colliders="ball"
+      restitution={0.2}
+      friction={1}
+      linearDamping={0.5}
+      angularDamping={0.5}
+      position={[19.487, 0.377, 6.678]}
+    >
+      <mesh
+        // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+        geometry={nodes.Icosphere.geometry}
+        material={materials["Material.026"]}
+      />
+    </RigidBody>
   );
 }

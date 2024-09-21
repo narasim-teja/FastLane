@@ -18,39 +18,34 @@ export function CommunityTrack(props: GroupProps) {
   return (
     <Physics debug={debugPhysics} colliders="trimesh">
       <group {...props}>
-        <group
-          position={[-57.054, -0.412, 64.566]}
-          rotation={[Math.PI / 2, 0, 0]}
-          scale={0.01}
-        >
-          {/* floor */}
-          <RigidBody type="fixed">
+        <RigidBody type="fixed">
+          <group
+            position={[-57.054, -0.412, 64.566]}
+            rotation={[Math.PI / 2, 0, 0]}
+            scale={0.01}
+          >
+            {/* floor */}
             <mesh
               // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032.geometry}
               material={materials.plane}
             />
-          </RigidBody>
 
-          {/* race track */}
-          <RigidBody type="fixed">
+            {/* race track */}
             <mesh
               // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032_1.geometry}
               material={materials["gree.002"]}
             />
-          </RigidBody>
 
-          {/* every other thing on the floor */}
-
-          <RigidBody type="fixed">
+            {/* every other thing on the floor */}
             <mesh
               // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032_2.geometry}
               material={materials.PaletteMaterial001}
             />
-          </RigidBody>
-        </group>
+          </group>
+        </RigidBody>
 
         {/* buildings */}
         <RigidBody type="fixed">
@@ -65,14 +60,14 @@ export function CommunityTrack(props: GroupProps) {
         </RigidBody>
 
         {/* dont know what it is */}
-        {/* <mesh
+        <mesh
           // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Cube_Cube002.geometry}
           material={materials.PaletteMaterial002}
           position={[-8.812, 0.823, 86.826]}
           rotation={[Math.PI / 2, 0, 0]}
           scale={0.177}
-        /> */}
+        />
 
         {/* trees */}
         <RigidBody type="fixed">
@@ -95,12 +90,11 @@ export function CommunityTrack(props: GroupProps) {
         />
 
         {/* oasis logo */}
-        <RigidBody type="fixed">
+        <RigidBody type="fixed" position={[10.54, -0.62, 6.678]}>
           <mesh
             // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes["Oasis_Logo_White@2x"].geometry}
             material={materials["Oasis Logo White@2x"]}
-            position={[10.54, -0.485, 6.678]}
             scale={2.058}
           />
         </RigidBody>
