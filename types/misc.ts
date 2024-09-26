@@ -6,3 +6,5 @@ export type GamePlayAction = {
   frameNumber: number;
   action: string;
 };
+
+export type Track = "gold" | "eth" | "oasis-track";

@@ -1,6 +1,8 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
+import type { Track } from "~/types/misc";
+
 import { CommunityTrack } from "~/app/play/_components/community-track";
 import { Spinner } from "~/components/spinner";
 
@@ -14,7 +16,7 @@ const View = dynamic(() => import("~/components/canvas/view"), {
 
 type GamePageProps = {
   searchParams: {
-    track: "gold" | "eth" | "community";
+    track: Track;
   };
 };
 
@@ -23,9 +25,9 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     <View className="h-dvh w-dvw">
       <Common />
 
-      {track === "community" && <CommunityTrack />}
       {track === "gold" && <GoldTrack />}
       {track === "eth" && <GoldTrack />}
+      {track === "oasis-track" && <CommunityTrack />}
     </View>
   );
 }
