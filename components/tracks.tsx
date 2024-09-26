@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 
 import { siteConfig } from "~/config/site";
 
-import { GradientBall1, GradientBall2 } from "./icons";
+import { CommunityTracksCard } from "./community-tracks-card";
 import { Button } from "./ui/button";
 
 export function Tracks() {
@@ -83,23 +83,7 @@ export function Tracks() {
         </Button>
       </div>
 
-      <div className="group relative w-full bg-background transition-colors duration-300 *:duration-300 hover:bg-foreground">
-        <h3 className="z-10 p-2 text-right font-poppins font-semibold uppercase transition-colors group-hover:text-background">
-          Community <br /> Track
-        </h3>
-
-        <GradientBall2 className="absolute -left-24 -top-20 size-72 transition-transform group-hover:rotate-45 group-hover:scale-125" />
-
-        <GradientBall1 className="absolute -bottom-20 -right-20 size-80 rounded-full transition-transform group-hover:rotate-45 group-hover:scale-125" />
-
-        <Button
-          variant="custom"
-          href="/play?track=community"
-          className="rounded-xl border bg-transparent p-2 font-poppins font-semibold text-foreground backdrop-blur-sm group-hover:bg-background"
-        >
-          Explore <ArrowUpRight className="ml-2 size-5" />
-        </Button>
-      </div>
+      <CommunityTracksCard />
     </div>
   );
 }
