@@ -1,12 +1,18 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
-import { createCallerFactory, createRouter, publicProcedure } from "../trpc";
-import { wsRouter } from "./ws";
+import {
+  createCallerFactory,
+  createRouter,
+  mergeRouters,
+  publicProcedure,
+} from "../trpc";
+import { multiplayerRouter } from "./multiplayer";
+import { singlePlayerRouter } from "./ws";
 
 export const appRouter = createRouter({
   "": publicProcedure.query(() => "Hello from FastLane API! 🚀"),
   ping: publicProcedure.query(() => "pong"),
-  ws: wsRouter,
+  ws: mergeRouters(singlePlayerRouter, multiplayerRouter),
 });
 
 // export type definition of API

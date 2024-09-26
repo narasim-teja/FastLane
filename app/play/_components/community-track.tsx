@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+
 import { useGLTF } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
@@ -7,12 +9,33 @@ import { useControls } from "leva";
 import type { GroupProps } from "@react-three/fiber";
 
 import { Multiplayer } from "~/components/players/multiplayer";
+import { getLogger } from "~/lib/logger";
+import { api } from "~/lib/trpc/react";
 
-export function CommunityTrack(props: GroupProps) {
+export const CommunityTrack: React.FC<GroupProps & { address?: string }> = ({
+  address,
+  ...props
+}) => {
+  const logger = getLogger();
+
+  const [totalPlayers, setTotalPlayer] = React.useState(0);
   const { nodes, materials } = useGLTF("/community-track.glb");
 
   const { debugPhysics } = useControls("Debug Tools", {
     debugPhysics: false,
+  });
+
+  const { mutate: addPlayer } = api.ws.addPlayer.useMutation();
+
+  api.ws.onBroadcastPosition.useSubscription(void function () {}, {
+    onStarted: () => {
+      logger.info(">>> Adding Player");
+      addPlayer(address ?? Math.random().toString(36).substring(7));
+    },
+    onData: ({ data: { playersCount, address, impulse, torque } }) => {
+      setTotalPlayer(playersCount);
+      console.log({ playersCount, address, impulse, torque });
+    },
   });
 
   return (
@@ -143,9 +166,11 @@ export function CommunityTrack(props: GroupProps) {
         </RigidBody>
       </group>
 
-      <Multiplayer />
+      {Array.from({ length: totalPlayers }).map((_, i) => (
+        <Multiplayer key={i} address={address!} />
+      ))}
     </Physics>
   );
-}
+};
 
 useGLTF.preload("/community-track.glb");

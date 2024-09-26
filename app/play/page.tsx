@@ -1,5 +1,6 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import { cookies } from "next/headers";
 
 import type { Track } from "~/types/misc";
 
@@ -21,13 +22,15 @@ type GamePageProps = {
 };
 
 export default function GamePage({ searchParams: { track } }: GamePageProps) {
+  const address = cookies().get("address")?.value;
+
   return (
     <View className="h-dvh w-dvw">
       <Common />
 
       {track === "gold" && <GoldTrack />}
       {track === "eth" && <GoldTrack />}
-      {track === "oasis-track" && <CommunityTrack />}
+      {track === "oasis-track" && <CommunityTrack address={address} />}
     </View>
   );
 }

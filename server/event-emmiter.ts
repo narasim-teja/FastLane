@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 
-import { EventEmitter } from "events";
+import { EventEmitter, on } from "node:events";
 
-import type { RevealRowData } from "~/types/ws";
+import type { BroadcastPositionData, RevealRowData } from "~/types/ws";
 
 export interface MyEvents {
   revealRow: (data: RevealRowData) => void;
+  broadcastPosition: (data: BroadcastPositionData) => void;
 }
 
 declare interface MyEventEmitter {
@@ -22,7 +23,10 @@ declare interface MyEventEmitter {
 /**
  * Custom Typed EventEmitter for WebSocket events
  */
-class MyEventEmitter extends EventEmitter {}
-
+class MyEventEmitter extends EventEmitter {
+  public toIterable<TEv extends keyof MyEvents>(event: TEv) {
+    return on(this, event) as AsyncIterable<Parameters<MyEvents[TEv]>>;
+  }
+}
 /** Event emitter for WebSocket events */
 export const ee = new MyEventEmitter();

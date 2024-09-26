@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useGLTF, useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
@@ -7,9 +7,15 @@ import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
+import type { Position } from "~/types/misc";
+
 import { useGame } from "~/hooks/use-game";
 
-export function Multiplayer() {
+export const Multiplayer: React.FC<{
+  address: string;
+  // impulse: Position;
+  // torque: Position;
+}> = () => {
   const { nodes, materials } = useGLTF("/marble.glb");
 
   const body = useRef<RapierRigidBody>(null);
@@ -138,4 +144,4 @@ export function Multiplayer() {
       />
     </RigidBody>
   );
-}
+};

@@ -1,6 +1,8 @@
 export type Obstacles = number[];
 
-export type Position = [x: number, y: number, z: number];
+export type Position =
+  | [x: number, y: number, z: number]
+  | { x: number; y: number; z: number };
 
 export type GamePlayAction = {
   frameNumber: number;

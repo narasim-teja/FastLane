@@ -87,7 +87,7 @@ export function GoldTrack() {
           ...Array(Math.max(0, 50 * spawnCheckpoint - 10)).fill(0),
           ...obstacles,
         ];
-        console.log(`Combined array for segment ${i}:`, combinedArray);
+        logger.info(`Combined array for segment ${i}:`, combinedArray);
         return (
           <group key={i}>
             {combinedArray.map((obstacle, j) => {

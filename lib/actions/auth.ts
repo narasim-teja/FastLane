@@ -37,7 +37,7 @@ export async function login(payload: VerifyLoginPayloadParams) {
   }
 }
 
-export async function isLoggedIn() {
+export async function isLoggedIn(address?: string) {
   const jwt = cookies().get("jwt");
   if (!jwt?.value) {
     return false;
@@ -47,10 +47,16 @@ export async function isLoggedIn() {
   if (!authResult.valid) {
     return false;
   }
+
+  if (address) {
+    cookies().set("address", address);
+  }
+
   return true;
 }
 
 export async function logout() {
   cookies().delete("jwt");
+  cookies().delete("address");
   redirect("/");
 }
