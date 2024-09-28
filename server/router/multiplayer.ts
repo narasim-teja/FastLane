@@ -1,14 +1,15 @@
 import { tracked } from "@trpc/server";
 import { z } from "zod";
 
+import type { Coordinates } from "~/types/misc";
 import type { BroadcastPositionData } from "~/types/ws";
-
-import { getLogger } from "~/lib/logger";
 
 import { createRouter, protectedProcedure } from "../trpc";
 
-const logger = getLogger();
-const totalPlayers = new Set<string>();
+const totalPlayers = new Map<
+  string,
+  { position: Coordinates; rotation: Coordinates }
+>();
 
 export const multiplayerRouter = createRouter({
   // createRoom: protectedProcedure
@@ -45,9 +46,9 @@ export const multiplayerRouter = createRouter({
     ctx: { ee },
   }) {
     for await (const [data] of ee.toIterable("broadcastPosition")) {
-      const { address, impulse, torque } = data as BroadcastPositionData;
+      const { address, position, rotation } = data as BroadcastPositionData;
       const playersCount = Array.from(totalPlayers).length;
-      yield tracked(address, { address, impulse, torque, playersCount });
+      yield tracked(address, { address, position, rotation, playersCount });
     }
   }),
 
@@ -55,20 +56,16 @@ export const multiplayerRouter = createRouter({
     .input(
       z.object({
         address: z.string(),
-        impulse: z.object({ x: z.number(), y: z.number(), z: z.number() }),
-        torque: z.object({ x: z.number(), y: z.number(), z: z.number() }),
+        position: z.object({ x: z.number(), y: z.number(), z: z.number() }),
+        rotation: z.object({ x: z.number(), y: z.number(), z: z.number() }),
       })
     )
     .mutation(async ({ ctx: { ee }, input }) => {
+      totalPlayers.set(input.address, {
+        position: input.position,
+        rotation: input.rotation,
+      });
+
       ee.emit("broadcastPosition", input);
     }),
-
-  addPlayer: protectedProcedure.input(z.string()).mutation(({ input }) => {
-    logger.info(`Adding player: ${input}`);
-    totalPlayers.add(input);
-  }),
-
-  getPlayers: protectedProcedure.query(async () => {
-    return Array.from(totalPlayers);
-  }),
 });

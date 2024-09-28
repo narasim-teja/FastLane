@@ -13,6 +13,7 @@ import type {
 
 import { env } from "../env";
 import { thirdWebclient } from "../thirdweb/client";
+import { base64 } from "../utils";
 
 const thirdwebAuth = createAuth({
   domain: env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
@@ -49,7 +50,7 @@ export async function isLoggedIn(address?: string) {
   }
 
   if (address) {
-    cookies().set("address", address);
+    cookies().set("address", base64.encode(address));
   }
 
   return true;

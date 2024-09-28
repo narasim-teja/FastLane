@@ -1,4 +1,4 @@
-import type { Position } from "./misc";
+import type { Coordinates } from "./misc";
 
 export type RevealRowData = {
   rowIdx: number;
@@ -8,6 +8,6 @@ export type RevealRowData = {
 
 export type BroadcastPositionData = {
   address: string;
-  impulse: Position;
-  torque: Position;
+  position: Coordinates;
+  rotation: Coordinates;
 };

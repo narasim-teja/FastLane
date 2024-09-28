@@ -1,8 +1,8 @@
 export type Obstacles = number[];
 
-export type Position =
-  | [x: number, y: number, z: number]
-  | { x: number; y: number; z: number };
+export type Position = [x: number, y: number, z: number];
+
+export type Coordinates = { x: number; y: number; z: number };
 
 export type GamePlayAction = {
   frameNumber: number;
@@ -10,3 +10,7 @@ export type GamePlayAction = {
 };
 
 export type Track = "gold" | "eth" | "oasis-track";
+
+export type Clients = {
+  [K: string]: { position: Coordinates; rotation: Coordinates };
+};

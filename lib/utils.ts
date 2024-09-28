@@ -41,3 +41,14 @@ export function downloadRecordedActions(actions: GamePlayAction[]) {
   link.click();
   document.body.removeChild(link);
 }
+
+/**
+ * Encodes and decodes strings to and from base64
+ * @param str The string to encode/decode
+ * @returns The encoded/decoded string
+ */
+export const base64 = {
+  encode: (str: string) =>
+    Buffer.from(str).toString("base64").replace(/=/g, ""),
+  decode: (str: string) => Buffer.from(str, "base64").toString("ascii"),
+};

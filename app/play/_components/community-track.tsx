@@ -8,33 +8,36 @@ import { useControls } from "leva";
 
 import type { GroupProps } from "@react-three/fiber";
 
+import type { Clients } from "~/types/misc";
+
 import { Multiplayer } from "~/components/players/multiplayer";
-import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
-export const CommunityTrack: React.FC<GroupProps & { address?: string }> = ({
+export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
   address,
   ...props
 }) => {
-  const logger = getLogger();
-
-  const [totalPlayers, setTotalPlayer] = React.useState(0);
   const { nodes, materials } = useGLTF("/community-track.glb");
 
   const { debugPhysics } = useControls("Debug Tools", {
     debugPhysics: false,
   });
 
-  const { mutate: addPlayer } = api.ws.addPlayer.useMutation();
+  const [clients, setClients] = React.useState<Clients>({});
+
+  const { mutate: broadcastPosition } = api.ws.broadcastPosition.useMutation();
 
   api.ws.onBroadcastPosition.useSubscription(void function () {}, {
     onStarted: () => {
-      logger.info(">>> Adding Player");
-      addPlayer(address ?? Math.random().toString(36).substring(7));
+      console.log("broadcastPosition started");
+      broadcastPosition({
+        address,
+        position: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+      });
     },
-    onData: ({ data: { playersCount, address, impulse, torque } }) => {
-      setTotalPlayer(playersCount);
-      console.log({ playersCount, address, impulse, torque });
+    onData: ({ data: { address, position, rotation } }) => {
+      setClients((prev) => ({ ...prev, [address]: { position, rotation } }));
     },
   });
 
@@ -166,9 +169,33 @@ export const CommunityTrack: React.FC<GroupProps & { address?: string }> = ({
         </RigidBody>
       </group>
 
-      {Array.from({ length: totalPlayers }).map((_, i) => (
-        <Multiplayer key={i} address={address!} />
-      ))}
+      {Object.keys(clients).map((clientAddress) => {
+        if (clientAddress === address) {
+          return <Multiplayer key={clientAddress} address={address} />;
+        }
+
+        const { position, rotation } = clients[clientAddress];
+
+        return (
+          <RigidBody
+            key={clientAddress}
+            canSleep={false}
+            colliders="ball"
+            restitution={0.2}
+            friction={1}
+            linearDamping={0.5}
+            angularDamping={0.5}
+            position={[position.x, position.y, position.z]}
+            rotation={[rotation.x, rotation.y, rotation.z]}
+          >
+            <mesh
+              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+              geometry={nodes.Icosphere.geometry}
+              material={materials["Material.026"]}
+            />
+          </RigidBody>
+        );
+      })}
     </Physics>
   );
 };
