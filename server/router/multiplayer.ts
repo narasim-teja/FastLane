@@ -8,8 +8,14 @@ import { createRouter, protectedProcedure } from "../trpc";
 
 const totalPlayers = new Map<
   string,
-  { position: Coordinates; rotation: Coordinates }
+  {
+    position: Coordinates;
+    rotation: Coordinates;
+    lastBroadcast: number;
+  }
 >();
+
+let lastRemoval = Date.now();
 
 export const multiplayerRouter = createRouter({
   // createRoom: protectedProcedure
@@ -64,8 +70,24 @@ export const multiplayerRouter = createRouter({
       totalPlayers.set(input.address, {
         position: input.position,
         rotation: input.rotation,
+        lastBroadcast: Date.now(),
       });
 
       ee.emit("broadcastPosition", input);
+
+      /* -----------------------------------------------------------------------------------------------
+       * remove inactive players
+       * -----------------------------------------------------------------------------------------------*/
+      const now = Date.now();
+
+      if (now - lastRemoval < 60 * 1000) return; // 1 minute
+      lastRemoval = now;
+
+      totalPlayers.forEach((player, address) => {
+        // 5 minutes
+        if (now - player.lastBroadcast > 5 * 60 * 1000) {
+          totalPlayers.delete(address);
+        }
+      });
     }),
 });
