@@ -11,7 +11,7 @@ import type { RapierRigidBody } from "@react-three/rapier";
 
 import type { GamePlayAction } from "~/types/misc";
 
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
+import { CHAIN_ID, SESSION_ID, TIME_LIMIT } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
@@ -19,8 +19,6 @@ import { cn } from "~/lib/utils";
 
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
-
-const TIME_LIMIT = 50; // in seconds
 
 export function Player() {
   const logger = getLogger();
@@ -62,7 +60,8 @@ export function Player() {
 
   const playerPosition = -(spawnCheckpoint * 50) + 2.5;
 
-  // useEffect(() => {
+  // useEffect(() => {const TIME_LIMIT = 10; // in seconds
+
   //   void (async () => {
   //     try {
   //       const response = await fetch("/player-actions.json");
@@ -215,6 +214,13 @@ export function Player() {
     if (!(bodyPosition.y < -0.5) && !isPaused && !isEditorOpen) {
       body.current.applyImpulse(impulse, true);
       body.current.applyTorqueImpulse(torque, true);
+
+      //   broadcastPosition({
+      //     address: account.address,
+      //     impulse,
+      //     torque,
+      //   });
+      // }
     }
 
     // // make sure there is an action to simulate and we're within the bounds of the simulationData array.

@@ -1,18 +1,44 @@
 "use client";
 
+import React from "react";
+
 import { useGLTF } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
 
 import type { GroupProps } from "@react-three/fiber";
 
-import { Multiplayer } from "~/components/players/multiplayer";
+import type { Clients } from "~/types/misc";
 
-export function CommunityTrack(props: GroupProps) {
+import { Multiplayer } from "~/components/players/multiplayer";
+import { api } from "~/lib/trpc/react";
+
+export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
+  address,
+  ...props
+}) => {
   const { nodes, materials } = useGLTF("/community-track.glb");
 
   const { debugPhysics } = useControls("Debug Tools", {
     debugPhysics: false,
+  });
+
+  const [clients, setClients] = React.useState<Clients>({});
+
+  const { mutate: broadcastPosition } = api.ws.broadcastPosition.useMutation();
+
+  api.ws.onBroadcastPosition.useSubscription(void function () {}, {
+    onStarted: () => {
+      console.log("broadcastPosition started");
+      broadcastPosition({
+        address,
+        position: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+      });
+    },
+    onData: ({ data: { address, position, rotation } }) => {
+      setClients((prev) => ({ ...prev, [address]: { position, rotation } }));
+    },
   });
 
   return (
@@ -143,9 +169,35 @@ export function CommunityTrack(props: GroupProps) {
         </RigidBody>
       </group>
 
-      <Multiplayer />
+      {Object.keys(clients).map((clientAddress) => {
+        if (clientAddress === address) {
+          return <Multiplayer key={clientAddress} address={address} />;
+        }
+
+        const { position, rotation } = clients[clientAddress];
+
+        return (
+          <RigidBody
+            key={clientAddress}
+            canSleep={false}
+            colliders="ball"
+            restitution={0.2}
+            friction={1}
+            linearDamping={0.5}
+            angularDamping={0.5}
+            position={[position.x, position.y, position.z]}
+            rotation={[rotation.x, rotation.y, rotation.z]}
+          >
+            <mesh
+              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+              geometry={nodes.Icosphere.geometry}
+              material={materials["Material.026"]}
+            />
+          </RigidBody>
+        );
+      })}
     </Physics>
   );
-}
+};
 
 useGLTF.preload("/community-track.glb");

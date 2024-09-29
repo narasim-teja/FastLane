@@ -1,5 +1,3 @@
-import { on } from "events";
-
 import { tracked } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { z } from "zod";
@@ -10,12 +8,12 @@ import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { getLogger } from "~/lib/logger";
 
 import { fetchAllObstacles, revealObstaclesInRow } from "../helper";
-import { createRouter, publicProcedure } from "../trpc";
+import { createRouter, protectedProcedure } from "../trpc";
 
 const logger = getLogger();
 
-export const wsRouter = createRouter({
-  revealRow: publicProcedure
+export const singlePlayerRouter = createRouter({
+  revealRow: protectedProcedure
     .input(
       z.object({
         chainId: z.number(),
@@ -32,12 +30,15 @@ export const wsRouter = createRouter({
       }
     ),
 
-  onRevealRow: publicProcedure.subscription(async function* ({ ctx: { ee } }) {
+  onRevealRow: protectedProcedure.subscription(async function* ({
+    ctx: { ee },
+  }) {
     logger.info(">>>> observer running <<<<");
 
-    for await (const [data] of on(ee, "revealRow")) {
+    for await (const [data] of ee.toIterable("revealRow")) {
       const revealRowData = data as RevealRowData;
 
+      yield tracked(revealRowData.rowIdx.toString(), revealRowData);
       yield tracked(revealRowData.rowIdx.toString(), revealRowData);
     }
   }),
@@ -47,7 +48,7 @@ export const wsRouter = createRouter({
    * This subscription does not work in Next.js v14 with `fetchRequestHandler`.
    * Please use `onRevealRow` instead.
    */
-  _onRevealRow: publicProcedure.subscription(({ ctx: { ee } }) =>
+  _onRevealRow: protectedProcedure.subscription(({ ctx: { ee } }) =>
     observable<RevealRowData>((emit) => {
       logger.info(">>>> observer running <<<<");
 
@@ -63,7 +64,7 @@ export const wsRouter = createRouter({
     })
   ),
 
-  updateObstacles: publicProcedure.mutation(async ({ ctx: { ee } }) => {
+  updateObstacles: protectedProcedure.mutation(async ({ ctx: { ee } }) => {
     // 12 sec delay to allow for the blockchain to update
     await new Promise((resolve) => setTimeout(resolve, 12000));
 

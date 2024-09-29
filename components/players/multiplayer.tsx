@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useGLTF, useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
@@ -8,15 +8,19 @@ import * as THREE from "three";
 import type { RapierRigidBody } from "@react-three/rapier";
 
 import { useGame } from "~/hooks/use-game";
+import { api } from "~/lib/trpc/react";
 
-export function Multiplayer() {
+export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
   const { nodes, materials } = useGLTF("/marble.glb");
 
   const body = useRef<RapierRigidBody>(null);
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
+  const lastBroadcast = useRef(0);
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
+
+  const { mutate: broadcastPosition } = api.ws.broadcastPosition.useMutation();
 
   const { startGame, restartGame, isPaused } = useGame();
 
@@ -58,6 +62,7 @@ export function Multiplayer() {
 
     const { forward, backward, leftward, rightward } = getKeys();
     const bodyPosition = body.current.translation();
+    const bodyRotation = body.current.rotation();
 
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
@@ -118,6 +123,22 @@ export function Multiplayer() {
 
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedCameraTarget);
+
+    /* -----------------------------------------------------------------------------------------------
+     * broadcaster
+     * -----------------------------------------------------------------------------------------------*/
+
+    const currentTime = state.clock.elapsedTime;
+
+    // broadcast position every 0.5 seconds
+    if (currentTime - lastBroadcast.current > 0.5) {
+      broadcastPosition({
+        address,
+        position: bodyPosition,
+        rotation: bodyRotation,
+      });
+      lastBroadcast.current = currentTime;
+    }
   });
 
   return (
@@ -138,4 +159,4 @@ export function Multiplayer() {
       />
     </RigidBody>
   );
-}
+};

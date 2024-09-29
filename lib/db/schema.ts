@@ -17,3 +17,20 @@ export const waitlist = createTable(
     emailIdx: uniqueIndex("email_idx").on(table.email),
   })
 );
+
+// export const room = createTable(
+//   "room",
+//   {
+//     id: text("id").primaryKey(),
+//     name: text("name").notNull(),
+//     address: text("address").notNull(),
+//     createdAt: timestamp("created_at").defaultNow(),
+//     updatedAt: timestamp("updated_at", {
+//       mode: "date",
+//       precision: 3,
+//     }).$onUpdate(() => new Date()),
+//   },
+//   (table) => ({
+//     nameIdx: uniqueIndex("name_idx").on(table.name),
+//   })
+// );

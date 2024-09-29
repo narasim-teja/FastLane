@@ -13,6 +13,7 @@ import type {
 
 import { env } from "../env";
 import { thirdWebclient } from "../thirdweb/client";
+import { base64 } from "../utils";
 
 const thirdwebAuth = createAuth({
   domain: env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
@@ -37,7 +38,7 @@ export async function login(payload: VerifyLoginPayloadParams) {
   }
 }
 
-export async function isLoggedIn() {
+export async function isLoggedIn(address?: string) {
   const jwt = cookies().get("jwt");
   if (!jwt?.value) {
     return false;
@@ -47,10 +48,16 @@ export async function isLoggedIn() {
   if (!authResult.valid) {
     return false;
   }
+
+  if (address) {
+    cookies().set("address", base64.encode(address));
+  }
+
   return true;
 }
 
 export async function logout() {
   cookies().delete("jwt");
+  cookies().delete("address");
   redirect("/");
 }

@@ -6,20 +6,12 @@ import Link from "next/link";
 
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
-import type { Track } from "~/types/misc";
-
 import { cn } from "~/lib/utils";
 
 import { GradientBall1, GradientBall2 } from "./icons";
 import { Button } from "./ui/button";
 
-type CommunityTrack = {
-  name: string;
-  image: string;
-  slug: Track;
-};
-
-const communityTracks: CommunityTrack[] = [
+const communityTracks = [
   {
     name: "Oasis Track",
     image: "/images/oasis-logo.png",
