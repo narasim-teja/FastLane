@@ -17,6 +17,11 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
   const lastBroadcast = useRef(0);
+  const cameraAngleRef = useRef(0); // Angle in degrees
+  const prevKeyState = useRef({
+    leftward: false,
+    rightward: false,
+  }).current;
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
@@ -29,7 +34,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
       ({ phase }) => phase,
       (value) => {
         if (value === "ready" && body.current) {
-          // TODO: check for the wakeUp parameter
+          cameraAngleRef.current = 0; // Reset camera angle
           body.current.setTranslation({ x: 2, y: 1, z: 0 }, true);
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
           body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
@@ -50,12 +55,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
   useFrame((state, delta) => {
     if (!body.current) return;
 
-    /* -----------------------------------------------------------------------------------------------
-     * controls
-     * -----------------------------------------------------------------------------------------------*/
-
     if (isPaused) {
-      // optionally reset linear and angular velocity to 0 to stop all movement immediately
       body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
     }
@@ -64,62 +64,83 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
     const bodyPosition = body.current.translation();
     const bodyRotation = body.current.rotation();
 
-    const impulse = { x: 0, y: 0, z: 0 };
-    const torque = { x: 0, y: 0, z: 0 };
+    const impulseStrength = 0.5; // Adjust as needed
 
-    // define base impulse and torque strengths
-    const baseImpulseStrength = 0.5;
-    const baseTorqueStrength = 0.5;
-
-    // calculate impulse and torque strengths
-    const impulseStrength = baseImpulseStrength * 0.5;
-    const torqueStrength = baseTorqueStrength * 0.5;
-
-    if (forward) {
-      impulse.z -= impulseStrength;
-      torque.x -= torqueStrength;
+    // Handle camera rotation when leftward or rightward is first pressed and no movement keys are pressed
+    if (leftward && !prevKeyState.leftward && !forward && !backward) {
+      cameraAngleRef.current += 90; // Rotate camera 90 degrees to the left
+      if (cameraAngleRef.current >= 360) cameraAngleRef.current -= 360;
     }
 
-    if (rightward) {
-      impulse.x += impulseStrength;
-      torque.z -= torqueStrength;
+    if (rightward && !prevKeyState.rightward && !forward && !backward) {
+      cameraAngleRef.current -= 90; // Rotate camera 90 degrees to the right
+      if (cameraAngleRef.current < 0) cameraAngleRef.current += 360;
     }
 
-    if (backward) {
-      impulse.z += impulseStrength;
-      torque.x += torqueStrength;
-    }
+    // Update the previous key states
+    prevKeyState.leftward = leftward;
+    prevKeyState.rightward = rightward;
 
-    if (leftward) {
-      impulse.x -= impulseStrength;
-      torque.z += torqueStrength;
-    }
+    // Compute camera position and target
+    const cameraDistance = 10; // Adjust as needed
+    const cameraHeight = 3; // Adjust as needed
+    const cameraAngleRad = THREE.MathUtils.degToRad(cameraAngleRef.current);
 
-    // only apply impulse and torque if the player is not below the base level
-    if (!(bodyPosition.y < -0.5) && !isPaused) {
-      body.current.applyImpulse(impulse, true);
-      body.current.applyTorqueImpulse(torque, true);
-    }
+    const cameraOffset = new THREE.Vector3(
+      cameraDistance * Math.sin(cameraAngleRad),
+      cameraHeight,
+      cameraDistance * Math.cos(cameraAngleRad)
+    );
 
-    // restart the game if the player is below the base level
-    if (bodyPosition.y < -2) {
-      restartGame();
-    }
-
-    /* -----------------------------------------------------------------------------------------------
-     * camera
-     * -----------------------------------------------------------------------------------------------*/
     const cameraPosition = new THREE.Vector3();
-    cameraPosition.copy(bodyPosition);
-    cameraPosition.z += 10;
-    cameraPosition.y += 3;
+    cameraPosition.copy(bodyPosition).add(cameraOffset);
 
     const cameraTarget = new THREE.Vector3();
     cameraTarget.copy(bodyPosition);
     cameraTarget.y += 0.25;
 
-    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+    // Compute camera's forward and right vectors
+    const cameraForward = new THREE.Vector3();
+    cameraForward.subVectors(cameraTarget, cameraPosition).normalize();
+
+    const cameraRight = new THREE.Vector3();
+    cameraRight
+      .crossVectors(cameraForward, new THREE.Vector3(0, 1, 0))
+      .normalize();
+
+    // Adjust movement controls to be relative to the camera
+    const impulse = new THREE.Vector3();
+
+    if (forward) {
+      impulse.add(cameraForward.clone().multiplyScalar(impulseStrength));
+    }
+
+    if (backward) {
+      impulse.add(cameraForward.clone().multiplyScalar(-impulseStrength));
+    }
+
+    if (leftward && (forward || backward)) {
+      impulse.add(cameraRight.clone().multiplyScalar(-impulseStrength));
+    }
+
+    if (rightward && (forward || backward)) {
+      impulse.add(cameraRight.clone().multiplyScalar(impulseStrength));
+    }
+
+    // Apply impulses
+    if (!(bodyPosition.y < -0.5) && !isPaused) {
+      body.current.applyImpulse(impulse, true);
+      // Apply torque if needed
+    }
+
+    // Restart the game if the player is below the base level
+    if (bodyPosition.y < -2) {
+      restartGame();
+    }
+
+    // Smoothly interpolate the camera position and target
+    smoothedCameraPosition.lerp(cameraPosition, 2 * delta);
+    smoothedCameraTarget.lerp(cameraTarget, 2 * delta);
 
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedCameraTarget);
