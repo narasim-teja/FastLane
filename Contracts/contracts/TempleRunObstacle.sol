@@ -35,11 +35,11 @@ contract Fastlane is Ownable{
         _;
     }*/
 
-    modifier noSuccessiveCheckpoints() {
-        if (senderCheckpointNumbers[msg.sender].length > 0) {
+    modifier noSuccessiveCheckpoints(address player) {
+        if (senderCheckpointNumbers[player].length > 0) {
             require(
-                senderCheckpointNumbers[msg.sender][
-                    senderCheckpointNumbers[msg.sender].length - 1
+                senderCheckpointNumbers[player][
+                    senderCheckpointNumbers[player].length - 1
                 ] != checkpointCounter - 1,
                 "Cannot create two successive checkpoints"
             );
@@ -47,8 +47,8 @@ contract Fastlane is Ownable{
         _;
     }
 
-    modifier onlyDuringSession() {
-        require(activeSessions[msg.sender], "No active session");
+    modifier onlyDuringSession(address player) {
+        require(activeSessions[player], "No active session");
         require(
             block.timestamp <= sessionStartTime[msg.sender] + SESSION_DURATION,
             "Session has expired"
@@ -69,7 +69,6 @@ contract Fastlane is Ownable{
         // Initialize session
         sessionStartTime[msg.sender] = block.timestamp;
         activeSessions[msg.sender] = true;
-        playerCurrentCheckpoint[msg.sender] = 0;
 
         // Transfer the entry fee to the current latest checkpoint owner
         payable(currentLatestCheckpointOwner).transfer(msg.value);
@@ -80,10 +79,11 @@ contract Fastlane is Ownable{
     }
 
     // Function to add a new segment of obstacles to the chain with checkpoint ownership
-    function addSegment(uint256[] memory obstacleIds)
+    function addSegment(uint256[] memory obstacleIds, address player)
+        onlyOwner
+        noSuccessiveCheckpoints(player)
+        onlyDuringSession(player)
         public
-        noSuccessiveCheckpoints
-        onlyDuringSession
     {
         require(
             obstacleIds.length == 50,
@@ -153,7 +153,7 @@ contract Fastlane is Ownable{
     function getObstaclesInRow(uint256 rowIndex)
         public
         view
-        onlyDuringSession
+        //onlyDuringSession
         returns (uint256[] memory)
     {
         require(rowIndex < getRowCount(), "Row index out of bounds");
@@ -186,10 +186,11 @@ contract Fastlane is Ownable{
     }
 
     // Function to end the game session for a player
-    function endGame() public onlyDuringSession returns(bool) {
+    function endGame() public onlyDuringSession(msg.sender) returns(bool) {
         if(block.timestamp < sessionStartTime[msg.sender] + SESSION_DURATION){
             return false;
         }
+
         activeSessions[msg.sender] = false;
         emit GameEnded(msg.sender, block.timestamp); // Emit event when a game session ends
         return true;
