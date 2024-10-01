@@ -26,6 +26,8 @@ contract Fastlane is Ownable{
     event EntryFeePaid(address indexed player, uint256 amount);
     event GameEnded(address indexed player, uint256 endTime);
 
+    error InvalidRow();
+
     // Modifiers
    /*modifier onlyCheckpointOwner() {
         require(
@@ -35,11 +37,11 @@ contract Fastlane is Ownable{
         _;
     }*/
 
-    modifier noSuccessiveCheckpoints(address player) {
-        if (senderCheckpointNumbers[player].length > 0) {
+    modifier noSuccessiveCheckpoints() {
+        if (senderCheckpointNumbers[msg.sender].length > 0) {
             require(
-                senderCheckpointNumbers[player][
-                    senderCheckpointNumbers[player].length - 1
+                senderCheckpointNumbers[msg.sender][
+                    senderCheckpointNumbers[msg.sender].length - 1
                 ] != checkpointCounter - 1,
                 "Cannot create two successive checkpoints"
             );
@@ -47,8 +49,8 @@ contract Fastlane is Ownable{
         _;
     }
 
-    modifier onlyDuringSession(address player) {
-        require(activeSessions[player], "No active session");
+    modifier onlyDuringSession() {
+        require(activeSessions[msg.sender], "No active session");
         require(
             block.timestamp <= sessionStartTime[msg.sender] + SESSION_DURATION,
             "Session has expired"
@@ -65,6 +67,7 @@ contract Fastlane is Ownable{
     function startGame() public payable returns(uint256) {
         require(msg.value == ENTRY_FEE, "Incorrect entry fee");
         require(endGame(), "Session error");
+        require(checkpointCounter > 0, "No checkpoints created yet!");
 
         // Initialize session
         sessionStartTime[msg.sender] = block.timestamp;
@@ -79,16 +82,16 @@ contract Fastlane is Ownable{
     }
 
     // Function to add a new segment of obstacles to the chain with checkpoint ownership
-    function addSegment(uint256[] memory obstacleIds, address player)
-        onlyOwner
-        noSuccessiveCheckpoints(player)
-        onlyDuringSession(player)
+    function addSegment(uint256[] memory obstacleIds)
+        noSuccessiveCheckpoints()
+        onlyDuringSession()
         public
     {
         require(
             obstacleIds.length == 50,
             "Incorrect number of obstacle IDs provided."
         );
+        require(playerCurrentCheckpoint[msg.sender] == checkpointCounter, "Player didn't reach the final check point yet!");
 
         for (uint256 i = 0; i < obstacleIds.length; i += 5) {
             uint256[] memory row = new uint256[](5);
@@ -102,10 +105,9 @@ contract Fastlane is Ownable{
         checkpointNumberOwner[checkpointCounter] = msg.sender;
         senderCheckpointNumbers[msg.sender].push(checkpointCounter);
         currentLatestCheckpointOwner = msg.sender;
+        checkpointCounter++;
 
         emit CheckpointCreated(msg.sender, checkpointCounter);
-
-        checkpointCounter++;
     }
 
     // Internal function to add a row of obstacles to the chain's obstacle list
@@ -120,14 +122,58 @@ contract Fastlane is Ownable{
         chainObstacles.push(obstacleId);
     }
 
-    // Function to get the game state for a player
+    // Function to allow players to view obstacles (requires view call authentication)
+    function getObstaclesInRow(uint256 rowIndex)
+        public
+        view
+        onlyDuringSession
+        returns (uint256[] memory)
+    {
+        require(rowIndex < getRowCount(), "Row index out of bounds");
+        uint256[] memory obstaclesInRow = new uint256[](COLUMNS);
+        for (uint256 i = 0; i < COLUMNS; i++) {
+            uint256 index = rowIndex * COLUMNS + i;
+            if (index < chainObstacles.length) {
+                obstaclesInRow[i] = chainObstacles[index];
+            } else {
+               revert InvalidRow();
+            }
+        }
+        return obstaclesInRow;
+    }
+
+    // Function to update the player's current checkpoint
+    function updatePlayerCheckpoint(address player, uint256 checkpointNumber)
+        external
+        onlyOwner
+    {
+        require(checkpointNumber <= checkpointCounter, "Invalid checkpoint number");
+        require(playerCurrentCheckpoint[player] == checkpointNumber - 1, "Checkpoints mismatch");
+
+        playerCurrentCheckpoint[player] = checkpointNumber;
+        emit PlayerCheckpointUpdated(player, checkpointNumber);
+    }
+
+    // Function to get the number of rows of obstacles stored for a chain
+    function getRowCount() public view returns (uint256) {
+        uint256 length = chainObstacles.length;
+        return (length + COLUMNS - 1) / COLUMNS;
+    }
+
+    // Function to end the game session for a player
+    function endGame() public onlyDuringSession() returns(bool) {
+        activeSessions[msg.sender] = false;
+        emit GameEnded(msg.sender, block.timestamp); // Emit event when a game session ends
+        return true;
+    }
+
+     // Function to get the game state for a player
     function getGameState(address player)
         public
         view
         returns (
             bool isActive,
-            uint256 timeRemaining,
-            uint256 winnings
+            uint256 timeRemaining
         )
     {
         isActive = activeSessions[player];
@@ -141,59 +187,6 @@ contract Fastlane is Ownable{
         } else {
             timeRemaining = 0;
         }
-
-        if (checkpointCounter > 0 && checkpointNumberOwner[checkpointCounter - 1] == player) {
-            winnings = address(this).balance;
-        } else {
-            winnings = 0;
-        }
-    }
-
-    // Function to allow players to view obstacles (requires view call authentication)
-    function getObstaclesInRow(uint256 rowIndex)
-        public
-        view
-        //onlyDuringSession
-        returns (uint256[] memory)
-    {
-        require(rowIndex < getRowCount(), "Row index out of bounds");
-        uint256[] memory obstaclesInRow = new uint256[](COLUMNS);
-        for (uint256 i = 0; i < COLUMNS; i++) {
-            uint256 index = rowIndex * COLUMNS + i;
-            if (index < chainObstacles.length) {
-                obstaclesInRow[i] = chainObstacles[index];
-            } else {
-                obstaclesInRow[i] = 0; // or handle as appropriate
-            }
-        }
-        return obstaclesInRow;
-    }
-
-    // Function to update the player's current checkpoint
-    function updatePlayerCheckpoint(address player, uint256 checkpointNumber)
-        external
-        onlyOwner
-    {
-        require(checkpointNumber <= checkpointCounter, "Invalid checkpoint number");
-        playerCurrentCheckpoint[player] = checkpointNumber;
-        emit PlayerCheckpointUpdated(player, checkpointNumber);
-    }
-
-    // Function to get the number of rows of obstacles stored for a chain
-    function getRowCount() public view returns (uint256) {
-        uint256 length = chainObstacles.length;
-        return (length + COLUMNS - 1) / COLUMNS;
-    }
-
-    // Function to end the game session for a player
-    function endGame() public onlyDuringSession(msg.sender) returns(bool) {
-        if(block.timestamp < sessionStartTime[msg.sender] + SESSION_DURATION){
-            return false;
-        }
-
-        activeSessions[msg.sender] = false;
-        emit GameEnded(msg.sender, block.timestamp); // Emit event when a game session ends
-        return true;
     }
 
     function setEntryFee(uint256 newFee) external onlyOwner {
