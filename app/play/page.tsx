@@ -26,7 +26,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
   const address = base64.decode(cookies().get("address")?.value ?? "");
 
   return (
-    <View className="h-dvh w-dvw">
+    <View className="h-dvh w-dvw bg-background">
       <Common />
 
       {track === "gold" && <GoldTrack />}

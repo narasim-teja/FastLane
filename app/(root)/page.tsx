@@ -15,7 +15,7 @@ export default function LandingPage() {
         <Image
           priority
           loading="eager"
-          src="/planet.png"
+          src="/images/planet.png"
           alt={`${siteConfig.name} background planet`}
           height={1000}
           width={1000}

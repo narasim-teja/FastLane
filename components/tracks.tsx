@@ -16,7 +16,7 @@ export function Tracks() {
         <h3 className="p-2 text-sm text-[#D09500]">GOLD</h3>
         <Image
           loading="eager"
-          src="/gold-coin.png"
+          src="/images/gold-coin.png"
           alt={`${siteConfig.name} Gold Track`}
           height={600}
           width={600}
@@ -24,7 +24,7 @@ export function Tracks() {
         />
         <Image
           loading="eager"
-          src="/gold-coin.png"
+          src="/images/gold-coin.png"
           alt={`${siteConfig.name} Gold Track`}
           height={600}
           width={600}
@@ -32,7 +32,7 @@ export function Tracks() {
         />
         <Image
           loading="eager"
-          src="/gold-coin.png"
+          src="/images/gold-coin.png"
           alt={`${siteConfig.name} Gold Track`}
           height={600}
           width={600}
@@ -52,7 +52,7 @@ export function Tracks() {
         <h3 className="p-2 text-sm text-[#C2C2C2]">ETH</h3>
         <Image
           loading="eager"
-          src="/eth-coin.png"
+          src="/images/eth-coin.png"
           alt={`${siteConfig.name} Eth Track`}
           height={600}
           width={600}
@@ -60,7 +60,7 @@ export function Tracks() {
         />
         <Image
           loading="eager"
-          src="/eth-coin.png"
+          src="/images/eth-coin.png"
           alt={`${siteConfig.name} Eth Track`}
           height={600}
           width={600}
@@ -68,7 +68,7 @@ export function Tracks() {
         />
         <Image
           loading="eager"
-          src="/eth-coin.png"
+          src="/images/eth-coin.png"
           alt={`${siteConfig.name} Eth Track`}
           height={600}
           width={600}

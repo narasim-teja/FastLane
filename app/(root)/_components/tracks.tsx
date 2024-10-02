@@ -19,7 +19,7 @@ export function Tracks() {
           <h3 className="p-2 text-sm text-[#D09500]">GOLD</h3>
           <Image
             loading="eager"
-            src="/gold-coin.png"
+            src="/images/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
             height={600}
             width={600}
@@ -27,7 +27,7 @@ export function Tracks() {
           />
           <Image
             loading="eager"
-            src="/gold-coin.png"
+            src="/images/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
             height={600}
             width={600}
@@ -35,7 +35,7 @@ export function Tracks() {
           />
           <Image
             loading="eager"
-            src="/gold-coin.png"
+            src="/images/gold-coin.png"
             alt={`${siteConfig.name} Gold Track`}
             height={600}
             width={600}
@@ -55,7 +55,7 @@ export function Tracks() {
           <h3 className="p-2 text-sm text-[#C2C2C2]">ETH</h3>
           <Image
             loading="eager"
-            src="/eth-coin.png"
+            src="/images/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
             height={600}
             width={600}
@@ -63,7 +63,7 @@ export function Tracks() {
           />
           <Image
             loading="eager"
-            src="/eth-coin.png"
+            src="/images/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
             height={600}
             width={600}
@@ -71,7 +71,7 @@ export function Tracks() {
           />
           <Image
             loading="eager"
-            src="/eth-coin.png"
+            src="/images/eth-coin.png"
             alt={`${siteConfig.name} Eth Track`}
             height={600}
             width={600}
@@ -92,7 +92,7 @@ export function Tracks() {
           </h3>
           <Image
             loading="eager"
-            src="/gradient-ball-2.png"
+            src="/images/gradient-ball-2.png"
             alt={`${siteConfig.name} Community Track`}
             height={600}
             width={600}
@@ -100,7 +100,7 @@ export function Tracks() {
           />
           <Image
             loading="eager"
-            src="/gradient-ball-1.png"
+            src="/images/gradient-ball-1.png"
             alt=""
             height={600}
             width={600}
@@ -118,7 +118,7 @@ export function Tracks() {
 
       <Image
         loading="eager"
-        src="/ellipse.png"
+        src="/images/ellipse.png"
         alt={`${siteConfig.name} ellipse`}
         height={960}
         width={960}

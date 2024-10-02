@@ -9,7 +9,7 @@ export default function NotFoundPage() {
       <Navbar />
 
       <Image
-        src="/404_bg.png"
+        src="/images/404_bg.png"
         alt="404 - Not Found"
         fill
         className="-z-20 object-cover"

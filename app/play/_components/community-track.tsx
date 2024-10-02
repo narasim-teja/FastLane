@@ -17,7 +17,7 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
   address,
   ...props
 }) => {
-  const { nodes, materials } = useGLTF("/community-track.glb");
+  const { nodes, materials } = useGLTF("/models/community-track.glb");
 
   const { debugPhysics } = useControls("Debug Tools", {
     debugPhysics: false,
@@ -187,6 +187,7 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
             angularDamping={0.5}
             position={[position.x, position.y, position.z]}
             rotation={[rotation.x, rotation.y, rotation.z]}
+            scale={0.9}
           >
             <mesh
               // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
@@ -200,4 +201,4 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
   );
 };
 
-useGLTF.preload("/community-track.glb");
+useGLTF.preload("/models/community-track.glb");

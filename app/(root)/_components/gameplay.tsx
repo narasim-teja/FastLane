@@ -82,7 +82,7 @@ export const Gameplay: React.FC<{ from: "signin" | "landing" }> = ({
               )}
             >
               <video
-                src="/gameplay.mp4"
+                src="/videos/gameplay.mp4"
                 preload="auto"
                 playsInline
                 autoPlay

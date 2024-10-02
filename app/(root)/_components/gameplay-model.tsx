@@ -12,7 +12,7 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
   const group = React.useRef<THREE.Group>(null);
   const light = React.useRef<THREE.DirectionalLight>(null);
 
-  const { nodes, materials, animations } = useGLTF("/gameplay.glb");
+  const { nodes, materials, animations } = useGLTF("/models/gameplay.glb");
   const { actions, names } = useAnimations(animations, group);
 
   useFrame((state) => {
@@ -435,4 +435,4 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
   );
 };
 
-useGLTF.preload("/gameplay.glb");
+useGLTF.preload("/models/gameplay.glb");

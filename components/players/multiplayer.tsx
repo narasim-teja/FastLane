@@ -11,12 +11,13 @@ import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
 
 export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
-  const { nodes, materials } = useGLTF("/marble.glb");
+  const { nodes, materials } = useGLTF("/models/marble.glb");
 
   const body = useRef<RapierRigidBody>(null);
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
   const lastBroadcast = useRef(0);
+  const lastPlayerMovement = useRef(0);
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
@@ -39,6 +40,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
 
     const unsubscribeKeys = subscribeKeys(() => {
       startGame();
+      lastPlayerMovement.current = Date.now();
     });
 
     return () => {
@@ -140,10 +142,13 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
      * broadcaster
      * -----------------------------------------------------------------------------------------------*/
 
-    const currentTime = state.clock.elapsedTime;
+    const currentTime = Date.now();
 
-    // broadcast position every 0.5 seconds
-    if (currentTime - lastBroadcast.current > 0.5) {
+    // broadcast position every 2, dont broadcast if the player has moved since last 10 seconds
+    if (
+      currentTime - lastBroadcast.current > 20 &&
+      currentTime - lastPlayerMovement.current < 10 * 1000
+    ) {
       broadcastPosition({
         address,
         position: bodyPosition,
@@ -172,3 +177,5 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
     </RigidBody>
   );
 };
+
+useGLTF.preload("/models/marble.glb");
