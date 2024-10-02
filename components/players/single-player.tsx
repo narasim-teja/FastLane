@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Html, useKeyboardControls, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -20,7 +20,7 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
 
-export function Player() {
+export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
   const logger = getLogger();
 
   const { gl } = useThree();
@@ -58,7 +58,7 @@ export function Player() {
     spawnCheckpoint,
   } = useGame();
 
-  const playerPosition = -(spawnCheckpoint * 50) + 2.5;
+  const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 2.5);
 
   // useEffect(() => {const TIME_LIMIT = 10; // in seconds
 
@@ -85,7 +85,10 @@ export function Player() {
       (value) => {
         if (value === "ready" && body.current) {
           // TODO: check for the wakeUp parameter
-          body.current.setTranslation({ x: 2, y: 1, z: playerPosition }, true);
+          body.current.setTranslation(
+            { x: from === "gold" ? 0 : 2, y: 1, z: playerPosition },
+            true
+          );
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
           body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
         }
@@ -100,7 +103,7 @@ export function Player() {
       unsubscribeReset();
       unsubscribeKeys();
     };
-  }, [startGame, subscribeKeys, playerPosition]);
+  }, [startGame, subscribeKeys, playerPosition, from]);
 
   useFrame((state, delta) => {
     if (!body.current) return;
@@ -534,7 +537,7 @@ export function Player() {
         friction={1}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[2, 1, playerPosition]}
+        position={[from === "gold" ? 0 : 2, 1, playerPosition]}
       >
         {/* <primitive object={ball} scale={0.005} /> */}
 
@@ -545,4 +548,4 @@ export function Player() {
       </RigidBody>
     </>
   );
-}
+};

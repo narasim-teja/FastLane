@@ -9,6 +9,7 @@ import { Spinner } from "~/components/spinner";
 import { base64 } from "~/lib/utils";
 
 import Common from "./_components/common";
+import { EthTrack } from "./_components/eth-track";
 import { GoldTrack } from "./_components/gold-track";
 
 const View = dynamic(() => import("~/components/canvas/view"), {
@@ -30,7 +31,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
       <Common />
 
       {track === "gold" && <GoldTrack />}
-      {track === "eth" && <GoldTrack />}
+      {track === "eth" && <EthTrack />}
       {track === "oasis-track" && <CommunityTrack address={address} />}
     </View>
   );

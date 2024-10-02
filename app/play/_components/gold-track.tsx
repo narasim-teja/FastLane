@@ -6,10 +6,10 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
-import { BlockEnd, BlockStart } from "~/components/block";
-import { Bounds } from "~/components/bounds";
+import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
-import { Player } from "~/components/players/single-player";
+import { SinglePlayer } from "~/components/players/single-player";
+import { Track } from "~/components/track";
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
@@ -29,7 +29,6 @@ export function GoldTrack() {
     setRowCount,
     segments,
     addObstaclesRow,
-    toggleEditor,
     spawnCheckpoint,
     // ...
   } = useGame();
@@ -69,17 +68,6 @@ export function GoldTrack() {
     );
   }
 
-  // Function to generate BlockEnd components at intervals
-  const generateBlockEnds = () => {
-    const blockEnds = [];
-    for (let i = 50; i <= rowCount * 5; i += 50) {
-      blockEnds.push(
-        <BlockEnd key={i} position={[0, 0.05, -i]} checkpoint={i / 50 + 1} />
-      );
-    }
-    return blockEnds;
-  };
-
   return (
     <Physics debug={debugPhysics}>
       {segments.map(({ obstacles }, i) => {
@@ -99,32 +87,35 @@ export function GoldTrack() {
                   key={`${i}-${j}`}
                   id={obstacle.toString()}
                   row={row}
-                  col={col}
+                  col={col - 1}
                 />
               );
             })}
 
-            <BlockStart
-              //  position={[2, 0.1, 7]}
-              position={[2, 0, 2]}
-            />
-            {generateBlockEnds()}
-            <Bounds
-              length={rowCount}
-              rowCount={rowCount}
-              onCollison={() => {
-                if (i === segments.length - 1) {
-                  logger.info(">>> Opening editor...");
-                  toggleEditor(true);
-                }
-              }}
-            />
+            <GoldStartingBlock position={[0, 0, 2]} />
+            {(() => {
+              const blockEnds = [];
+              for (let i = 50; i <= rowCount * 5; i += 50) {
+                blockEnds.push(
+                  <GoldBlockEnd
+                    key={i}
+                    position={[0, 0, -i]}
+                    checkpoint={i / 50 + 1}
+                  />
+                );
+              }
+              return blockEnds;
+            })()}
+
+            {Array.from({ length: rowCount }, (_, i) => (
+              <Track key={i} length={rowCount} row={i} />
+            ))}
             <Environment preset="dawn" background />
           </group>
         );
       })}
 
-      <Player />
+      <SinglePlayer from="gold" />
     </Physics>
   );
 }
