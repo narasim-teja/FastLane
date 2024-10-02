@@ -66,9 +66,12 @@ contract Fastlane is Ownable{
     // Function to start a game session
     function startGame() public payable returns(uint256) {
         require(msg.value == ENTRY_FEE, "Incorrect entry fee");
-        require(endGame(), "Session error");
-        require(checkpointCounter > 0, "No checkpoints created yet!");
-
+        if(activeSessions[msg.sender]){
+            require(
+            block.timestamp <= sessionStartTime[msg.sender] + SESSION_DURATION,
+            "Session has expired"
+            );
+        }
         // Initialize session
         sessionStartTime[msg.sender] = block.timestamp;
         activeSessions[msg.sender] = true;
@@ -149,6 +152,7 @@ contract Fastlane is Ownable{
     {
         require(checkpointNumber <= checkpointCounter, "Invalid checkpoint number");
         require(playerCurrentCheckpoint[player] == checkpointNumber - 1, "Checkpoints mismatch");
+        require(checkpointCounter > 0, "No checkpoints created yet!");
 
         playerCurrentCheckpoint[player] = checkpointNumber;
         emit PlayerCheckpointUpdated(player, checkpointNumber);
