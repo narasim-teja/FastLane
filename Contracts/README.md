@@ -1,39 +1,66 @@
-### 1. Compile the Smart Contract
+## Foundry
 
-To compile the Minesweeper smart contract, run:
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-```bash
-bun hardhat compile
+Foundry consists of:
+
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+
+## Documentation
+
+https://book.getfoundry.sh/
+
+## Usage
+
+### Build
+
+```shell
+$ forge build
 ```
 
-This will compile the Solidity contract and generate the necessary ABI files.
+### Test
 
-### 2. Deploy the Smart Contract
-
-To deploy the contract to the Oasis Sapphire testnet, use the following command:
-
-```bash
-bun hardhat run "Path"/scripts/deploy.js --network sapphire-testnet
+```shell
+$ forge test
 ```
 
-After successful deployment, the console will output the contract address. Copy this address and update your `.env` file:
+### Format
 
-### 3. Interacting with the Contract
-
-Now that your contract is deployed, you can start interacting with it using various scripts.
-
-#### 3.1 Start a Game
-
-To start a new game, run the `startGame.ts` script:
-
-```bash
-bun hardhat run "Path"/scripts/startGame.js --network sapphire-testnet
+```shell
+$ forge fmt
 ```
 
-#### 3.2 Get Game State
+### Gas Snapshots
 
-To start a new game, run the `getGameState.ts` script:
+```shell
+$ forge snapshot
+```
 
-```bash
-bun hardhat run "Path"/scripts/getGameState.js --network sapphire-testnet
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
 ```
