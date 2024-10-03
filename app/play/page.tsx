@@ -4,13 +4,13 @@ import { cookies } from "next/headers";
 
 import type { Track } from "~/types/misc";
 
-import { CommunityTrack } from "~/app/play/_components/community-track";
 import { Spinner } from "~/components/spinner";
+import { EthTrack } from "~/components/tracks/eth-track";
+import { GoldTrack } from "~/components/tracks/gold-track";
+import { CommunityTrack } from "~/components/tracks/oasis-community-track";
 import { base64 } from "~/lib/utils";
 
 import Common from "./_components/common";
-import { EthTrack } from "./_components/eth-track";
-import { GoldTrack } from "./_components/gold-track";
 
 const View = dynamic(() => import("~/components/canvas/view"), {
   ssr: false,

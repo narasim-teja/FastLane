@@ -16,6 +16,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
   const body = useRef<RapierRigidBody>(null);
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
+  const cameraAngle = useRef(0);
   const lastBroadcast = useRef(0);
   const lastPlayerMovement = useRef(0);
 
@@ -30,7 +31,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
       ({ phase }) => phase,
       (value) => {
         if (value === "ready" && body.current) {
-          // TODO: check for the wakeUp parameter
+          cameraAngle.current = 0;
           body.current.setTranslation({ x: 2, y: 1, z: 0 }, true);
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
           body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
@@ -52,55 +53,83 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
   useFrame((state, delta) => {
     if (!body.current) return;
 
-    /* -----------------------------------------------------------------------------------------------
-     * controls
-     * -----------------------------------------------------------------------------------------------*/
-
     if (isPaused) {
-      // optionally reset linear and angular velocity to 0 to stop all movement immediately
       body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      return;
     }
 
-    const { forward, backward, leftward, rightward } = getKeys();
+    const { forward, backward, leftward, rightward, jump, panLeft, panRight } =
+      getKeys();
     const bodyPosition = body.current.translation();
     const bodyRotation = body.current.rotation();
 
-    const impulse = { x: 0, y: 0, z: 0 };
-    const torque = { x: 0, y: 0, z: 0 };
+    const impulseStrength = 0.5;
 
-    // define base impulse and torque strengths
-    const baseImpulseStrength = 0.5;
-    const baseTorqueStrength = 0.5;
+    // compute camera position and target
+    const cameraDistance = 10;
+    const cameraHeight = 3;
+    const cameraAngleRad = THREE.MathUtils.degToRad(cameraAngle.current);
 
-    // calculate impulse and torque strengths
-    const impulseStrength = baseImpulseStrength * 0.5;
-    const torqueStrength = baseTorqueStrength * 0.5;
+    const cameraOffset = new THREE.Vector3(
+      cameraDistance * Math.sin(cameraAngleRad),
+      cameraHeight,
+      cameraDistance * Math.cos(cameraAngleRad)
+    );
+
+    const cameraPosition = new THREE.Vector3();
+    cameraPosition.copy(bodyPosition).add(cameraOffset);
+
+    const cameraTarget = new THREE.Vector3();
+    cameraTarget.copy(bodyPosition);
+    cameraTarget.y += 0.25;
+
+    // compute camera's forward and right vectors
+    const cameraForward = new THREE.Vector3();
+    cameraForward.subVectors(cameraTarget, cameraPosition).normalize();
+    cameraForward.y = 0;
+
+    const cameraRight = new THREE.Vector3();
+    cameraRight
+      .crossVectors(cameraForward, new THREE.Vector3(0, 1, 0))
+      .normalize();
+
+    // adjust movement controls to be relative to the camera
+    const impulse = new THREE.Vector3();
 
     if (forward) {
-      impulse.z -= impulseStrength;
-      torque.x -= torqueStrength;
-    }
-
-    if (rightward) {
-      impulse.x += impulseStrength;
-      torque.z -= torqueStrength;
+      impulse.addScaledVector(cameraForward, impulseStrength);
     }
 
     if (backward) {
-      impulse.z += impulseStrength;
-      torque.x += torqueStrength;
+      impulse.addScaledVector(cameraForward, -impulseStrength);
     }
 
     if (leftward) {
-      impulse.x -= impulseStrength;
-      torque.z += torqueStrength;
+      impulse.addScaledVector(cameraRight, -impulseStrength);
+    }
+
+    if (rightward) {
+      impulse.addScaledVector(cameraRight, impulseStrength);
+    }
+
+    if (jump && bodyPosition.y <= 2.25) {
+      impulse.y += 2;
+    }
+
+    if (panLeft) {
+      cameraAngle.current += 1;
+      if (cameraAngle.current >= 360) cameraAngle.current -= 360;
+    }
+
+    if (panRight) {
+      cameraAngle.current -= 1;
+      if (cameraAngle.current < 0) cameraAngle.current += 360;
     }
 
     // only apply impulse and torque if the player is not below the base level
-    if (!(bodyPosition.y < -0.5) && !isPaused) {
+    if (!(bodyPosition.y < -0.5)) {
       body.current.applyImpulse(impulse, true);
-      body.current.applyTorqueImpulse(torque, true);
     }
 
     // restart the game if the player is below the base level
@@ -108,30 +137,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
       restartGame();
     }
 
-    /* -----------------------------------------------------------------------------------------------
-     * camera
-     * -----------------------------------------------------------------------------------------------*/
-    const cameraPosition = new THREE.Vector3();
-    cameraPosition.copy(bodyPosition);
-    cameraPosition.z += 10;
-    cameraPosition.y += 3;
-
-    const cameraTarget = new THREE.Vector3();
-    cameraTarget.copy(bodyPosition);
-    cameraTarget.y += 0.25;
-
-    if (leftward) {
-      cameraPosition.x += 10;
-      cameraPosition.z -= 10;
-      cameraTarget.x -= 20;
-    }
-
-    if (rightward) {
-      cameraPosition.x -= 10;
-      cameraPosition.z -= 10;
-      cameraTarget.x += 20;
-    }
-
+    // Smoothly interpolate the camera position and target
     smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
     smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
@@ -177,5 +183,3 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
     </RigidBody>
   );
 };
-
-useGLTF.preload("/models/marble.glb");

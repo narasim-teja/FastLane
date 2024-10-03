@@ -9,6 +9,9 @@ export enum Controls {
   back = "backward",
   left = "leftward",
   right = "rightward",
+  jump = "jump",
+  panLeft = "panLeft",
+  panRight = "panRight",
 }
 
 export const KeyboardControls = ({ children }: React.PropsWithChildren) => (
@@ -18,6 +21,9 @@ export const KeyboardControls = ({ children }: React.PropsWithChildren) => (
       { name: Controls.back, keys: ["ArrowDown", "KeyS"] },
       { name: Controls.left, keys: ["ArrowLeft", "KeyA"] },
       { name: Controls.right, keys: ["ArrowRight", "KeyD"] },
+      { name: Controls.jump, keys: ["Space"] },
+      { name: Controls.panLeft, keys: ["KeyZ"] },
+      { name: Controls.panRight, keys: ["KeyX"] },
     ]}
   >
     {children}
