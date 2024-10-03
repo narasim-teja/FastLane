@@ -67,10 +67,7 @@ contract Fastlane is Ownable{
     function startGame() public payable returns(uint256) {
         require(msg.value == ENTRY_FEE, "Incorrect entry fee");
         if(activeSessions[msg.sender]){
-            require(
-            block.timestamp <= sessionStartTime[msg.sender] + SESSION_DURATION,
-            "Session has expired"
-            );
+            endGame();
         }
         // Initialize session
         sessionStartTime[msg.sender] = block.timestamp;
@@ -165,7 +162,12 @@ contract Fastlane is Ownable{
     }
 
     // Function to end the game session for a player
-    function endGame() public onlyDuringSession() returns(bool) {
+    function endGame() public returns(bool) {
+        require(activeSessions[msg.sender], "No active session");
+        require(
+            block.timestamp > sessionStartTime[msg.sender] + SESSION_DURATION,
+            "Session has not expired"
+            );
         activeSessions[msg.sender] = false;
         emit GameEnded(msg.sender, block.timestamp); // Emit event when a game session ends
         return true;

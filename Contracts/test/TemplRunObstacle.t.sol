@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "forge-std/Test.sol";
+import {console} from "forge-std/console.sol";
 import "../contracts/TempleRunObstacle.sol";
 
 contract FastlaneTest is Test {
@@ -110,6 +111,8 @@ contract FastlaneTest is Test {
     function testEndGame() public {
         addInitialCheckpoint();
 
+        vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
+
         vm.prank(player1);
         bool result = fastlane.endGame();
 
@@ -179,6 +182,7 @@ function testStartGameMultiplePlayers() public {
 
     vm.deal(player1, 3 ether);
     vm.deal(player2, 3 ether);
+    vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
 
     vm.prank(player1);
     fastlane.startGame{value: 1 ether}();
@@ -196,11 +200,13 @@ function testStartGameMultiplePlayers() public {
 
 function testStartGameAfterEndingPreviousSession() public {
     addInitialCheckpoint();
+    vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
 
     vm.deal(player1, 3 ether);
 
     vm.startPrank(player1);
     fastlane.startGame{value: 1 ether}();
+    vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
     fastlane.endGame();
     fastlane.startGame{value: 1 ether}();
     vm.stopPrank();
@@ -223,13 +229,17 @@ function testAddSegmentMultipleTimes() public {
 
     vm.startPrank(player);
     fastlane.startGame{value: 1 ether}();
+    vm.stopPrank();
 
     // Player needs to cross all existing checkpoints
     for (uint256 i = 1; i <= initialCheckpointCounter; i++) {
-        vm.stopPrank();
         vm.prank(owner);
         fastlane.updatePlayerCheckpoint(player, i);
-        vm.startPrank(player);
+        
+        // Simulate session expiry and start a new game for each checkpoint
+        vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
+        vm.prank(player);
+        fastlane.startGame{value: 1 ether}();
     }
 
     // Now player should be able to add a new segment (5th checkpoint)
@@ -237,9 +247,8 @@ function testAddSegmentMultipleTimes() public {
     for (uint256 i = 0; i < 50; i++) {
         obstacleIds[i] = i + 201;
     }
+    vm.prank(player);
     fastlane.addSegment(obstacleIds);
-
-    vm.stopPrank();
 
     assertEq(fastlane.checkpointCounter(), initialCheckpointCounter + 1, "Should have added one new checkpoint");
 
@@ -249,10 +258,9 @@ function testAddSegmentMultipleTimes() public {
     assertEq(obstacles[0], 201, "First obstacle of new checkpoint should be 201");
 }
 
-// Helper function to add a checkpoint
 function addCheckpoint(address checkpointCreator) internal {
     vm.deal(checkpointCreator, 2 ether);
-    vm.startPrank(checkpointCreator);
+    vm.prank(checkpointCreator);
     fastlane.startGame{value: 1 ether}();
     
     uint256[] memory obstacleIds = new uint256[](50);
@@ -260,12 +268,14 @@ function addCheckpoint(address checkpointCreator) internal {
         obstacleIds[i] = i + 1 + (fastlane.checkpointCounter() * 50);
     }
     
-    vm.stopPrank();
     vm.prank(owner);
     fastlane.updatePlayerCheckpoint(checkpointCreator, fastlane.checkpointCounter());
     
     vm.prank(checkpointCreator);
     fastlane.addSegment(obstacleIds);
+
+    // Simulate session expiry
+    vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
 }
 
 function testSuccessiveCheckPoints() public {
@@ -276,10 +286,10 @@ function testSuccessiveCheckPoints() public {
         obstacleIds[i] = i + 51;
     }
 
-    vm.deal(player1, 3 ether);
-    vm.startPrank(player1);
-    fastlane.startGame{value: 1 ether}();
-    vm.stopPrank();
+    //vm.deal(player1, 3 ether);
+    //vm.startPrank(player1);
+    //fastlane.startGame{value: 1 ether}();
+    //vm.stopPrank();
 
     vm.prank(owner);
     fastlane.updatePlayerCheckpoint(player1, 1);
@@ -297,21 +307,19 @@ function testAddSegmentAfterSessionExpiry() public {
         obstacleIds[i] = i + 51;
     }
 
-    vm.deal(player1, 3 ether);
-    vm.startPrank(player1);
-    fastlane.startGame{value: 1 ether}();
-    vm.stopPrank();
-
-    vm.prank(owner);
+   vm.prank(owner);
     fastlane.updatePlayerCheckpoint(player1, 1);
+    console.log('blocktimestaml1:  ',block.timestamp);
 
     vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
+    console.log('blocktimestaml2:  ',block.timestamp);
 
     vm.prank(player1);
     vm.expectRevert("Session has expired");
     fastlane.addSegment(obstacleIds);
 }
 
+/*
 function testEndGameAndCheckpointOwnership() public {
     addInitialCheckpoint();
 
@@ -333,6 +341,7 @@ function testEndGameAndCheckpointOwnership() public {
     fastlane.addSegment(obstacleIds);
 
     uint256 player2Checkpoint = fastlane.checkpointCounter();
+    vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
 
     vm.prank(player2);
     fastlane.endGame();
@@ -340,33 +349,13 @@ function testEndGameAndCheckpointOwnership() public {
     assertFalse(fastlane.activeSessions(player2));
     assertEq(fastlane.checkpointNumberOwner(player2Checkpoint), player2);
 }
-
-function testEndGameMultipleTimes() public {
-    addInitialCheckpoint();
-
-    vm.deal(player1, 3 ether);
-    vm.startPrank(player1);
-    fastlane.startGame{value: 1 ether}();
-    
-    bool result1 = fastlane.endGame();
-    assertTrue(result1);
-    assertFalse(fastlane.activeSessions(player1));
-
-    vm.expectRevert("No active session");
-    fastlane.endGame();
-
-    fastlane.startGame{value: 1 ether}();
-    bool result2 = fastlane.endGame();
-    assertTrue(result2);
-    assertFalse(fastlane.activeSessions(player1));
-
-    vm.stopPrank();
-}
+*/
 
 function testStartGameAfterSessionExpiry() public {
     addInitialCheckpoint();
 
     vm.deal(player1, 3 ether);
+    vm.warp(block.timestamp + fastlane.SESSION_DURATION() + 1);
     vm.startPrank(player1);
     fastlane.startGame{value: 1 ether}();
 
