@@ -86,8 +86,8 @@ contract Fastlane is Ownable{
 
     // Function to add a new segment of obstacles to the chain with checkpoint ownership
     function addSegment(uint256[] memory obstacleIds)
-        noSuccessiveCheckpoints()
         onlyDuringSession()
+        noSuccessiveCheckpoints()
         public
     {
         require(
