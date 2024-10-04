@@ -58,7 +58,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
     spawnCheckpoint,
   } = useGame();
 
-  const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 2.5);
+  const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 0.75);
 
   // useEffect(() => {const TIME_LIMIT = 10; // in seconds
 
@@ -85,10 +85,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
       (value) => {
         if (value === "ready" && body.current) {
           // TODO: check for the wakeUp parameter
-          body.current.setTranslation(
-            { x: from === "gold" ? 0 : 2, y: 1, z: playerPosition },
-            true
-          );
+          body.current.setTranslation({ x: 0, y: 1, z: playerPosition }, true);
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
           body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
         }
@@ -537,7 +534,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
         friction={1}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[from === "gold" ? 0 : 2, 1, playerPosition]}
+        position={[0, 1, playerPosition]}
       >
         {/* <primitive object={ball} scale={0.005} /> */}
 

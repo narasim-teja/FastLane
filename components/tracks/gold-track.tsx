@@ -93,6 +93,7 @@ export function GoldTrack() {
             })}
 
             <GoldStartingBlock position={[0, 0, 2]} />
+
             {(() => {
               const blockEnds = [];
               for (let i = 50; i <= rowCount * 5; i += 50) {
@@ -110,6 +111,7 @@ export function GoldTrack() {
             {Array.from({ length: rowCount }, (_, i) => (
               <Track key={i} length={rowCount} row={i} />
             ))}
+
             <Environment preset="dawn" background />
           </group>
         );
