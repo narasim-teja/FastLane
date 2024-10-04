@@ -29,7 +29,6 @@ export function GoldTrack() {
     setRowCount,
     segments,
     addObstaclesRow,
-    spawnCheckpoint,
     // ...
   } = useGame();
 
@@ -43,9 +42,10 @@ export function GoldTrack() {
       onStarted: () => {
         logger.info(">>> Fetching Initial Row");
         revealRow({
+          track: "gold",
           chainId: CHAIN_ID,
           sessionId: SESSION_ID,
-          rowIdx: spawnCheckpoint * 9,
+          rowIdx: 0,
         });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
@@ -70,50 +70,43 @@ export function GoldTrack() {
 
   return (
     <Physics debug={debugPhysics}>
-      {segments.map(({ obstacles }, i) => {
-        const combinedArray = [
-          ...Array(Math.max(0, 50 * spawnCheckpoint - 10)).fill(0),
-          ...obstacles,
-        ];
-        logger.info(`Combined array for segment ${i}:`, combinedArray);
-        return (
-          <group key={i}>
-            {combinedArray.map((obstacle, j) => {
-              const row = Math.floor(j / 5);
-              const col = j % 5;
+      {segments.map(({ obstacles }, i) => (
+        <group key={i}>
+          {obstacles.map((obstacle, j) => {
+            const row = Math.floor(j / 5);
+            const col = j % 5;
 
-              return (
-                <ObstaclesSpawner
-                  key={`${i}-${j}`}
-                  id={obstacle.toString()}
-                  row={row}
-                  col={col - 1}
+            return (
+              <ObstaclesSpawner
+                key={`${i}-${j}`}
+                id={obstacle.toString()}
+                row={row}
+                col={col - 3}
+              />
+            );
+          })}
+
+          <GoldStartingBlock position={[0, 0, 2]} />
+          {(() => {
+            const blockEnds = [];
+            for (let i = 50; i <= rowCount * 5; i += 50) {
+              blockEnds.push(
+                <GoldBlockEnd
+                  key={i}
+                  position={[0, 0, -i]}
+                  checkpoint={i / 50 + 1}
                 />
               );
-            })}
+            }
+            return blockEnds;
+          })()}
 
-            <GoldStartingBlock position={[0, 0, 2]} />
-            {(() => {
-              const blockEnds = [];
-              for (let i = 50; i <= rowCount * 5; i += 50) {
-                blockEnds.push(
-                  <GoldBlockEnd
-                    key={i}
-                    position={[0, 0, -i]}
-                    checkpoint={i / 50 + 1}
-                  />
-                );
-              }
-              return blockEnds;
-            })()}
-
-            {Array.from({ length: rowCount }, (_, i) => (
-              <Track key={i} length={rowCount} row={i} />
-            ))}
-            <Environment preset="dawn" background />
-          </group>
-        );
-      })}
+          {Array.from({ length: rowCount / 9 }, (_, i) => (
+            <Track key={i} length={rowCount} row={i} />
+          ))}
+          <Environment preset="dawn" background />
+        </group>
+      ))}
 
       <SinglePlayer from="gold" />
     </Physics>

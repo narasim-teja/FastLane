@@ -44,6 +44,7 @@ export function EthTrack() {
       onStarted: () => {
         logger.info(">>> Fetching Initial Row");
         revealRow({
+          track: "eth",
           chainId: CHAIN_ID,
           sessionId: SESSION_ID,
           rowIdx: spawnCheckpoint * 9,

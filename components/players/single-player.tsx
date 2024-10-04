@@ -127,6 +127,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
 
         if (remainingTime <= 0) {
           revealRow({
+            track: from,
             chainId: CHAIN_ID,
             sessionId: SESSION_ID,
             rowIdx: spawnCheckpoint * 10,
@@ -309,6 +310,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
       lastRow.current = currentRow; // update the last row
       // emit event to server to reveal the next row of obstacles
       revealRow({
+        track: from,
         chainId: CHAIN_ID,
         sessionId: SESSION_ID,
         rowIdx: currentRow,
@@ -317,6 +319,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
 
     if (bodyPosition.y < -2) {
       revealRow({
+        track: from,
         chainId: CHAIN_ID,
         sessionId: SESSION_ID,
         rowIdx: spawnCheckpoint * 9,
