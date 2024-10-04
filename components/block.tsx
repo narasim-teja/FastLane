@@ -16,6 +16,8 @@ export const EthBlockEnd: React.FC<{
 }> = ({ position = [0, 0, 0], checkpoint }) => {
   const hascollided = React.useRef(false);
 
+  const { nodes, materials } = useGLTF("/models/eth-track/checkpoint.glb");
+
   const { phase, resetStartTime } = useGame();
 
   function handleCollision() {
@@ -35,7 +37,7 @@ export const EthBlockEnd: React.FC<{
         font="/fonts/bebas-neue-v9-latin-regular.woff"
         scale={0.5}
         // position={[0, 1.25, 2]}
-        position={[2, 1, 2]}
+        position={[0, 1, -2]}
       >
         Checkpoint {checkpoint}
         <meshBasicMaterial toneMapped={false} />
@@ -49,13 +51,11 @@ export const EthBlockEnd: React.FC<{
         friction={1}
         onCollisionEnter={handleCollision}
       >
-        <mesh receiveShadow position={[2, 0, 2]}>
-          <boxGeometry
-            // args={[5, 0.1, 5]}
-            args={[5, 0, 5]}
-          />
-          <meshStandardMaterial color="limegreen" />
-        </mesh>
+        <mesh
+          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+          geometry={nodes.Gold_Track_Checkpoint.geometry}
+          material={materials["Material.001"]}
+        />
       </RigidBody>
     </group>
   );
@@ -64,6 +64,8 @@ export const EthBlockEnd: React.FC<{
 export const EthStartingBlock: React.FC<{
   position?: Position;
 }> = ({ position = [0, 0, 0] }) => {
+  const { nodes, materials } = useGLTF("/models/eth-track/checkpoint.glb");
+
   return (
     <group position={position as Position}>
       <RigidBody
@@ -84,16 +86,10 @@ export const EthStartingBlock: React.FC<{
         </Text>
 
         <mesh
-          receiveShadow
-          //  position={[0, -0.1, 0]}
-          position={[0, 0, 0]}
-        >
-          <boxGeometry
-            // args={[5, 0.2, 5]}
-            args={[5, 0, 5]}
-          />
-          <meshStandardMaterial color="limegreen" />
-        </mesh>
+          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+          geometry={nodes.Gold_Track_Checkpoint.geometry}
+          material={materials["Material.001"]}
+        />
       </RigidBody>
     </group>
   );

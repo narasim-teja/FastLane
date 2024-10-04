@@ -70,17 +70,6 @@ export function EthTrack() {
     );
   }
 
-  // Function to generate BlockEnd components at intervals
-  const generateBlockEnds = () => {
-    const blockEnds = [];
-    for (let i = 50; i <= rowCount * 5; i += 50) {
-      blockEnds.push(
-        <EthBlockEnd key={i} position={[0, 0.05, -i]} checkpoint={i / 50 + 1} />
-      );
-    }
-    return blockEnds;
-  };
-
   return (
     <Physics debug={debugPhysics}>
       {segments.map(({ obstacles }, i) => {
@@ -100,23 +89,41 @@ export function EthTrack() {
                   key={`${i}-${j}`}
                   id={obstacle.toString()}
                   row={row}
-                  col={col}
+                  col={col - 1}
                 />
               );
             })}
 
-            <EthStartingBlock position={[2, 0, 2]} />
-            {generateBlockEnds()}
-            <Bounds
-              length={rowCount}
-              rowCount={rowCount}
-              onCollison={() => {
-                if (i === segments.length - 1) {
-                  logger.info(">>> Opening editor...");
-                  toggleEditor(true);
-                }
-              }}
-            />
+            <EthStartingBlock position={[0, 0, 0]} />
+
+            {(() => {
+              const blockEnds = [];
+              for (let i = 50; i <= rowCount * 5; i += 50) {
+                blockEnds.push(
+                  <EthBlockEnd
+                    key={i}
+                    position={[0, 0, -i]}
+                    checkpoint={i / 50 + 1}
+                  />
+                );
+              }
+              return blockEnds;
+            })()}
+
+            {Array.from({ length: rowCount }, (_, i) => (
+              <Bounds
+                key={i}
+                length={rowCount}
+                row={i}
+                onCollison={() => {
+                  if (i === segments.length - 1) {
+                    logger.info(">>> Opening editor...");
+                    toggleEditor(true);
+                  }
+                }}
+              />
+            ))}
+
             <Environment preset="dawn" background />
           </group>
         );
