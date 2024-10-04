@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "../trpc";
 import { multiplayerRouter } from "./multiplayer";
-import { singlePlayerRouter } from "./ws";
+import { singlePlayerRouter } from "./singleplayer";
 
 export const appRouter = createRouter({
   "": publicProcedure.query(() => "Hello from FastLane API! 🚀"),

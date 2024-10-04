@@ -9,7 +9,7 @@ export const sessionChainMap: Record<number, number> = {};
 export const sessionObstacles: number[][][] = [];
 let contract: ethers.Contract | null = null;
 
-// const log = getLogger();
+const log = getLogger();
 
 function getContractInstance() {
   if (!contract) {
@@ -30,9 +30,9 @@ export async function revealObstaclesInRow(
   sessionId: number,
   rowIndex: number
 ) {
-  // log.info(
-  //   `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`
-  // );
+  log.info(
+    `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`
+  );
 
   try {
     if (!sessionChainMap[sessionId]) {
@@ -40,27 +40,27 @@ export async function revealObstaclesInRow(
     }
 
     if (!sessionObstacles[sessionId]?.length) {
-      // log.error(`No obstacles found for sessionId: ${sessionId}`);
+      log.error(`No obstacles found for sessionId: ${sessionId}`);
       return {
         rowCount: 0,
         obstaclesInRow: [],
       };
     }
 
-    // log.info({ rowCount: sessionObstacles[sessionId].length }, "rowCount:");
+    log.info({ rowCount: sessionObstacles[sessionId].length }, "rowCount:");
 
     const obstaclesInRow = sessionObstacles[sessionId]?.[rowIndex] ?? [];
-    // log.info(
-    //   { obstaclesInRow },
-    //   `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`
-    // );
+    log.info(
+      { obstaclesInRow },
+      `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`
+    );
 
     return {
       rowCount: sessionObstacles[sessionId].length,
       obstaclesInRow,
     };
   } catch (error) {
-    // log.error(error, "Error in revealObstaclesInRow:");
+    log.error(error, "Error in revealObstaclesInRow:");
     return {
       rowCount: 0,
       obstaclesInRow: [],
@@ -70,21 +70,21 @@ export async function revealObstaclesInRow(
 
 export async function initializeSession(chainId: number, sessionId: number) {
   try {
-    // log.info(
-    //   `initializeSession called with chainId: ${chainId}, sessionId: ${sessionId}`
-    // );
+    log.info(
+      `initializeSession called with chainId: ${chainId}, sessionId: ${sessionId}`
+    );
 
     sessionChainMap[sessionId] = chainId;
     sessionObstacles[sessionId] = [];
 
     await fetchAllObstacles(chainId, sessionId);
 
-    // log.info(
-    //   { sessionObstacles: sessionObstacles[sessionId] },
-    //   "Obstacles in session:"
-    // );
+    log.info(
+      { sessionObstacles: sessionObstacles[sessionId] },
+      "Obstacles in session:"
+    );
   } catch (error) {
-    // log.error(error, "Failed to create new session:");
+    log.error(error, "Failed to create new session:");
   }
 }
 
@@ -101,7 +101,7 @@ export async function fetchAllObstacles(chainId: number, sessionId: number) {
 
     const allObstacles = await Promise.all(obstaclePromises);
 
-    // log.info({ allObstacles }, "Obstacles for session:");
+    log.info({ allObstacles }, "Obstacles for session:");
 
     sessionObstacles[sessionId] = allObstacles;
 
@@ -110,7 +110,7 @@ export async function fetchAllObstacles(chainId: number, sessionId: number) {
       obstacles: allObstacles,
     };
   } catch (error) {
-    // log.info(error, "Error in fetchAllObstacles:");
+    log.info(error, "Error in fetchAllObstacles:");
 
     return {
       rowCount: 0,
@@ -121,8 +121,8 @@ export async function fetchAllObstacles(chainId: number, sessionId: number) {
 
 export async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
   try {
-    // log.info(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
-    // log.info({ sessionChainMap }, "Current mapping:");
+    log.info(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
+    log.info({ sessionChainMap }, "Current mapping:");
 
     const contract = getContractInstance();
 
@@ -134,7 +134,7 @@ export async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
 
     return obstacles;
   } catch (error) {
-    // log.error(error, "Error in fetchObstaclesInRow:");
+    log.error(error, "Error in fetchObstaclesInRow:");
     return [];
   }
 }

@@ -39,7 +39,6 @@ export const singlePlayerRouter = createRouter({
       const revealRowData = data as RevealRowData;
 
       yield tracked(revealRowData.rowIdx.toString(), revealRowData);
-      yield tracked(revealRowData.rowIdx.toString(), revealRowData);
     }
   }),
 
