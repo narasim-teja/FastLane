@@ -42,7 +42,7 @@ contract Fastlane is Ownable{
             require(
                 senderCheckpointNumbers[msg.sender][
                     senderCheckpointNumbers[msg.sender].length - 1
-                ] != checkpointCounter - 1,
+                ] != checkpointCounter,
                 "Cannot create two successive checkpoints"
             );
         }
@@ -102,10 +102,10 @@ contract Fastlane is Ownable{
         }
 
         // Assign checkpoint ownership
+        checkpointCounter += 1;
         checkpointNumberOwner[checkpointCounter] = msg.sender;
         senderCheckpointNumbers[msg.sender].push(checkpointCounter);
         currentLatestCheckpointOwner = msg.sender;
-        checkpointCounter++;
 
         emit CheckpointCreated(msg.sender, checkpointCounter);
     }
