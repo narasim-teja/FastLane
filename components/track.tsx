@@ -19,7 +19,7 @@ export const Track: React.FC<{
         // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
         geometry={nodes.Plane.geometry}
         material={materials["Gold Track v1"]}
-        scale={[1, 1, 3.5]}
+        scale={[1.5, 1, 3.5]}
         position={[0, 0, -(25 * (row * 2 + 1))]}
       />
       <CuboidCollider

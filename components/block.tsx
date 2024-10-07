@@ -125,7 +125,7 @@ export const GoldBlockEnd: React.FC<{
   }, [phase]);
 
   return (
-    <group position={position as Position}>
+    <group scale={[1.5, 1, 1]} position={position as Position}>
       <Text
         font="/fonts/bebas-neue-v9-latin-regular.woff"
         scale={0.5}
@@ -160,7 +160,7 @@ export const GoldStartingBlock: React.FC<{
   const { nodes, materials } = useGLTF("/models/gold-track/checkpoint.glb");
 
   return (
-    <group position={position as Position}>
+    <group scale={[1.5, 1, 1]} position={position as Position}>
       <RigidBody
         type="fixed"
         colliders="trimesh"
