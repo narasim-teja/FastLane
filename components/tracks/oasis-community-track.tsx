@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 
 import { useGLTF, useTexture } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
@@ -9,7 +9,7 @@ import * as THREE from "three";
 
 import type { GroupProps } from "@react-three/fiber";
 
-import type { Clients } from "~/types/misc";
+import type { Clients, Position } from "~/types/misc";
 
 import { Multiplayer } from "~/components/players/multiplayer";
 import { api } from "~/lib/trpc/react";
@@ -46,6 +46,8 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
       setClients((prev) => ({ ...prev, [address]: { position, rotation } }));
     },
   });
+
+  const playersCount = Object.keys(clients).length;
 
   return (
     <Physics debug={debugPhysics} colliders="trimesh">
@@ -178,7 +180,18 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
 
       {Object.keys(clients).map((clientAddress) => {
         if (clientAddress === address) {
-          return <Multiplayer key={clientAddress} address={address} />;
+          const x = Math.floor((playersCount - 1) / 6) * 5;
+          const z = (playersCount % 6 || 6) * 5;
+
+          const position: Position = [-7.2 + x, 0.09, -(1.16 + z)];
+
+          return (
+            <Multiplayer
+              key={clientAddress}
+              address={address}
+              position={position}
+            />
+          );
         }
 
         const { position, rotation } = clients[clientAddress];

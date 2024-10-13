@@ -7,10 +7,15 @@ import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
+import type { Position } from "~/types/misc";
+
 import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
 
-export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
+export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
+  address,
+  position,
+}) => {
   const { nodes, materials } = useGLTF("/models/marble.glb");
 
   const body = useRef<RapierRigidBody>(null);
@@ -173,7 +178,7 @@ export const Multiplayer: React.FC<{ address: string }> = ({ address }) => {
       friction={1}
       linearDamping={0.5}
       angularDamping={0.5}
-      position={[19.487, 0.377, 6.678]}
+      position={position}
     >
       <mesh
         // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.

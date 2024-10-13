@@ -12,5 +12,5 @@ export type GamePlayAction = {
 export type Track = "gold" | "eth" | "oasis-track";
 
 export type Clients = {
-  [K: string]: { position: Coordinates; rotation: Coordinates };
+  [address: string]: { position: Coordinates; rotation: Coordinates };
 };
