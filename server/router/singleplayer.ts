@@ -10,29 +10,7 @@ import { getLogger } from "~/lib/logger";
 import { fetchAllObstacles, revealObstaclesInRow } from "../helper";
 import { createRouter, protectedProcedure } from "../trpc";
 
-// import { useWriteInputBoxAddInput } from "../hooks/generated";
-
 const logger = getLogger();
-
-// const { isPending, isSuccess, error, writeContractAsync } = useWriteInputBoxAddInput();
-
-// const dAppAddress = `0xab7528bb862fb57e8a2bcd567a2e929a0be56a5e`; // Default address for running locally change upon deployment
-
-// {"method":"generate_random","rows":5,"cols":5,"max":4}
-// converted json to hex change when adding more obstacles
-// 0x7b226d6574686f64223a2267656e65726174655f72616e646f6d222c22726f7773223a352c22636f6c73223a352c226d6178223a347d
-
-// const hexPayload = '0x7b226d6574686f64223a2267656e65726174655f72616e646f6d222c22726f7773223a352c22636f6c73223a352c226d6178223a347d';
-
-// async function generateRandomObstacleData(){
-//   await writeContractAsync({
-//     args: [
-//       dAppAddress,
-//       hexPayload,
-//     ],
-//   });
-
-// }
 
 function generateRandomObstacleData(): number[][] {
   const numRows = Math.floor(Math.random() * (50 - 10 + 1)) + 10; // Random length between 10 and 50

@@ -1,4 +1,5 @@
 import fs from "fs";
+
 import openapiTS from "openapi-typescript";
 
 /*

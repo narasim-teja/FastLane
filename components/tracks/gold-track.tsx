@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
+import { fromHex, stringToHex } from "thirdweb";
+import type { Hex } from "viem";
 
 import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
@@ -14,6 +16,31 @@ import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
+import { useWriteInputBoxAddInput } from "~/server/hooks/generated";
+import { fetchGraphQLData } from "~/utils/api";
+import { NOTICES_QUERY } from "~/utils/queries";
+import type { Notice } from "~/utils/types";
+
+function convertFlatArrayTo2DArray(
+  flatArray: Uint8Array,
+  rows: number,
+  cols: number
+): number[][] {
+  let index = 0;
+  const twoDArray: number[][] = []; // Make sure this is a 2D array of numbers
+
+  for (let i = 0; i < rows; i++) {
+    const row: number[] = []; // Declare the row as a number[] array
+    for (let j = 0; j < cols; j++) {
+      const value = flatArray[index]!; // Use the non-null assertion operator to assert it's a number
+      row.push(value); // Push the value into the row array
+      index++;
+    }
+    twoDArray.push(row); // Push the row into the 2D array
+  }
+
+  return twoDArray;
+}
 
 export function GoldTrack() {
   const logger = getLogger();
@@ -31,6 +58,48 @@ export function GoldTrack() {
     addObstaclesRow,
     // ...
   } = useGame();
+
+  const [attempts, setAttempts] = useState(0);
+  const { isPending, isSuccess, error, writeContractAsync } =
+    useWriteInputBoxAddInput();
+  const dAppAddress = `0xab7528bb862fb57e8a2bcd567a2e929a0be56a5e`; // Default address for running locally change upon deployment
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const fetchNotices = async () => {
+    try {
+      const data = await fetchGraphQLData<{
+        notices: { edges: { node: Notice }[] };
+      }>(NOTICES_QUERY);
+      setNotices(data.notices.edges.map((edge) => edge.node));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    writeContractAsync({
+      args: [
+        dAppAddress,
+        stringToHex(
+          `{"method":"generate_random","rows":${rowCount},"cols":5,"max":4}`
+        ),
+      ],
+    });
+
+    setAttempts(attempts + 1);
+    console.log("sent");
+    console.log(attempts);
+    fetchNotices();
+  }, []);
+  setAttempts(attempts + 1);
+
+  console.log(attempts);
+  console.log(notices[attempts]?.payload);
+  const payload = fromHex(
+    (notices[attempts]?.payload as Hex) || "0x0",
+    "bytes"
+  );
+  console.log(convertFlatArrayTo2DArray(payload, rowCount, 5));
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
