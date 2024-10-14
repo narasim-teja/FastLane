@@ -1,6 +1,6 @@
 import type { HardhatUserConfig } from "hardhat/config";
 
-import "@oasisprotocol/sapphire-hardhat";
+// import "@oasisprotocol/sapphire-hardhat";
 import "@nomicfoundation/hardhat-foundry";
 import "@nomicfoundation/hardhat-toolbox";
 
