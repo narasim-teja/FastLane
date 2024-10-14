@@ -1,13 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+struct SignatureRSV {
+    bytes32 r;
+    bytes32 s;
+    uint256 v;
+}
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Fastlane is Ownable{
     // Constants
     uint256 constant COLUMNS = 5;
     uint256 public ENTRY_FEE = 1 ether;
-    uint256 public SESSION_DURATION = 1200 seconds;
+    uint256 public SESSION_DURATION = 1800 seconds;
+
+    bytes32 public constant EIP712_DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
+    string public constant SIGNIN_TYPE = "SignIn(address user,uint32 time)";
+    bytes32 public constant SIGNIN_TYPEHASH = keccak256(bytes(SIGNIN_TYPE));
+    bytes32 public immutable DOMAIN_SEPARATOR;
 
     // State variables
     uint256[] private chainObstacles;
@@ -59,8 +70,54 @@ contract Fastlane is Ownable{
     }
 
     constructor() Ownable(msg.sender) {
-        checkpointCounter = 0;
-        currentLatestCheckpointOwner = msg.sender;
+      DOMAIN_SEPARATOR = keccak256(abi.encode(
+            EIP712_DOMAIN_TYPEHASH,
+            keccak256("SignInExample.SignIn"),
+            keccak256("1"),
+            block.chainid,
+            address(this)
+        ));
+      checkpointCounter = 0;
+      currentLatestCheckpointOwner = msg.sender;
+    }
+
+    // constructor () {
+    //     DOMAIN_SEPARATOR = keccak256(abi.encode(
+    //         EIP712_DOMAIN_TYPEHASH,
+    //         keccak256("SignInExample.SignIn"),
+    //         keccak256("1"),
+    //         block.chainid,
+    //         address(this)
+    //     ));
+    // }
+    struct SignIn {
+        address user;
+        uint32 time;
+        SignatureRSV rsv;
+    }
+
+    modifier authenticated(SignIn calldata auth)
+    {
+        // Must be signed within 24 hours ago.
+        require( auth.time > (block.timestamp - (60*60*24)) );
+
+        // Validate EIP-712 sign-in authentication.
+        bytes32 authdataDigest = keccak256(abi.encodePacked(
+            "\x19\x01",
+            DOMAIN_SEPARATOR,
+            keccak256(abi.encode(
+                SIGNIN_TYPEHASH,
+                auth.user,
+                auth.time
+            ))
+        ));
+
+        address recovered_address = ecrecover(
+            authdataDigest, uint8(auth.rsv.v), auth.rsv.r, auth.rsv.s);
+
+        require( auth.user == recovered_address, "Invalid Sign-In" );
+
+        _;
     }
 
     // Function to start a game session
@@ -123,10 +180,11 @@ contract Fastlane is Ownable{
     }
 
     // Function to allow players to view obstacles (requires view call authentication)
-    function getObstaclesInRow(uint256 rowIndex)
+    function getObstaclesInRow(SignIn calldata auth,uint256 rowIndex)
         public
         view
         onlyDuringSession
+        authenticated(auth)
         returns (uint256[] memory)
     {
         require(rowIndex < getRowCount(), "Row index out of bounds");
@@ -174,9 +232,10 @@ contract Fastlane is Ownable{
     }
 
      // Function to get the game state for a player
-    function getGameState(address player)
+    function getGameState(SignIn calldata auth,address player)
         public
         view
+        authenticated(auth)
         returns (
             bool isActive,
             uint256 timeRemaining
