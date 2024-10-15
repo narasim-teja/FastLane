@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 
 import { getSigner, getWeb3Provider } from "@dynamic-labs/ethers-v6";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
@@ -9,14 +9,19 @@ import { ethers } from "ethers";
 
 import { abi } from "~/config/constants";
 import { env } from "~/lib/env";
+import { getLogger } from "~/lib/logger";
 
-const Web3Context = React.createContext<{
+const logger = getLogger();
+
+export type Web3ContextType = {
   isLoaded: boolean;
   provider: ethers.Provider | null;
   signer: ethers.Signer | null;
   readContract: ethers.Contract | null;
   writeContract: ethers.Contract | null;
-}>({
+};
+
+const Web3Context = React.createContext<Web3ContextType>({
   isLoaded: false,
   provider: null,
   signer: null,
@@ -26,7 +31,7 @@ const Web3Context = React.createContext<{
 
 export const useWeb3 = () => React.useContext(Web3Context);
 
-export function Web3Provider({ children }: { children: React.ReactNode }) {
+export const Web3Provider: React.FCC = ({ children }) => {
   const { primaryWallet } = useDynamicContext();
 
   const [provider, setProvider] = React.useState<ethers.Provider | null>(null);
@@ -36,11 +41,14 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [writeContract, setWriteContract] =
     React.useState<ethers.Contract | null>(null);
   const [isLoaded, setLoaded] = React.useState(false);
+
   const isInitiating = React.useRef(false);
 
   async function init() {
     if (isInitiating.current || !primaryWallet) return;
+
     isInitiating.current = true;
+
     try {
       const dynamicProvider = await getWeb3Provider(primaryWallet);
       const dynamicSigner = await getSigner(primaryWallet);
@@ -66,7 +74,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       setWriteContract(writeContractInstance);
       setLoaded(true);
     } catch (e) {
-      console.error("Error initializing web3 provider", e);
+      logger.error(e, "Error initializing web3 provider");
       setLoaded(false);
     } finally {
       isInitiating.current = false;
@@ -77,7 +85,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     if (primaryWallet) {
       init();
     }
-  }, [primaryWallet]);
+  }, [primaryWallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Web3Context.Provider
@@ -92,4 +100,4 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       {children}
     </Web3Context.Provider>
   );
-}
+};

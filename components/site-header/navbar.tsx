@@ -28,7 +28,7 @@ export function Navbar() {
         </Button>
 
         <div className="flex items-center gap-4">
-          <ConnectWallet from="navbar" />
+          <ConnectWallet />
 
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>

@@ -39,18 +39,18 @@ export const env = createEnv({
      * Oasis contract
      * -----------------------------------------------------------------------------------------------*/
     OASIS_CONTRACT_ADDRESS: z.string({
-      required_error: "`OASIS_CONTRACT_ADDR` is required",
+      required_error: "`OASIS_CONTRACT_ADDRESS` is required",
     }),
 
     /* -----------------------------------------------------------------------------------------------
-     * Thirdweb (https://thirdweb.com/create-api-key)
+     * Dynamic Wallet
      * -----------------------------------------------------------------------------------------------*/
 
-    THIRDWEB_SECRET_KEY: z.string({
-      required_error: "`THIRDWEB_SECRET_KEY` is required",
+    DYNAMIC_ENVIRONMENT_ID: z.string({
+      required_error: "`DYNAMIC_ENVIRONMENT_ID` is required",
     }),
-    THIRDWEB_ADMIN_PRIVATE_KEY: z.string({
-      required_error: "`THIRDWEB_ADMIN_PRIVATE_KEY` is required",
+    DYNAMIC_API_BASE_URL: z.string({
+      required_error: "`DYNAMIC_API_BASE_URL` is required",
     }),
 
     /* -----------------------------------------------------------------------------------------------
@@ -81,17 +81,6 @@ export const env = createEnv({
    */
   client: {
     /* -----------------------------------------------------------------------------------------------
-     * Thirdweb (https://thirdweb.com/create-api-key)
-     * -----------------------------------------------------------------------------------------------*/
-
-    NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN: z.string({
-      required_error: "`NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN` is required",
-    }),
-    NEXT_PUBLIC_THIRDWEB_CLIENT_ID: z.string({
-      required_error: "`NEXT_PUBLIC_THIRDWEB_CLIENT_ID` is required",
-    }),
-
-    /* -----------------------------------------------------------------------------------------------
      * Oasis contract
      * -----------------------------------------------------------------------------------------------*/
     NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS: z.string({
@@ -99,7 +88,7 @@ export const env = createEnv({
     }),
 
     /* -----------------------------------------------------------------------------------------------
-     * Dynamic XYZ
+     * Dynamic Wallet
      * -----------------------------------------------------------------------------------------------*/
     NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID: z.string({
       required_error: "`NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID` is required",
@@ -114,9 +103,6 @@ export const env = createEnv({
   experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
-    NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN:
-      process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN,
-    NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
     NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS:
       process.env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS,
     NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID:

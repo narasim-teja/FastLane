@@ -3,35 +3,51 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import {
-  DynamicContextProvider,
-  DynamicWidget,
-} from "@dynamic-labs/sdk-react-core";
+import jwt from "jsonwebtoken";
+import { JwksClient } from "jwks-rsa";
 
-import { base64 } from "../utils";
+import type { JwtPayload } from "jsonwebtoken";
 
-export async function login(token: string) {
-  cookies().set("jwt", token);
-}
+import { env } from "../env";
+import { getLogger } from "../logger";
 
-export async function isLoggedIn(address?: string) {
-  const jwt = cookies().get("jwt");
-  if (!jwt?.value) {
+const logger = getLogger();
+
+export async function isLoggedIn() {
+  const encodedJwt = cookies().get("DYNAMIC_JWT_TOKEN")?.value;
+
+  if (!encodedJwt) {
     return false;
   }
 
-  // You may need to implement JWT verification here
-  // This depends on how Dynamic provides the JWT and how you want to verify it
+  const jwksUrl = `https://app.dynamic.xyz/api/v0/sdk/${env.DYNAMIC_ENVIRONMENT_ID}/.well-known/jwks`;
 
-  if (address) {
-    cookies().set("address", base64.encode(address));
+  const client = new JwksClient({
+    jwksUri: jwksUrl,
+    rateLimit: true,
+    cache: true,
+    cacheMaxEntries: 5,
+    cacheMaxAge: 600000,
+  });
+
+  const signingKey = await client.getSigningKey();
+  const publicKey = signingKey.getPublicKey();
+
+  try {
+    const decodedToken: JwtPayload = jwt.verify(encodedJwt, publicKey, {
+      ignoreExpiration: false,
+    }) as JwtPayload;
+
+    // if (decodedToken.scopes.includes("requiresAdditionalAuth")) {
+    //   throw new Error("Additional verification required");
+    // }
+
+    logger.info({ decodedToken }, "User is logged in");
+
+    return true;
+  } catch (error) {
+    logger.error({ error }, "User verification failed");
+
+    return false;
   }
-
-  return true;
-}
-
-export async function logout() {
-  cookies().delete("jwt");
-  cookies().delete("address");
-  redirect("/");
 }

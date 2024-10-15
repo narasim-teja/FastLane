@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
@@ -14,10 +15,10 @@ import type { Clients, Position } from "~/types/misc";
 import { Multiplayer } from "~/components/players/multiplayer";
 import { api } from "~/lib/trpc/react";
 
-export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
-  address,
-  ...props
-}) => {
+export const CommunityTrack: React.FC<GroupProps> = (props) => {
+  const { primaryWallet } = useDynamicContext();
+  const address = primaryWallet?.address ?? "";
+
   const { nodes, materials } = useGLTF("/models/community-track.glb");
   const roadTexture = useTexture("/textures/road.jpg", (texture) => {
     // flip the texture
