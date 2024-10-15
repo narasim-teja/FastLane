@@ -1,32 +1,57 @@
 import React from "react";
 
+import { getSigner, getWeb3Provider } from "@dynamic-labs/ethers-v6";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import * as sapphire from "@oasisprotocol/sapphire-paratime";
 import { ethers } from "ethers";
 
 import { abi } from "~/config/constants";
 import { env } from "~/lib/env";
 
 export const useContract = () => {
-  const [contract, setContract] = React.useState<ethers.Contract | null>(null);
+  const [readContract, setReadContract] =
+    React.useState<ethers.Contract | null>(null);
+  const [writeContract, setWriteContract] =
+    React.useState<ethers.Contract | null>(null);
+
+  const { primaryWallet } = useDynamicContext();
 
   React.useEffect(() => {
-    if (contract) {
-      return;
-    }
+    const init = async () => {
+      if (primaryWallet) {
+        try {
+          const dynamicProvider = await getWeb3Provider(primaryWallet);
+          const dynamicSigner = await getSigner(primaryWallet);
 
-    void (async () => {
-      {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        const contract = new ethers.Contract(
-          env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS,
-          abi,
-          signer
-        );
+          // Wrap the provider and signer with the Sapphire wrappers
+          const wrappedProvider = sapphire.wrap(dynamicProvider);
+          const wrappedSigner = sapphire.wrap(dynamicSigner);
 
-        setContract(contract);
+          // Initialize the read-only contract instance
+          const readContractInstance = new ethers.Contract(
+            env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS,
+            abi,
+            wrappedProvider
+          );
+
+          // Initialize the write contract instance with the wrapped signer
+          const writeContractInstance = new ethers.Contract(
+            env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS,
+            abi,
+            wrappedSigner
+          );
+
+          // Set the contract instances in state
+          setReadContract(readContractInstance);
+          setWriteContract(writeContractInstance);
+        } catch (error) {
+          console.error("Error initializing contracts:", error);
+        }
       }
-    })();
-  }, [contract]);
+    };
 
-  return contract;
+    init();
+  }, [primaryWallet]);
+
+  return { writeContract, readContract } as const;
 };

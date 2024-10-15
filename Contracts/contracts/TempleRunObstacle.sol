@@ -81,15 +81,6 @@ contract Fastlane is Ownable{
       currentLatestCheckpointOwner = msg.sender;
     }
 
-    // constructor () {
-    //     DOMAIN_SEPARATOR = keccak256(abi.encode(
-    //         EIP712_DOMAIN_TYPEHASH,
-    //         keccak256("SignInExample.SignIn"),
-    //         keccak256("1"),
-    //         block.chainid,
-    //         address(this)
-    //     ));
-    // }
     struct SignIn {
         address user;
         uint32 time;

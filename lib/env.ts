@@ -97,6 +97,13 @@ export const env = createEnv({
     NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS: z.string({
       required_error: "`OASIS_CONTRACT_ADDR` is required",
     }),
+
+    /* -----------------------------------------------------------------------------------------------
+     * Dynamic XYZ
+     * -----------------------------------------------------------------------------------------------*/
+    NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID: z.string({
+      required_error: "`NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID` is required",
+    }),
   },
 
   /**
@@ -112,6 +119,8 @@ export const env = createEnv({
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
     NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS:
       process.env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS,
+    NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID:
+      process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
   },
 
   /**
