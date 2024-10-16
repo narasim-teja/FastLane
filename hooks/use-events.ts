@@ -3,7 +3,7 @@ import React from "react";
 import { useContract } from "~/hooks/use-contract";
 
 export const useEvents = () => {
-  const [readContract] = useContract();
+  const { readContract } = useContract();
 
   React.useEffect(() => {
     if (readContract) {

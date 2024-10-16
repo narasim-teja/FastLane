@@ -15,7 +15,7 @@ import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
-export function EthTrack() {
+export function EthTrack({ auth }) {
   const logger = getLogger();
 
   const isGameReady = React.useRef(false);
@@ -42,16 +42,15 @@ export function EthTrack() {
   if (!isDebugging) {
     api.ws.onRevealRow.useSubscription(void function () {}, {
       onStarted: () => {
-        logger.info(">>> Fetching Initial Row");
+        console.log("Fetching Initial Row with auth:", auth);
         revealRow({
           track: "eth",
-          chainId: CHAIN_ID,
-          sessionId: SESSION_ID,
           rowIdx: spawnCheckpoint * 9,
+          auth,
         });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
-        logger.info({ obstacles }, `>>> Raw event data for row ${rowIdx}:`);
+        console.log("Received row data:", { rowCount, rowIdx, obstacles });
         addObstaclesRow(obstacles);
         setRowCount(rowCount);
         isGameReady.current = true;
@@ -122,7 +121,7 @@ export function EthTrack() {
         );
       })}
 
-      <SinglePlayer from="eth" />
+      <SinglePlayer from="eth" auth={auth} />
     </Physics>
   );
 }

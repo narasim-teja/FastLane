@@ -1,13 +1,14 @@
 import { ethers } from "hardhat";
 
-import { env } from "../env";
 import type { Fastlane } from "../typechain-types"; // Adjust the path if necessary
+
+import { env } from "../env";
 
 async function main() {
   const contractAddress = env.CONTRACT_ADDRESS;
 
   // Attach to the deployed Fastlane contract
-  const FastlaneFactory = await ethers.getContractFactory("Fastlane");
+  const FastlaneFactory = await ethers.getContractFactory("TempleRunObstacle");
   const fastlane = FastlaneFactory.attach(contractAddress) as Fastlane;
 
   // Get the signer (player)

@@ -33,31 +33,39 @@ export const singlePlayerRouter = createRouter({
     .input(
       z.object({
         track: z.enum(["eth", "gold"]),
-        chainId: z.number(),
-        sessionId: z.number(),
         rowIdx: z.number(),
+        auth: z.object({
+          user: z.string(),
+          time: z.number(),
+          rsv: z.object({
+            r: z.string(),
+            s: z.string(),
+            v: z.number(),
+          }),
+        }),
       })
     )
-    .mutation(
-      async ({ ctx: { ee }, input: { track, chainId, sessionId, rowIdx } }) => {
-        let rowCount: number, obstacles: number[];
+    .mutation(async ({ ctx: { ee }, input: { track, rowIdx, auth } }) => {
+      console.log("revealRow called with:", { track, rowIdx, auth });
+      let rowCount: number, obstacles: number[];
 
-        if (track === "eth") {
-          ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
-            chainId,
-            sessionId,
-            rowIdx
-          ));
-        } else {
-          obstacles = obstacleData.at(rowIdx) ?? [];
-          rowCount = obstacleData.length;
-        }
-
-        ee.emit("revealRow", { rowIdx, rowCount, obstacles });
-
-        return { rowIdx, rowCount, obstacles };
+      if (track === "eth") {
+        console.log("Calling revealObstaclesInRow for ETH track");
+        ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
+          rowIdx,
+          auth
+        ));
+      } else {
+        console.log("Using generated obstacle data for non-ETH track");
+        obstacles = obstacleData.at(rowIdx) ?? [];
+        rowCount = obstacleData.length;
       }
-    ),
+
+      console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
+      ee.emit("revealRow", { rowIdx, rowCount, obstacles });
+
+      return { rowIdx, rowCount, obstacles };
+    }),
 
   onRevealRow: protectedProcedure.subscription(async function* ({
     ctx: { ee },
@@ -92,23 +100,36 @@ export const singlePlayerRouter = createRouter({
     })
   ),
 
-  updateObstacles: protectedProcedure.mutation(async ({ ctx: { ee } }) => {
-    // 12 sec delay to allow for the blockchain to update
-    await new Promise((resolve) => setTimeout(resolve, 12000));
+  updateObstacles: protectedProcedure
+    .input(
+      z.object({
+        auth: z.object({
+          user: z.string(),
+          time: z.number(),
+          rsv: z.object({
+            r: z.string(),
+            s: z.string(),
+            v: z.number(),
+          }),
+        }),
+      })
+    )
+    .mutation(async ({ ctx: { ee }, input: { auth } }) => {
+      console.log("updateObstacles called with auth:", auth);
+      // 12 sec delay to allow for the blockchain to update
+      await new Promise((resolve) => setTimeout(resolve, 12000));
 
-    const { rowCount, obstacles } = await fetchAllObstacles(
-      CHAIN_ID,
-      SESSION_ID
-    );
+      console.log("Fetching all obstacles");
+      const { rowCount, obstacles } = await fetchAllObstacles(auth);
 
-    logger.info({ rowCount, obstacles }, "Full available obstacles:");
+      logger.info({ rowCount, obstacles }, "Full available obstacles:");
 
-    ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
+      ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
 
-    return {
-      rowCount,
-      obstacles,
-      refresh: true,
-    };
-  }),
+      return {
+        rowCount,
+        obstacles,
+        refresh: true,
+      };
+    }),
 });

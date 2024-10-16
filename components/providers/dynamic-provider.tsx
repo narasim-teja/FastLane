@@ -25,11 +25,14 @@ export const DynamicProvider: React.FCC = ({ children }) => {
           //     }
           //   }
           // },
-          // onLogout: () => {
-          //   localStorage.removeItem("dynamic_authentication_token");
-          //   document.cookie =
-          //     "dynamic_authentication_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          // },
+          onLogout: (args) => {
+            // localStorage.removeItem("dynamic_authentication_token");
+            // document.cookie =
+            //   "dynamic_authentication_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            localStorage.removeItem("auth");
+            window.location.reload();
+            console.log("onLogout was called", args);
+          },
         },
       }}
     >

@@ -12,8 +12,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Fastlane is Ownable{
     // Constants
     uint256 constant COLUMNS = 5;
-    uint256 public ENTRY_FEE = 1 ether;
-    uint256 public SESSION_DURATION = 1800 seconds;
+    uint256 public ENTRY_FEE = 0.1 ether;
+    uint256 public SESSION_DURATION = 600 seconds;
 
     bytes32 public constant EIP712_DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
     string public constant SIGNIN_TYPE = "SignIn(address user,uint32 time)";

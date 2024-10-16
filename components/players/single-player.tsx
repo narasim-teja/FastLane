@@ -20,7 +20,10 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
 
-export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
+export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({
+  from,
+  auth,
+}) => {
   const logger = getLogger();
 
   const { gl } = useThree();
@@ -128,9 +131,12 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
         if (remainingTime <= 0) {
           revealRow({
             track: from,
-            chainId: CHAIN_ID,
-            sessionId: SESSION_ID,
             rowIdx: spawnCheckpoint * 10,
+            auth: {
+              user: auth.user,
+              time: auth.time,
+              rsv: auth.rsv,
+            },
           });
 
           lastRow.current = 0;
@@ -311,18 +317,24 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
       // emit event to server to reveal the next row of obstacles
       revealRow({
         track: from,
-        chainId: CHAIN_ID,
-        sessionId: SESSION_ID,
         rowIdx: currentRow,
+        auth: {
+          user: auth.user,
+          time: auth.time,
+          rsv: auth.rsv,
+        },
       });
     }
 
     if (bodyPosition.y < -2) {
       revealRow({
         track: from,
-        chainId: CHAIN_ID,
-        sessionId: SESSION_ID,
         rowIdx: spawnCheckpoint * 9,
+        auth: {
+          user: auth.user,
+          time: auth.time,
+          rsv: auth.rsv,
+        },
       });
 
       // lastRow.current = spawnCheckpoint * 10;
