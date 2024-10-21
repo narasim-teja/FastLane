@@ -23,7 +23,7 @@
     "ui-add": "bunx shadcn@latest add",
     "analyze": "ANALYZE=true next build",
     "clean": "rm -rf .next",
-    "cleani": "rm -rf .next && rm -rf node_modules && bun i",
+    "cleani": "rm -rf .next node_modules && bun i",
     "prepare": "husky"
   },
   "dependencies": {
@@ -76,7 +76,6 @@
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "thirdweb": "^5.47.1",
     "three": "^0.167.1",
     "viem": "^2.21.25",
     "ws": "^8.18.0",

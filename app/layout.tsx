@@ -4,6 +4,7 @@ import Script from "next/script";
 
 import type { Metadata, Viewport } from "next";
 
+import { ReactLenis } from "~/components/lenis";
 import { DynamicProvider } from "~/components/providers/dynamic-provider";
 import { Web3Provider } from "~/components/providers/web3-provider";
 import { RealViewport } from "~/components/real-viewport";
@@ -13,7 +14,6 @@ import { TooltipProvider } from "~/components/ui/tooltip";
 import { siteConfig } from "~/config/site";
 import { env } from "~/lib/env";
 import * as fonts from "~/lib/fonts";
-import { ReactLenis } from "~/lib/lenis";
 import { absoluteUrl, cn } from "~/lib/utils";
 
 export const viewport: Viewport = {
@@ -64,7 +64,7 @@ export const RootLayout: React.FCC = ({ children }) => {
           "relative min-h-[dvh] scroll-smooth font-sans antialiased"
         )}
       >
-        <ReactLenis root>
+        <ReactLenis>
           <DynamicProvider>
             <Web3Provider>
               <TooltipProvider>{children}</TooltipProvider>
