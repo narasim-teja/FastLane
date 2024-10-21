@@ -8,7 +8,7 @@ type SpinnerProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export function Spinner({ size = "md", ...props }: SpinnerProps) {
   return (
-    <div {...props} className="grid h-screen w-full place-items-center">
+    <div className="grid h-screen w-full place-items-center" {...props}>
       <span className="sr-only">Loading...</span>
       <div
         className={cn(
