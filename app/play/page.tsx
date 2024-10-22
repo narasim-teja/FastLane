@@ -8,6 +8,7 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { ethers } from "ethers";
 import { toast } from "sonner";
 
+import type { DailySignInAuth } from "~/types/auth";
 import type { Track } from "~/types/misc";
 
 import { useWeb3 } from "~/components/providers/web3-provider";
@@ -16,6 +17,7 @@ import { EthTrack } from "~/components/tracks/eth-track";
 import { GoldTrack } from "~/components/tracks/gold-track";
 import { CommunityTrack } from "~/components/tracks/oasis-community-track";
 import { useGame } from "~/hooks/use-game";
+import { useLocalStorage } from "~/hooks/use-local-storage";
 import { env } from "~/lib/env";
 
 import Common from "./_components/common";
@@ -37,28 +39,15 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
   const { startGame } = useGame();
   const { primaryWallet } = useDynamicContext();
   const [isGameActive, setIsGameActive] = React.useState(false);
-  const [auth, setAuth] = React.useState(null);
   const hasAttemptedStart = React.useRef(false);
   const hasAttemptedSignIn = React.useRef(false);
+  const [auth, setAuth] = useLocalStorage<DailySignInAuth | null>("auth", null);
 
   const checkAuth = React.useCallback(async () => {
     if (hasAttemptedSignIn.current) return auth;
 
-    console.log("Checking auth...");
-    const storedAuthStr = localStorage.getItem("auth");
-    let storedAuth = null;
-
-    if (storedAuthStr) {
-      storedAuth = JSON.parse(storedAuthStr);
-      console.log("Stored auth found:", storedAuth);
-    } else {
-      console.log("No stored auth found");
-    }
-
-    if (storedAuth && isAuthValid(storedAuth)) {
-      console.log("Auth is still valid");
-      setAuth(storedAuth);
-      return storedAuth;
+    if (auth && isAuthValid(auth)) {
+      return auth;
     } else {
       console.log("Auth is invalid or expired. Performing sign-in");
       hasAttemptedSignIn.current = true;
@@ -66,9 +55,9 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
       hasAttemptedSignIn.current = false;
       return newAuth;
     }
-  }, [signer, primaryWallet]);
+  }, [signer, primaryWallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isAuthValid = (auth) => {
+  const isAuthValid = (auth: DailySignInAuth) => {
     const currentTime = Math.floor(Date.now() / 1000);
     return auth && auth.time && currentTime - auth.time < 24 * 60 * 60; // Valid for 24 hours
   };
@@ -117,7 +106,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     }
   };
 
-  async function fetchGameState(auth) {
+  async function fetchGameState(auth: DailySignInAuth) {
     if (!primaryWallet) {
       console.error("No primary wallet connected");
       throw new Error("No primary wallet connected");
@@ -155,7 +144,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
       return { isActive, timeRemaining: timeRemaining.toString() };
     } catch (error) {
       console.error("Error fetching game state:", error);
-      if (error.reason) {
+      if (typeof error === "object" && error && "reason" in error) {
         console.error("Error reason:", error.reason);
       }
       throw error;
@@ -164,7 +153,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
 
   async function startGameOnChain() {
     console.log("Attempting to start game...");
-    const tx = await writeContract.startGame({
+    const tx = await writeContract?.startGame({
       value: ethers.parseEther("0.1"),
     });
     console.log("Transaction sent:", tx.hash);
@@ -222,7 +211,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     };
 
     initializeGame();
-  }, [
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps 
     primaryWallet,
     signer,
     writeContract,
@@ -231,7 +220,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     startGame,
     track,
     checkAuth,
-  ]);
+  ]); // prettier-ignore
 
   if (!isGameActive) {
     return <Spinner />;
@@ -242,7 +231,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
       <Common />
 
       {track === "gold" && <GoldTrack />}
-      {track === "eth" && <EthTrack auth={auth} />}
+      {track === "eth" && auth && <EthTrack auth={auth} />}
       {track === "oasis-track" && <CommunityTrack />}
     </View>
   );

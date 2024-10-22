@@ -6,16 +6,17 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
+import type { DailySignInAuth } from "~/types/auth";
+
 import { EthBlockEnd, EthStartingBlock } from "~/components/block";
 import { Bounds } from "~/components/bounds";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
-export function EthTrack({ auth }) {
+export const EthTrack: React.FC<{ auth: DailySignInAuth }> = ({ auth }) => {
   const logger = getLogger();
 
   const isGameReady = React.useRef(false);
@@ -121,7 +122,7 @@ export function EthTrack({ auth }) {
         );
       })}
 
-      <SinglePlayer from="eth" auth={auth} />
+      {auth && <SinglePlayer from="eth" auth={auth} />}
     </Physics>
   );
-}
+};

@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import type { RevealRowData } from "~/types/ws";
 
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { getLogger } from "~/lib/logger";
 
 import { fetchAllObstacles, revealObstaclesInRow } from "../helper";

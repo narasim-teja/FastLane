@@ -9,9 +9,10 @@ import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
+import type { DailySignInAuth } from "~/types/auth";
 import type { GamePlayAction } from "~/types/misc";
 
-import { CHAIN_ID, SESSION_ID, TIME_LIMIT } from "~/config/constants";
+import { TIME_LIMIT } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
@@ -20,10 +21,10 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
 
-export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({
-  from,
-  auth,
-}) => {
+export const SinglePlayer: React.FC<{
+  from: "eth" | "gold";
+  auth: DailySignInAuth;
+}> = ({ from, auth }) => {
   const logger = getLogger();
 
   const { gl } = useThree();

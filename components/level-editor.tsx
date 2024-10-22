@@ -4,19 +4,16 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { getSigner, getWeb3Provider } from "@dynamic-labs/ethers-v6";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import * as sapphire from "@oasisprotocol/sapphire-paratime";
-import { ethers } from "ethers";
 import { Info, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
-import type { TransactionResponse } from "ethers";
+import type { DailySignInAuth } from "~/types/auth";
 
 import { useWeb3 } from "~/components/providers/web3-provider";
-import { abi, CHAIN_ID } from "~/config/constants";
 import { OBSTACLES } from "~/config/obctacles";
 import { useGame } from "~/hooks/use-game";
+import { useLocalStorage } from "~/hooks/use-local-storage";
 import { env } from "~/lib/env";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
@@ -42,7 +39,7 @@ type Selection = {
 };
 
 export function LevelEditor() {
-  const { writeContract, readContract, signer } = useWeb3();
+  const { writeContract, readContract } = useWeb3();
   const router = useRouter();
   const { primaryWallet } = useDynamicContext();
 
@@ -55,8 +52,11 @@ export function LevelEditor() {
   const [selections, setSelections] = React.useState<Selection[]>(
     Array(NUMBER_OF_ROWS).fill({ obstacle: null, column: null })
   );
-  const [auth, setAuth] = React.useState(null);
-  const account = primaryWallet?.address || "";
+  const [auth, _setAuth] = useLocalStorage<DailySignInAuth | null>(
+    "auth",
+    null
+  );
+  const _account = primaryWallet?.address || "";
 
   const handleCheckpointCreated = (
     creator: string,
@@ -289,17 +289,22 @@ export function LevelEditor() {
       await writeContract.addSegment(extendedResultArray);
 
       // After the transaction is successful, update obstacles in the UI
-      updateObstacles(undefined, {
-        onSuccess: ({ obstacles, rowCount, refresh }) => {
-          setRowCount(rowCount);
-          addSegment(obstacles);
-          toggleEditor(false);
-          togglePause(false);
-          if (refresh) {
-            router.refresh();
+      if (auth) {
+        updateObstacles(
+          { auth },
+          {
+            onSuccess: ({ obstacles, rowCount, refresh }) => {
+              setRowCount(rowCount);
+              addSegment(obstacles);
+              toggleEditor(false);
+              togglePause(false);
+              if (refresh) {
+                router.refresh();
+              }
+            },
           }
-        },
-      });
+        );
+      }
 
       toast.success("Segment added successfully");
     } catch (error) {
