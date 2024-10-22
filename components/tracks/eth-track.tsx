@@ -8,6 +8,7 @@ import { useControls } from "leva";
 
 import { EthBlockEnd, EthStartingBlock } from "~/components/block";
 import { Bounds } from "~/components/bounds";
+import { Loader } from "~/components/loader";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
 import { CHAIN_ID, SESSION_ID } from "~/config/constants";
@@ -63,9 +64,8 @@ export function EthTrack() {
 
   if (!isGameReady.current) {
     return (
-      <Html fullscreen className="grid h-full place-items-center">
-        <div className="aspect-square h-16 animate-spin rounded-full border-y-2 border-primary lg:h-32" />
-        <span className="sr-only">Loading initial obstacle...</span>
+      <Html fullscreen>
+        <Loader />
       </Html>
     );
   }

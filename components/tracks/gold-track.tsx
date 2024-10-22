@@ -7,6 +7,7 @@ import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
 import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
+import { Loader } from "~/components/loader";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
 import { Track } from "~/components/track";
@@ -61,9 +62,8 @@ export function GoldTrack() {
 
   if (!isGameReady.current) {
     return (
-      <Html fullscreen className="grid h-full place-items-center">
-        <div className="aspect-square h-16 animate-spin rounded-full border-y-2 border-primary lg:h-32" />
-        <span className="sr-only">Loading initial obstacle...</span>
+      <Html fullscreen>
+        <Loader />
       </Html>
     );
   }

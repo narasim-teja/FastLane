@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 import type { Track } from "~/types/misc";
 
-import { Spinner } from "~/components/spinner";
+import { Loader } from "~/components/loader";
 import { EthTrack } from "~/components/tracks/eth-track";
 import { GoldTrack } from "~/components/tracks/gold-track";
 import { CommunityTrack } from "~/components/tracks/oasis-community-track";
@@ -14,7 +14,7 @@ import Common from "./_components/common";
 
 const View = dynamic(() => import("~/components/canvas/view"), {
   ssr: false,
-  loading: () => <Spinner />,
+  loading: () => <Loader />,
 });
 
 type GamePageProps = {
