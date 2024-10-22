@@ -23,7 +23,7 @@
     "ui-add": "bunx shadcn@latest add",
     "analyze": "ANALYZE=true next build",
     "clean": "rm -rf .next",
-    "cleani": "rm -rf .next && rm -rf node_modules && bun i",
+    "cleani": "rm -rf .next node_modules && bun i",
     "prepare": "husky"
   },
   "dependencies": {
@@ -107,10 +107,10 @@
   },
   "lint-staged": {
     "*.{ts,tsx,md,mdx}": [
-      "prettier --write \"**/*.{ts,tsx,mdx}\" --cache"
+      "prettier --write --cache"
     ],
     "*.{ts,tsx,mdx}": [
-      "eslint --fix ."
+      "eslint --fix"
     ]
   },
   "commitlint": {

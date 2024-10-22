@@ -2,7 +2,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-import { Html, useKeyboardControls, useTexture } from "@react-three/drei";
+import {
+  Html,
+  useGLTF,
+  useKeyboardControls,
+  useTexture,
+} from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
@@ -24,6 +29,8 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
   const logger = getLogger();
 
   const { gl } = useThree();
+
+  const { nodes, materials } = useGLTF("/models/gold-track/marble.glb");
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
@@ -60,7 +67,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
 
   const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 2.5);
 
-  // useEffect(() => {const TIME_LIMIT = 10; // in seconds
+  // useEffect(() => {
 
   //   void (async () => {
   //     try {
@@ -544,10 +551,14 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
       >
         {/* <primitive object={ball} scale={0.005} /> */}
 
-        <mesh castShadow>
-          <sphereGeometry args={[0.25, 18, 18]} />
-          <meshStandardMaterial attach="material" map={texture} />
-        </mesh>
+        {from === "gold" ?
+          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+          <mesh geometry={nodes.Cube.geometry} material={materials.Material} />
+        : <mesh castShadow>
+            <sphereGeometry args={[0.25, 18, 18]} />
+            <meshStandardMaterial attach="material" map={texture} />
+          </mesh>
+        }
       </RigidBody>
     </>
   );
