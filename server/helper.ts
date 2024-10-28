@@ -15,18 +15,14 @@ function getContractInstance() {
     const provider = new ethers.JsonRpcProvider(
       sapphire.NETWORKS.testnet.defaultGateway
     );
-    const signer = new ethers.Wallet(env.TRACK_OWNER_PKEY, provider);
-    const wrappedSigner = sapphire.wrap(signer);
-    log.info("Wrapped signer created");
+    const wrappedProvider = sapphire.wrap(provider);
 
     contract = new ethers.Contract(
       env.OASIS_CONTRACT_ADDRESS,
       abi,
-      wrappedSigner
+      wrappedProvider
     );
   }
-  log.info("Contract", contract);
-
   return contract;
 }
 
@@ -136,7 +132,6 @@ export async function fetchObstaclesInRow(
       log.error("Auth data is null");
       return [];
     }
-    log.info(`Auth data:`, auth);
 
     const contract = getContractInstance();
 
@@ -147,6 +142,7 @@ export async function fetchObstaclesInRow(
         time: auth.time,
         rsv: auth.rsv,
       },
+      auth.user,
       rowIndex
     );
     log.info(`Raw obstacles from contract:`, obstaclesBigInt);

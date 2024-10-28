@@ -135,13 +135,20 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
         primaryWallet.address
       );
 
-      const { isActive, timeRemaining } = gameState;
+      const { isActive, timeRemaining, currentCheckpoint } = gameState;
       console.log("Game State:", {
         isActive,
         timeRemaining: timeRemaining.toString(),
+        currentCheckpoint: currentCheckpoint.toString(),
       });
+      // @hemant: update the spawn checkpoint
+      useGame.getState().setSpawnCheckpoint(Number(currentCheckpoint));
 
-      return { isActive, timeRemaining: timeRemaining.toString() };
+      return {
+        isActive,
+        timeRemaining: timeRemaining.toString(),
+        currentCheckpoint: currentCheckpoint.toString(),
+      };
     } catch (error) {
       console.error("Error fetching game state:", error);
       if (typeof error === "object" && error && "reason" in error) {
@@ -211,7 +218,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     };
 
     initializeGame();
-  }, [ // eslint-disable-line react-hooks/exhaustive-deps 
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
     primaryWallet,
     signer,
     writeContract,
