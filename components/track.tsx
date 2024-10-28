@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useFBX, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 
 import { useGame } from "~/hooks/use-game";
@@ -22,6 +22,7 @@ export const Track: React.FC<{
         scale={[1.5, 1, 3.5]}
         position={[0, 0, -(25 * (row * 2 + 1))]}
       />
+
       <CuboidCollider
         // args={[2.5, 0, 2.5]}
         args={[2.5, 0, 2.5]}
@@ -35,4 +36,4 @@ export const Track: React.FC<{
   );
 };
 
-useFBX.preload("/road-plane.fbx");
+useGLTF.preload("/models/gold-track/track.glb");
