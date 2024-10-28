@@ -6,7 +6,7 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
-import type { DailySignInAuth } from "~/types/auth";
+import type { Auth } from "~/types/auth";
 
 import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
@@ -34,7 +34,7 @@ export function GoldTrack() {
     // ...
   } = useGame();
 
-  const [auth] = useLocalStorage<DailySignInAuth | null>("auth", null);
+  const [auth] = useLocalStorage<Auth | null>("auth", null);
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 

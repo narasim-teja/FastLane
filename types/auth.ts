@@ -1,4 +1,4 @@
-export type DailySignInAuth = {
+export type Auth = {
   user: string;
   time: number;
   rsv: Rsv;

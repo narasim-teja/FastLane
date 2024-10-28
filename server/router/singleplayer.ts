@@ -2,11 +2,15 @@ import { tracked } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
-import type { RevealRowData } from "~/types/ws";
+import type { RevealRowData, UpdateCheckpointData } from "~/types/ws";
 
 import { getLogger } from "~/lib/logger";
 
-import { fetchAllObstacles, revealObstaclesInRow } from "../helper";
+import {
+  fetchAllObstacles,
+  revealObstaclesInRow,
+  updateCheckpoint,
+} from "../helper";
 import { createRouter, protectedProcedure } from "../trpc";
 
 const logger = getLogger();
@@ -99,6 +103,18 @@ export const singlePlayerRouter = createRouter({
     })
   ),
 
+  onUpdateCheckpoint: protectedProcedure.subscription(async function* ({
+    ctx: { ee },
+  }) {
+    for await (const [data] of ee.toIterable("updateCheckpoint")) {
+      const updateCheckpointData = data as UpdateCheckpointData;
+      yield tracked(
+        updateCheckpointData.checkpointNumber.toString(),
+        updateCheckpointData
+      );
+    }
+  }),
+
   updateObstacles: protectedProcedure
     .input(
       z.object({
@@ -130,5 +146,18 @@ export const singlePlayerRouter = createRouter({
         obstacles,
         refresh: true,
       };
+    }),
+
+  updateCheckpoint: protectedProcedure
+    .input(
+      z.object({
+        address: z.string(),
+        checkpointNumber: z.number(),
+      })
+    )
+    .mutation(async ({ ctx: { ee }, input: { address, checkpointNumber } }) => {
+      await updateCheckpoint(address, checkpointNumber);
+
+      ee.emit("updateCheckpoint", { checkpointNumber });
     }),
 });

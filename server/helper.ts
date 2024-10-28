@@ -1,6 +1,8 @@
 import * as sapphire from "@oasisprotocol/sapphire-paratime";
 import { ethers } from "ethers";
 
+import type { Auth } from "~/types/auth";
+
 import { abi } from "~/config/constants";
 import { env } from "~/lib/env";
 import { getLogger } from "~/lib/logger";
@@ -26,10 +28,7 @@ function getContractInstance() {
   return contract;
 }
 
-export async function revealObstaclesInRow(
-  rowIndex: number,
-  auth: { user: string; time: number; rsv: { r: string; s: string; v: number } }
-) {
+export async function revealObstaclesInRow(rowIndex: number, auth: Auth) {
   log.info(`Reveal row: rowIndex=${rowIndex}`);
 
   try {
@@ -69,11 +68,7 @@ export async function revealObstaclesInRow(
   }
 }
 
-export async function initializeSession(auth: {
-  user: string;
-  time: number;
-  rsv: { r: string; s: string; v: number };
-}) {
+export async function initializeSession(auth: Auth) {
   try {
     log.info("Initializing session");
 
@@ -87,11 +82,7 @@ export async function initializeSession(auth: {
   }
 }
 
-export async function fetchAllObstacles(auth: {
-  user: string;
-  time: number;
-  rsv: { r: string; s: string; v: number };
-}) {
+export async function fetchAllObstacles(auth: Auth) {
   try {
     const contract = getContractInstance();
 
@@ -122,10 +113,7 @@ export async function fetchAllObstacles(auth: {
   }
 }
 
-export async function fetchObstaclesInRow(
-  rowIndex: number,
-  auth: { user: string; time: number; rsv: { r: string; s: string; v: number } }
-) {
+export async function fetchObstaclesInRow(rowIndex: number, auth: Auth) {
   try {
     log.info(`Fetching obstacles for rowIndex: ${rowIndex}`);
     if (!auth) {
@@ -155,4 +143,17 @@ export async function fetchObstaclesInRow(
     log.error(`Error in fetchObstaclesInRow for rowIndex ${rowIndex}:`, error);
     return [];
   }
+}
+
+export async function updateCheckpoint(
+  address: string,
+  checkpointNumber: number
+) {
+  log.info(
+    `Updating checkpoint for address: ${address}, checkpointNumber: ${checkpointNumber}`
+  );
+
+  const contract = getContractInstance();
+
+  await contract.updateCheckpoint(address, checkpointNumber);
 }

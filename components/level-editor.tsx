@@ -8,7 +8,7 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Info, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
-import type { DailySignInAuth } from "~/types/auth";
+import type { Auth } from "~/types/auth";
 
 import { useWeb3 } from "~/components/providers/web3-provider";
 import { OBSTACLES } from "~/config/obctacles";
@@ -52,10 +52,7 @@ export function LevelEditor() {
   const [selections, setSelections] = React.useState<Selection[]>(
     Array(NUMBER_OF_ROWS).fill({ obstacle: null, column: null })
   );
-  const [auth, _setAuth] = useLocalStorage<DailySignInAuth | null>(
-    "auth",
-    null
-  );
+  const [auth, _setAuth] = useLocalStorage<Auth | null>("auth", null);
   const _account = primaryWallet?.address || "";
 
   const handleCheckpointCreated = (

@@ -9,7 +9,7 @@ import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
-import type { DailySignInAuth } from "~/types/auth";
+import type { Auth } from "~/types/auth";
 import type { GamePlayAction } from "~/types/misc";
 
 import { TIME_LIMIT } from "~/config/constants";
@@ -23,7 +23,7 @@ import { Button } from "../ui/button";
 
 export const SinglePlayer: React.FC<{
   from: "eth" | "gold";
-  auth: DailySignInAuth;
+  auth: Auth;
 }> = ({ from, auth }) => {
   const logger = getLogger();
 
@@ -32,7 +32,7 @@ export const SinglePlayer: React.FC<{
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
-  // const { mutate: updatePlayerCheckpoint } = api.ws.updatePlayerCheckpoint.useMutation();
+  const { mutate: updateCheckpoint } = api.ws.updateCheckpoint.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -324,13 +324,8 @@ export const SinglePlayer: React.FC<{
 
         const checkpointNumber = Math.floor(currentRow / 8);
         updateCheckpoint({
-          track: from,
+          address: auth.user,
           checkpointNumber,
-          auth: {
-            user: auth.user,
-            time: auth.time,
-            rsv: auth.rsv,
-          },
         });
       }
 

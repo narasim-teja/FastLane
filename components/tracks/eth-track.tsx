@@ -6,7 +6,7 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
-import type { DailySignInAuth } from "~/types/auth";
+import type { Auth } from "~/types/auth";
 
 import { EthBlockEnd, EthStartingBlock } from "~/components/block";
 import { Bounds } from "~/components/bounds";
@@ -16,7 +16,7 @@ import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
-export const EthTrack: React.FC<{ auth: DailySignInAuth }> = ({ auth }) => {
+export const EthTrack: React.FC<{ auth: Auth }> = ({ auth }) => {
   const logger = getLogger();
 
   const isGameReady = React.useRef(false);
@@ -32,6 +32,7 @@ export const EthTrack: React.FC<{ auth: DailySignInAuth }> = ({ auth }) => {
     addObstaclesRow,
     toggleEditor,
     spawnCheckpoint,
+    setSpawnCheckpoint,
     // ...
   } = useGame();
 
@@ -55,6 +56,13 @@ export const EthTrack: React.FC<{ auth: DailySignInAuth }> = ({ auth }) => {
         addObstaclesRow(obstacles);
         setRowCount(rowCount);
         isGameReady.current = true;
+      },
+    });
+
+    api.ws.onUpdateCheckpoint.useSubscription(void function () {}, {
+      onData: ({ data: { checkpointNumber } }) => {
+        console.log("Received checkpoint data:", checkpointNumber);
+        setSpawnCheckpoint(checkpointNumber);
       },
     });
   } else {

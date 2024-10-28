@@ -8,7 +8,7 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { ethers } from "ethers";
 import { toast } from "sonner";
 
-import type { DailySignInAuth } from "~/types/auth";
+import type { Auth } from "~/types/auth";
 import type { Track } from "~/types/misc";
 
 import { useWeb3 } from "~/components/providers/web3-provider";
@@ -35,13 +35,15 @@ type GamePageProps = {
 
 export default function GamePage({ searchParams: { track } }: GamePageProps) {
   const router = useRouter();
-  const { writeContract, readContract, signer } = useWeb3();
-  const { startGame } = useGame();
   const { primaryWallet } = useDynamicContext();
+  const { writeContract, readContract, signer } = useWeb3();
+  const { startGame, setSpawnCheckpoint } = useGame();
+
   const [isGameActive, setIsGameActive] = React.useState(false);
   const hasAttemptedStart = React.useRef(false);
   const hasAttemptedSignIn = React.useRef(false);
-  const [auth, setAuth] = useLocalStorage<DailySignInAuth | null>("auth", null);
+
+  const [auth, setAuth] = useLocalStorage<Auth | null>("auth", null);
 
   const checkAuth = React.useCallback(async () => {
     if (hasAttemptedSignIn.current) return auth;
@@ -57,7 +59,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     }
   }, [signer, primaryWallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isAuthValid = (auth: DailySignInAuth) => {
+  const isAuthValid = (auth: Auth) => {
     const currentTime = Math.floor(Date.now() / 1000);
     return auth && auth.time && currentTime - auth.time < 24 * 60 * 60; // Valid for 24 hours
   };
@@ -95,7 +97,6 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
       const newAuth = { user, time: currentTime, rsv };
 
       setAuth(newAuth);
-      localStorage.setItem("auth", JSON.stringify(newAuth));
 
       console.log("Sign-in successful");
       return newAuth;
@@ -106,7 +107,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
     }
   };
 
-  async function fetchGameState(auth: DailySignInAuth) {
+  async function fetchGameState(auth: Auth) {
     if (!primaryWallet) {
       console.error("No primary wallet connected");
       throw new Error("No primary wallet connected");
@@ -141,8 +142,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
         timeRemaining: timeRemaining.toString(),
         currentCheckpoint: currentCheckpoint.toString(),
       });
-      // @hemant: update the spawn checkpoint
-      useGame.getState().setSpawnCheckpoint(Number(currentCheckpoint));
+      setSpawnCheckpoint(Number(currentCheckpoint));
 
       return {
         isActive,
