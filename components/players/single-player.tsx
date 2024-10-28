@@ -32,6 +32,7 @@ export const SinglePlayer: React.FC<{
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
+  // const { mutate: updatePlayerCheckpoint } = api.ws.updatePlayerCheckpoint.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -315,6 +316,24 @@ export const SinglePlayer: React.FC<{
     if (currentRow > lastRow.current && bodyPosition.y > 0) {
       logger.info(lastRow.current);
       lastRow.current = currentRow; // update the last row
+
+      // Add checkpoint update logic here
+      if (currentRow % 8 === 0) {
+        // Assuming checkpoints are every 8 rows
+        console.log("yoyo");
+
+        const checkpointNumber = Math.floor(currentRow / 8);
+        updateCheckpoint({
+          track: from,
+          checkpointNumber,
+          auth: {
+            user: auth.user,
+            time: auth.time,
+            rsv: auth.rsv,
+          },
+        });
+      }
+
       // emit event to server to reveal the next row of obstacles
       revealRow({
         track: from,

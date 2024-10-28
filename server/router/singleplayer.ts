@@ -115,8 +115,8 @@ export const singlePlayerRouter = createRouter({
     )
     .mutation(async ({ ctx: { ee }, input: { auth } }) => {
       console.log("updateObstacles called with auth:", auth);
-      // 12 sec delay to allow for the blockchain to update
-      await new Promise((resolve) => setTimeout(resolve, 12000));
+      // 15 sec delay to allow for the blockchain to update
+      await new Promise((resolve) => setTimeout(resolve, 15000));
 
       console.log("Fetching all obstacles");
       const { rowCount, obstacles } = await fetchAllObstacles(auth);
