@@ -18,6 +18,7 @@ import { env } from "~/lib/env";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 
+import { Spinner } from "./spinner";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -28,6 +29,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import If from "./ui/if";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const NUMBER_OF_COLUMNS = 5;
@@ -46,7 +48,8 @@ export function LevelEditor() {
   const { addSegment, setRowCount, isEditorOpen, toggleEditor, togglePause } =
     useGame();
 
-  const { mutate: updateObstacles } = api.ws.updateObstacles.useMutation();
+  const { mutate: updateObstacles, isPending: isUpdatingObstacles } =
+    api.ws.updateObstacles.useMutation();
 
   const [currentRow, setCurrentRow] = React.useState<number>(0);
   const [selections, setSelections] = React.useState<Selection[]>(
@@ -197,151 +200,178 @@ export function LevelEditor() {
 
   return (
     <Dialog open={isEditorOpen}>
-      <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-scroll">
-        <DialogHeader className="space-y-0">
-          <DialogTitle className="font-cal text-3xl tracking-wide md:text-4xl">
-            Level Editor
-          </DialogTitle>
-          <DialogDescription>
-            Create a new segment by selecting obstacles for each row.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent
+        hideClose
+        className="h-[72.5vh] max-w-2xl overflow-y-scroll"
+      >
+        <If
+          condition={!isUpdatingObstacles}
+          fallback={
+            <div className="grid h-full place-items-center">
+              <div className="flex flex-col items-center justify-center gap-4 md:gap-8">
+                <Spinner className="mx-auto" />
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold">Choose Obstacle</h2>
-              <div className="grid grid-cols-3 gap-4">
-                {OBSTACLES.map(({ label, description, value, image }, i) => {
-                  const Img = ({ width = 100, height = 100 }) => (
-                    <Image
-                      src={image}
-                      alt={label}
-                      width={width}
-                      height={height}
-                      className="aspect-square w-full rounded-md border object-cover"
-                    />
-                  );
-
-                  return (
-                    <div
-                      key={i}
-                      onClick={() => handleObstacleSelection(value)}
-                      className={cn(
-                        "relative size-20",
-                        selections[currentRow].obstacle === value &&
-                          "rounded-md ring-2 ring-ring ring-offset-2 ring-offset-background"
-                      )}
-                    >
-                      <Img />
-
-                      <HoverCard>
-                        <HoverCardTrigger className="absolute right-1 top-1 cursor-pointer overflow-hidden rounded-full bg-background/50 p-0.5">
-                          <Info className="size-3.5" />
-                        </HoverCardTrigger>
-
-                        <HoverCardContent side="right" className="font-matter">
-                          <Img height={400} width={400} />
-
-                          <p className="text-lg font-medium">{label}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {description}
-                          </p>
-                        </HoverCardContent>
-                      </HoverCard>
-                    </div>
-                  );
-                })}
+                <h3 className="text-balance text-center text-xl font-bold md:text-2xl">
+                  Transaction in progress. Please wait and do not close or
+                  refresh this window.
+                </h3>
               </div>
             </div>
+          }
+        >
+          <DialogHeader className="space-y-0 p-0">
+            <DialogTitle className="font-cal text-3xl tracking-wide md:text-4xl">
+              Level Editor
+            </DialogTitle>
+            <DialogDescription>
+              Create a new segment by selecting obstacles for each row.
+            </DialogDescription>
+          </DialogHeader>
 
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold">Obstacle Placement</h2>
-              <div className="grid grid-cols-3 gap-4">
-                {Array.from({ length: NUMBER_OF_COLUMNS }).map((_, i) => {
-                  const Segments = ({ className = "" }) =>
-                    Array.from({ length: 5 }).map((_, j) => (
-                      <div
-                        key={j}
-                        className={cn(
-                          "rounded border",
-                          i === j && "bg-muted group-hover:animate-bounce",
-                          className
-                        )}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold">Choose Obstacle</h2>
+                <div className="grid grid-cols-3 gap-4">
+                  {OBSTACLES.map(({ label, description, value, image }, i) => {
+                    const Img = ({ width = 100, height = 100 }) => (
+                      <Image
+                        src={image}
+                        alt={label}
+                        width={width}
+                        height={height}
+                        className="aspect-square w-full rounded-md border object-cover"
                       />
-                    ));
+                    );
 
-                  return (
-                    <div
-                      key={i}
-                      onClick={() => handleColumnSelection(i)}
-                      className={cn(
-                        "group flex size-20 cursor-pointer items-center justify-center gap-px overflow-hidden rounded-md border",
-                        selections[currentRow].column === i &&
-                          "ring-2 ring-ring ring-offset-2 ring-offset-background"
-                      )}
-                    >
-                      <Segments className="size-3" />
-                    </div>
-                  );
-                })}
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => handleObstacleSelection(value)}
+                        className={cn(
+                          "relative size-20",
+                          selections[currentRow].obstacle === value &&
+                            "rounded-md ring-2 ring-ring ring-offset-2 ring-offset-background"
+                        )}
+                      >
+                        <Img />
+
+                        <HoverCard>
+                          <HoverCardTrigger className="absolute right-1 top-1 cursor-pointer overflow-hidden rounded-full bg-background/50 p-0.5">
+                            <Info className="size-3.5" />
+                          </HoverCardTrigger>
+
+                          <HoverCardContent
+                            side="right"
+                            className="font-matter"
+                          >
+                            <Img height={400} width={400} />
+
+                            <p className="text-lg font-medium">{label}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {description}
+                            </p>
+                          </HoverCardContent>
+                        </HoverCard>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold">Obstacle Placement</h2>
+                <div className="grid grid-cols-3 gap-4">
+                  {Array.from({ length: NUMBER_OF_COLUMNS }).map((_, i) => {
+                    const Segments = ({ className = "" }) =>
+                      Array.from({ length: 5 }).map((_, j) => (
+                        <div
+                          key={j}
+                          className={cn(
+                            "rounded border",
+                            i === j && "bg-muted group-hover:animate-bounce",
+                            className
+                          )}
+                        />
+                      ));
+
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => handleColumnSelection(i)}
+                        className={cn(
+                          "group flex size-20 cursor-pointer items-center justify-center gap-px overflow-hidden rounded-md border",
+                          selections[currentRow].column === i &&
+                            "ring-2 ring-ring ring-offset-2 ring-offset-background"
+                        )}
+                      >
+                        <Segments className="size-3" />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Choose Row</h2>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    onClick={setRandomObstacles}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Choose Row</h2>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={setRandomObstacles}
+                      className={cn(
+                        "size-8",
+                        env.NODE_ENV === "production" && "hidden"
+                      )}
+                    >
+                      <RefreshCw className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    Select random obstacles for each row.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <div className="grid grid-cols-5 gap-4">
+                {Array.from({ length: NUMBER_OF_ROWS }).map((_, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setCurrentRow(i)}
                     className={cn(
-                      "size-8",
-                      env.NODE_ENV === "production" && "hidden"
+                      "cursor-pointer rounded-md border bg-black/10 px-1 py-2 text-center",
+                      selections[i].obstacle !== null &&
+                        selections[i].column !== null &&
+                        "border-green-500 bg-green-400 text-background",
+                      currentRow === i &&
+                        "ring-2 ring-ring ring-offset-2 ring-offset-background"
                     )}
                   >
-                    <RefreshCw className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  Select random obstacles for each row.
-                </TooltipContent>
-              </Tooltip>
+                    <p className="font-matter">Row {i + 1}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-5 gap-4">
-              {Array.from({ length: NUMBER_OF_ROWS }).map((_, i) => (
-                <div
-                  key={i}
-                  onClick={() => setCurrentRow(i)}
-                  className={cn(
-                    "cursor-pointer rounded-md border bg-black/10 px-1 py-2 text-center",
-                    selections[i].obstacle !== null &&
-                      selections[i].column !== null &&
-                      "border-green-500 bg-green-400 text-background",
-                    currentRow === i &&
-                      "ring-2 ring-ring ring-offset-2 ring-offset-background"
-                  )}
+
+            <div className="flex w-full justify-end gap-2">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  disabled={isUpdatingObstacles}
+                  variant="secondary"
+                  onClick={() => toggleEditor(false)}
                 >
-                  <p className="font-matter">Row {i + 1}</p>
-                </div>
-              ))}
+                  Cancel
+                </Button>
+              </DialogClose>
+
+              <Button disabled={isUpdatingObstacles}>Create Segment</Button>
             </div>
-          </div>
-
-          <div className="flex w-full justify-end gap-2">
-            <DialogClose asChild>
-              <Button disabled type="button" variant="secondary">
-                Cancel
-              </Button>
-            </DialogClose>
-
-            <Button>Create Segment</Button>
-          </div>
-        </form>
+          </form>
+        </If>
       </DialogContent>
     </Dialog>
   );
