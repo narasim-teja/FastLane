@@ -134,16 +134,14 @@ export const singlePlayerRouter = createRouter({
       // 15 sec delay to allow for the blockchain to update
       await new Promise((resolve) => setTimeout(resolve, 15000));
 
-      console.log("Fetching all obstacles");
-      const { rowCount, obstacles } = await fetchAllObstacles(auth);
+      // console.log("Fetching all obstacles");
+      // const { rowCount, obstacles } = await fetchAllObstacles(auth);
 
-      logger.info({ rowCount, obstacles }, "Full available obstacles:");
+      // logger.info({ rowCount, obstacles }, "Full available obstacles:");
 
-      ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
+      // ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
 
       return {
-        rowCount,
-        obstacles,
         refresh: true,
       };
     }),

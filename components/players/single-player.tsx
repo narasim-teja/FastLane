@@ -344,7 +344,7 @@ export const SinglePlayer: React.FC<{
     if (bodyPosition.y < -2) {
       revealRow({
         track: from,
-        rowIdx: spawnCheckpoint * 9,
+        rowIdx: spawnCheckpoint * 8,
         auth: {
           user: auth.user,
           time: auth.time,

@@ -106,136 +106,6 @@ export function LevelEditor() {
     }
   }, [selections, currentRow]);
 
-  // async function fetchGameState(auth) {
-  //   if (!primaryWallet) {
-  //     console.error("No primary wallet connected");
-  //     throw new Error("No primary wallet connected");
-  //   }
-
-  //   if (!readContract) {
-  //     console.error("Read contract is not initialized");
-  //     throw new Error("Read contract is not initialized");
-  //   }
-
-  //   if (!auth) {
-  //     console.error("Authentication data is missing");
-  //     throw new Error("Authentication data is missing");
-  //   }
-
-  //   try {
-  //     console.log("Fetching game state with auth:", auth);
-  //     console.log("Primary wallet address:", primaryWallet.address);
-
-  //     const gameState = await readContract.getGameState({
-  //       user: auth.user,
-  //       time: auth.time,
-  //       rsv: auth.rsv
-  //     }, primaryWallet.address);
-
-  //     // Destructure and log the game state
-  //     const { isActive, timeRemaining } = gameState;
-  //     console.log("Game State:", {
-  //       isActive,
-  //       timeRemaining: timeRemaining.toString() // Convert BigNumber to string
-  //     });
-
-  //     return { isActive, timeRemaining: timeRemaining.toString() };
-  //   } catch (error) {
-  //     console.error("Error fetching game state:", error);
-  //     if (error.reason) {
-  //       console.error("Error reason:", error.reason);
-  //     }
-  //     throw error;
-  //   }
-  // }
-
-  // React.useEffect(() => {
-  //   const initializeEditor = async () => {
-  //     if (primaryWallet && signer) {
-  //       try {
-  //         console.log("Initializing editor...");
-  //         const authResult = await checkAuth();
-  //         if (authResult) {
-  //           console.log("Auth successful, fetching game state...");
-  //           const gameState = await fetchGameState(authResult);
-  //           console.log("Fetched game state:", gameState);
-  //           // You can add any additional logic here based on the game state
-  //         } else {
-  //           console.log("Auth failed or not available");
-  //         }
-  //       } catch (error) {
-  //         console.error("Error initializing editor:", error);
-  //         toast.error("Failed to initialize editor");
-  //       }
-  //     }
-  //   };
-
-  //   initializeEditor();
-  // }, [primaryWallet, signer]);
-
-  // const checkAuth = React.useCallback(async () => {
-  //   console.log("Checking auth...");
-  //   const storedAuthStr = localStorage.getItem('auth');
-  //   let storedAuth = null;
-
-  //   if (storedAuthStr) {
-  //     storedAuth = JSON.parse(storedAuthStr);
-  //     console.log("Stored auth found:", storedAuth);
-  //   } else {
-  //     console.log("No stored auth found");
-  //   }
-
-  //   if (storedAuth && isAuthValid(storedAuth)) {
-  //     console.log("Auth is still valid");
-  //     setAuth(storedAuth);
-  //     return storedAuth;  // Return the auth object
-  //   } else {
-  //     console.log("Auth is invalid or expired. Performing sign-in");
-  //     const newAuth = await signIn();
-  //     return newAuth;  // Return the new auth object
-  //   }
-  // }, [signer, account]);
-
-  // const isAuthValid = (auth) => {
-  //   const currentTime = Math.floor(Date.now() / 1000);
-  //   return auth && auth.time && (currentTime - auth.time < 24 * 60 * 60); // Valid for 24 hours
-  // };
-
-  // const signIn = async () => {
-  //   try {
-  //     const currentTime = Math.floor(Date.now() / 1000);
-  //     const user = account;
-  //     console.log("Signing in for user:", user);
-
-  //     const signature = await signer.signTypedData({
-  //       name: "SignInExample.SignIn",
-  //       version: "1",
-  //       chainId: 23295,
-  //       verifyingContract: env.NEXT_PUBLIC_OASIS_CONTRACT_ADDRESS
-  //     }, {
-  //       SignIn: [
-  //         { name: 'user', type: "address" },
-  //         { name: 'time', type: 'uint32' },
-  //       ]
-  //     }, {
-  //       user,
-  //       time: currentTime
-  //     });
-  //     const rsv = ethers.Signature.from(signature);
-  //     const auth = {user, time: currentTime, rsv};
-
-  //     setAuth(auth);
-  //     localStorage.setItem('auth', JSON.stringify(auth));
-
-  //     console.log("Sign-in successful");
-  //     return auth;  // Return the new auth object
-  //   } catch (error) {
-  //     console.error("Error during sign-in:", error);
-  //     toast.error("Sign-in failed. Please try again.");
-  //     return null;
-  //   }
-  // };
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -285,23 +155,23 @@ export function LevelEditor() {
       // Call the smart contract function addSegment
       await writeContract.addSegment(extendedResultArray);
 
-      // After the transaction is successful, update obstacles in the UI
-      if (auth) {
-        updateObstacles(
-          { auth },
-          {
-            onSuccess: ({ obstacles, rowCount, refresh }) => {
-              setRowCount(rowCount);
-              addSegment(obstacles);
-              toggleEditor(false);
-              togglePause(false);
-              if (refresh) {
-                router.refresh();
-              }
-            },
-          }
-        );
-      }
+      // // After the transaction is successful, update obstacles in the UI
+      // if (auth) {
+      //   updateObstacles(
+      //     { auth },
+      //     {
+      //       onSuccess: ({ refresh }) => {
+      //         // setRowCount(rowCount);
+      //         // addSegment(obstacles);
+      //         toggleEditor(false);
+      //         togglePause(false);
+      //         if (refresh) {
+      //           router.refresh();
+      //         }
+      //       },
+      //     }
+      //   );
+      // }
 
       toast.success("Segment added successfully");
     } catch (error) {

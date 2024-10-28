@@ -9,7 +9,7 @@ import { getLogger } from "~/lib/logger";
 
 export const sessionObstacles: number[][] = [];
 let contract: ethers.Contract | null = null;
-
+let writeContract: ethers.Contract | null = null;
 const log = getLogger();
 
 function getContractInstance() {
@@ -26,6 +26,23 @@ function getContractInstance() {
     );
   }
   return contract;
+}
+
+function getWriteContractInstance() {
+  if (!writeContract) {
+    const provider = new ethers.JsonRpcProvider(
+      sapphire.NETWORKS.testnet.defaultGateway
+    );
+    const signer = new ethers.Wallet(env.TRACK_OWNER_PKEY, provider);
+    const wrappedSigner = sapphire.wrap(signer);
+
+    writeContract = new ethers.Contract(
+      env.OASIS_CONTRACT_ADDRESS,
+      abi,
+      wrappedSigner
+    );
+  }
+  return writeContract;
 }
 
 export async function revealObstaclesInRow(rowIndex: number, auth: Auth) {
@@ -153,7 +170,13 @@ export async function updateCheckpoint(
     `Updating checkpoint for address: ${address}, checkpointNumber: ${checkpointNumber}`
   );
 
-  const contract = getContractInstance();
+  const writeContract = getWriteContractInstance();
 
-  await contract.updateCheckpoint(address, checkpointNumber);
+  const tx = await writeContract.updatePlayerCheckpoint(
+    address,
+    checkpointNumber
+  );
+  await tx.wait();
+
+  log.info(`Checkpoint updated for address: ${address}`);
 }
