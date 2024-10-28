@@ -1,62 +1,79 @@
 import * as sapphire from "@oasisprotocol/sapphire-paratime";
 import { ethers } from "ethers";
 
-import { abi, CHAIN_ID } from "~/config/constants";
+import type { Auth } from "~/types/auth";
+
+import { abi } from "~/config/constants";
 import { env } from "~/lib/env";
 import { getLogger } from "~/lib/logger";
 
-export const sessionChainMap: Record<number, number> = {};
-export const sessionObstacles: number[][][] = [];
+export const sessionObstacles: number[][] = [];
 let contract: ethers.Contract | null = null;
-
+let writeContract: ethers.Contract | null = null;
 const log = getLogger();
 
 function getContractInstance() {
   if (!contract) {
-    const signer = sapphire
-      .wrap(new ethers.Wallet(env.TRACK_OWNER_PKEY))
-      .connect(
-        ethers.getDefaultProvider(sapphire.NETWORKS.testnet.defaultGateway)
-      );
+    const provider = new ethers.JsonRpcProvider(
+      sapphire.NETWORKS.testnet.defaultGateway
+    );
+    const wrappedProvider = sapphire.wrap(provider);
 
-    contract = new ethers.Contract(env.OASIS_CONTRACT_ADDRESS, abi, signer);
+    contract = new ethers.Contract(
+      env.OASIS_CONTRACT_ADDRESS,
+      abi,
+      wrappedProvider
+    );
   }
-
   return contract;
 }
 
-export async function revealObstaclesInRow(
-  chainId: number,
-  sessionId: number,
-  rowIndex: number
-) {
-  log.info(
-    `Reveal row: sessionId=${sessionId}, rowIndex=${rowIndex}, chainId=${chainId}`
-  );
+function getWriteContractInstance() {
+  if (!writeContract) {
+    const provider = new ethers.JsonRpcProvider(
+      sapphire.NETWORKS.testnet.defaultGateway
+    );
+    const signer = new ethers.Wallet(env.TRACK_OWNER_PKEY, provider);
+    const wrappedSigner = sapphire.wrap(signer);
+
+    writeContract = new ethers.Contract(
+      env.OASIS_CONTRACT_ADDRESS,
+      abi,
+      wrappedSigner
+    );
+  }
+  return writeContract;
+}
+
+export async function revealObstaclesInRow(rowIndex: number, auth: Auth) {
+  log.info(`Reveal row: rowIndex=${rowIndex}`);
 
   try {
-    if (!sessionChainMap[sessionId]) {
-      await initializeSession(chainId, sessionId);
+    if (!sessionObstacles.length) {
+      await initializeSession(auth);
     }
 
-    if (!sessionObstacles[sessionId]?.length) {
-      log.error(`No obstacles found for sessionId: ${sessionId}`);
+    if (!sessionObstacles.length) {
+      log.error("No obstacles found after initialization");
       return {
         rowCount: 0,
         obstaclesInRow: [],
       };
     }
 
-    log.info({ rowCount: sessionObstacles[sessionId].length }, "rowCount:");
+    log.info({ rowCount: sessionObstacles.length }, "rowCount:");
 
-    const obstaclesInRow = sessionObstacles[sessionId]?.[rowIndex] ?? [];
-    log.info(
-      { obstaclesInRow },
-      `Obstacles for sessionId=${sessionId}, rowIndex=${rowIndex}:`
-    );
+    const obstaclesInRow = sessionObstacles[rowIndex] ?? [];
+    log.info({ obstaclesInRow }, `Obstacles for rowIndex=${rowIndex}:`);
+
+    if (obstaclesInRow.length === 0) {
+      log.warn(
+        `No obstacles found for rowIndex=${rowIndex}. This might indicate a problem.`
+      );
+    }
 
     return {
-      rowCount: sessionObstacles[sessionId].length,
+      rowCount: sessionObstacles.length,
       obstaclesInRow,
     };
   } catch (error) {
@@ -68,42 +85,36 @@ export async function revealObstaclesInRow(
   }
 }
 
-export async function initializeSession(chainId: number, sessionId: number) {
+export async function initializeSession(auth: Auth) {
   try {
-    log.info(
-      `initializeSession called with chainId: ${chainId}, sessionId: ${sessionId}`
-    );
+    log.info("Initializing session");
 
-    sessionChainMap[sessionId] = chainId;
-    sessionObstacles[sessionId] = [];
+    sessionObstacles.length = 0;
 
-    await fetchAllObstacles(chainId, sessionId);
+    await fetchAllObstacles(auth);
 
-    log.info(
-      { sessionObstacles: sessionObstacles[sessionId] },
-      "Obstacles in session:"
-    );
+    log.info({ sessionObstacles }, "Obstacles in session:");
   } catch (error) {
     log.error(error, "Failed to create new session:");
   }
 }
 
-export async function fetchAllObstacles(chainId: number, sessionId: number) {
+export async function fetchAllObstacles(auth: Auth) {
   try {
     const contract = getContractInstance();
 
-    const rowCountBigInt = await contract.getRowCount(chainId);
+    const rowCountBigInt = await contract.getRowCount();
     const rowCount = Number(rowCountBigInt.toString());
 
     const obstaclePromises = Array.from({ length: rowCount }, (_, rowIndex) =>
-      fetchObstaclesInRow(sessionId, rowIndex)
+      fetchObstaclesInRow(rowIndex, auth)
     );
 
     const allObstacles = await Promise.all(obstaclePromises);
 
     log.info({ allObstacles }, "Obstacles for session:");
 
-    sessionObstacles[sessionId] = allObstacles;
+    sessionObstacles.push(...allObstacles);
 
     return {
       rowCount,
@@ -119,22 +130,53 @@ export async function fetchAllObstacles(chainId: number, sessionId: number) {
   }
 }
 
-export async function fetchObstaclesInRow(sessionId: number, rowIndex: number) {
+export async function fetchObstaclesInRow(rowIndex: number, auth: Auth) {
   try {
-    log.info(`Attempt to retrieve chainId for sessionId: ${sessionId}`);
-    log.info({ sessionChainMap }, "Current mapping:");
+    log.info(`Fetching obstacles for rowIndex: ${rowIndex}`);
+    if (!auth) {
+      log.error("Auth data is null");
+      return [];
+    }
 
     const contract = getContractInstance();
 
+    log.info(`Calling contract.getObstaclesInRow`);
     const obstaclesBigInt = await contract.getObstaclesInRow(
-      CHAIN_ID,
+      {
+        user: auth.user,
+        time: auth.time,
+        rsv: auth.rsv,
+      },
+      auth.user,
       rowIndex
     );
-    const obstacles = obstaclesBigInt.toString().split(",").map(Number);
+    log.info(`Raw obstacles from contract:`, obstaclesBigInt);
+
+    const obstacles = obstaclesBigInt.map(Number);
+    log.info(`Parsed obstacles for rowIndex: ${rowIndex}:`, obstacles);
 
     return obstacles;
   } catch (error) {
-    log.error(error, "Error in fetchObstaclesInRow:");
+    log.error(`Error in fetchObstaclesInRow for rowIndex ${rowIndex}:`, error);
     return [];
   }
+}
+
+export async function updateCheckpoint(
+  address: string,
+  checkpointNumber: number
+) {
+  log.info(
+    `Updating checkpoint for address: ${address}, checkpointNumber: ${checkpointNumber}`
+  );
+
+  const writeContract = getWriteContractInstance();
+
+  const tx = await writeContract.updatePlayerCheckpoint(
+    address,
+    checkpointNumber
+  );
+  await tx.wait();
+
+  log.info(`Checkpoint updated for address: ${address}`);
 }

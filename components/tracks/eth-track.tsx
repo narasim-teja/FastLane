@@ -6,17 +6,18 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
+import type { Auth } from "~/types/auth";
+
 import { EthBlockEnd, EthStartingBlock } from "~/components/block";
 import { Bounds } from "~/components/bounds";
 import { Loader } from "~/components/loader";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
-export function EthTrack() {
+export const EthTrack: React.FC<{ auth: Auth }> = ({ auth }) => {
   const logger = getLogger();
 
   const isGameReady = React.useRef(false);
@@ -32,6 +33,7 @@ export function EthTrack() {
     addObstaclesRow,
     toggleEditor,
     spawnCheckpoint,
+    setSpawnCheckpoint,
     // ...
   } = useGame();
 
@@ -43,19 +45,25 @@ export function EthTrack() {
   if (!isDebugging) {
     api.ws.onRevealRow.useSubscription(void function () {}, {
       onStarted: () => {
-        logger.info(">>> Fetching Initial Row");
+        console.log("Fetching Initial Row with auth:", auth);
         revealRow({
           track: "eth",
-          chainId: CHAIN_ID,
-          sessionId: SESSION_ID,
           rowIdx: spawnCheckpoint * 9,
+          auth,
         });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
-        logger.info({ obstacles }, `>>> Raw event data for row ${rowIdx}:`);
+        console.log("Received row data:", { rowCount, rowIdx, obstacles });
         addObstaclesRow(obstacles);
         setRowCount(rowCount);
         isGameReady.current = true;
+      },
+    });
+
+    api.ws.onUpdateCheckpoint.useSubscription(void function () {}, {
+      onData: ({ data: { checkpointNumber } }) => {
+        console.log("Received checkpoint data:", checkpointNumber);
+        setSpawnCheckpoint(checkpointNumber);
       },
     });
   } else {
@@ -129,7 +137,7 @@ export function EthTrack() {
         );
       })}
 
-      <SinglePlayer from="eth" />
+      {auth && <SinglePlayer from="eth" auth={auth} />}
     </Physics>
   );
-}
+};

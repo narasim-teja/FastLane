@@ -4,13 +4,16 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Info, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
-import { CHAIN_ID } from "~/config/constants";
+import type { Auth } from "~/types/auth";
+
+import { useWeb3 } from "~/components/providers/web3-provider";
 import { OBSTACLES } from "~/config/obctacles";
-import { useContract } from "~/hooks/use-contract";
 import { useGame } from "~/hooks/use-game";
+import { useLocalStorage } from "~/hooks/use-local-storage";
 import { env } from "~/lib/env";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
@@ -36,8 +39,9 @@ type Selection = {
 };
 
 export function LevelEditor() {
-  const contract = useContract();
+  const { writeContract, readContract } = useWeb3();
   const router = useRouter();
+  const { primaryWallet } = useDynamicContext();
 
   const { addSegment, setRowCount, isEditorOpen, toggleEditor, togglePause } =
     useGame();
@@ -48,6 +52,27 @@ export function LevelEditor() {
   const [selections, setSelections] = React.useState<Selection[]>(
     Array(NUMBER_OF_ROWS).fill({ obstacle: null, column: null })
   );
+  const [auth, _setAuth] = useLocalStorage<Auth | null>("auth", null);
+  const _account = primaryWallet?.address || "";
+
+  const handleCheckpointCreated = (
+    creator: string,
+    checkpointNumber: number
+  ) => {
+    console.log(
+      `Checkpoint created by: ${creator}, Checkpoint Number: ${checkpointNumber}`
+    );
+  };
+
+  React.useEffect(() => {
+    if (readContract) {
+      readContract.on("CheckpointCreated", handleCheckpointCreated);
+
+      return () => {
+        readContract.off("CheckpointCreated", handleCheckpointCreated);
+      };
+    }
+  }, [readContract]);
 
   function handleObstacleSelection(value: string) {
     setSelections((prev) =>
@@ -92,7 +117,6 @@ export function LevelEditor() {
       toast.error("An error occurred", {
         description: "Please fill all rows before submitting.",
       });
-
       return;
     }
 
@@ -116,23 +140,46 @@ export function LevelEditor() {
     const extendedResultArray = resultArray.concat(Array(10).fill(0));
 
     try {
-      if (contract) {
-        await contract.addSegment(CHAIN_ID, extendedResultArray);
-
-        updateObstacles(undefined, {
-          onSuccess: ({ obstacles, rowCount, refresh }) => {
-            setRowCount(rowCount);
-            addSegment(obstacles);
-            toggleEditor(false);
-            togglePause(false);
-            if (refresh) {
-              router.refresh(); // Refresh the page
-            }
-          },
-        });
+      if (!primaryWallet) {
+        throw new Error("No primary wallet connected");
       }
+
+      if (!writeContract) {
+        throw new Error("Write contract is not initialized");
+      }
+
+      // await fetchGameState(auth);
+
+      console.log("extendedResultArray", extendedResultArray);
+
+      // Call the smart contract function addSegment
+      await writeContract.addSegment(extendedResultArray);
+
+      // // After the transaction is successful, update obstacles in the UI
+      // if (auth) {
+      //   updateObstacles(
+      //     { auth },
+      //     {
+      //       onSuccess: ({ refresh }) => {
+      //         // setRowCount(rowCount);
+      //         // addSegment(obstacles);
+      //         toggleEditor(false);
+      //         togglePause(false);
+      //         if (refresh) {
+      //           router.refresh();
+      //         }
+      //       },
+      //     }
+      //   );
+      // }
+
+      toast.success("Segment added successfully");
     } catch (error) {
       console.error("Error submitting obstacles to the blockchain:", error);
+      toast.error("Failed to add segment", {
+        description:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
     }
   }
 

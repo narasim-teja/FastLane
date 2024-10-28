@@ -12,8 +12,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Fastlane is Ownable{
     // Constants
     uint256 constant COLUMNS = 5;
-    uint256 public ENTRY_FEE = 1 ether;
-    uint256 public SESSION_DURATION = 1800 seconds;
+    uint256 public ENTRY_FEE = 0.1 ether;
+    uint256 public SESSION_DURATION = 600 seconds;
 
     bytes32 public constant EIP712_DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
     string public constant SIGNIN_TYPE = "SignIn(address user,uint32 time)";
@@ -81,15 +81,6 @@ contract Fastlane is Ownable{
       currentLatestCheckpointOwner = msg.sender;
     }
 
-    // constructor () {
-    //     DOMAIN_SEPARATOR = keccak256(abi.encode(
-    //         EIP712_DOMAIN_TYPEHASH,
-    //         keccak256("SignInExample.SignIn"),
-    //         keccak256("1"),
-    //         block.chainid,
-    //         address(this)
-    //     ));
-    // }
     struct SignIn {
         address user;
         uint32 time;
@@ -180,14 +171,20 @@ contract Fastlane is Ownable{
     }
 
     // Function to allow players to view obstacles (requires view call authentication)
-    function getObstaclesInRow(SignIn calldata auth,uint256 rowIndex)
+    function getObstaclesInRow(
+        SignIn calldata auth,
+        address player,
+        uint256 rowIndex
+    )
         public
         view
-        onlyDuringSession
         authenticated(auth)
         returns (uint256[] memory)
     {
+        require(activeSessions[player], "No active session for player");
+        require(auth.user == player, "Auth user must match player");
         require(rowIndex < getRowCount(), "Row index out of bounds");
+
         uint256[] memory obstaclesInRow = new uint256[](COLUMNS);
         for (uint256 i = 0; i < COLUMNS; i++) {
             uint256 index = rowIndex * COLUMNS + i;
@@ -232,16 +229,18 @@ contract Fastlane is Ownable{
     }
 
      // Function to get the game state for a player
-    function getGameState(SignIn calldata auth,address player)
+    function getGameState(SignIn calldata auth, address player)
         public
         view
         authenticated(auth)
         returns (
             bool isActive,
-            uint256 timeRemaining
+            uint256 timeRemaining,
+            uint256 currentCheckpoint
         )
     {
         isActive = activeSessions[player];
+        currentCheckpoint = playerCurrentCheckpoint[player];
         if (isActive) {
             uint256 elapsedTime = block.timestamp - sessionStartTime[player];
             if (elapsedTime < SESSION_DURATION) {

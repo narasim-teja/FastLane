@@ -2,12 +2,15 @@ import { tracked } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
-import type { RevealRowData } from "~/types/ws";
+import type { RevealRowData, UpdateCheckpointData } from "~/types/ws";
 
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { getLogger } from "~/lib/logger";
 
-import { fetchAllObstacles, revealObstaclesInRow } from "../helper";
+import {
+  fetchAllObstacles,
+  revealObstaclesInRow,
+  updateCheckpoint,
+} from "../helper";
 import { createRouter, protectedProcedure } from "../trpc";
 
 const logger = getLogger();
@@ -33,31 +36,39 @@ export const singlePlayerRouter = createRouter({
     .input(
       z.object({
         track: z.enum(["eth", "gold"]),
-        chainId: z.number(),
-        sessionId: z.number(),
         rowIdx: z.number(),
+        auth: z.object({
+          user: z.string(),
+          time: z.number(),
+          rsv: z.object({
+            r: z.string(),
+            s: z.string(),
+            v: z.number(),
+          }),
+        }),
       })
     )
-    .mutation(
-      async ({ ctx: { ee }, input: { track, chainId, sessionId, rowIdx } }) => {
-        let rowCount: number, obstacles: number[];
+    .mutation(async ({ ctx: { ee }, input: { track, rowIdx, auth } }) => {
+      console.log("revealRow called with:", { track, rowIdx, auth });
+      let rowCount: number, obstacles: number[];
 
-        if (track === "eth") {
-          ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
-            chainId,
-            sessionId,
-            rowIdx
-          ));
-        } else {
-          obstacles = obstacleData.at(rowIdx) ?? [];
-          rowCount = obstacleData.length;
-        }
-
-        ee.emit("revealRow", { rowIdx, rowCount, obstacles });
-
-        return { rowIdx, rowCount, obstacles };
+      if (track === "eth") {
+        console.log("Calling revealObstaclesInRow for ETH track");
+        ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
+          rowIdx,
+          auth
+        ));
+      } else {
+        console.log("Using generated obstacle data for non-ETH track");
+        obstacles = obstacleData.at(rowIdx) ?? [];
+        rowCount = obstacleData.length;
       }
-    ),
+
+      console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
+      ee.emit("revealRow", { rowIdx, rowCount, obstacles });
+
+      return { rowIdx, rowCount, obstacles };
+    }),
 
   onRevealRow: protectedProcedure.subscription(async function* ({
     ctx: { ee },
@@ -92,23 +103,59 @@ export const singlePlayerRouter = createRouter({
     })
   ),
 
-  updateObstacles: protectedProcedure.mutation(async ({ ctx: { ee } }) => {
-    // 12 sec delay to allow for the blockchain to update
-    await new Promise((resolve) => setTimeout(resolve, 12000));
-
-    const { rowCount, obstacles } = await fetchAllObstacles(
-      CHAIN_ID,
-      SESSION_ID
-    );
-
-    logger.info({ rowCount, obstacles }, "Full available obstacles:");
-
-    ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
-
-    return {
-      rowCount,
-      obstacles,
-      refresh: true,
-    };
+  onUpdateCheckpoint: protectedProcedure.subscription(async function* ({
+    ctx: { ee },
+  }) {
+    for await (const [data] of ee.toIterable("updateCheckpoint")) {
+      const updateCheckpointData = data as UpdateCheckpointData;
+      yield tracked(
+        updateCheckpointData.checkpointNumber.toString(),
+        updateCheckpointData
+      );
+    }
   }),
+
+  updateObstacles: protectedProcedure
+    .input(
+      z.object({
+        auth: z.object({
+          user: z.string(),
+          time: z.number(),
+          rsv: z.object({
+            r: z.string(),
+            s: z.string(),
+            v: z.number(),
+          }),
+        }),
+      })
+    )
+    .mutation(async ({ ctx: { ee }, input: { auth } }) => {
+      console.log("updateObstacles called with auth:", auth);
+      // 15 sec delay to allow for the blockchain to update
+      await new Promise((resolve) => setTimeout(resolve, 15000));
+
+      // console.log("Fetching all obstacles");
+      // const { rowCount, obstacles } = await fetchAllObstacles(auth);
+
+      // logger.info({ rowCount, obstacles }, "Full available obstacles:");
+
+      // ee.emit("revealRow", { rowIdx: -1, rowCount, obstacles });
+
+      return {
+        refresh: true,
+      };
+    }),
+
+  updateCheckpoint: protectedProcedure
+    .input(
+      z.object({
+        address: z.string(),
+        checkpointNumber: z.number(),
+      })
+    )
+    .mutation(async ({ ctx: { ee }, input: { address, checkpointNumber } }) => {
+      await updateCheckpoint(address, checkpointNumber);
+
+      ee.emit("updateCheckpoint", { checkpointNumber });
+    }),
 });

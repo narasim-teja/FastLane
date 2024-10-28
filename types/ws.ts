@@ -11,3 +11,7 @@ export type BroadcastPositionData = {
   position: Coordinates;
   rotation: Coordinates;
 };
+
+export type UpdateCheckpointData = {
+  checkpointNumber: number;
+};

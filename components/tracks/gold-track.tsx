@@ -6,13 +6,15 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 
+import type { Auth } from "~/types/auth";
+
 import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
 import { Loader } from "~/components/loader";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
 import { Track } from "~/components/track";
-import { CHAIN_ID, SESSION_ID } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
+import { useLocalStorage } from "~/hooks/use-local-storage";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
 
@@ -33,6 +35,8 @@ export function GoldTrack() {
     // ...
   } = useGame();
 
+  const [auth] = useLocalStorage<Auth | null>("auth", null);
+
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
   // Debugging mode check
@@ -42,11 +46,12 @@ export function GoldTrack() {
     api.ws.onRevealRow.useSubscription(void function () {}, {
       onStarted: () => {
         logger.info(">>> Fetching Initial Row");
+        if (!auth) return;
+
         revealRow({
           track: "gold",
-          chainId: CHAIN_ID,
-          sessionId: SESSION_ID,
           rowIdx: 0,
+          auth,
         });
       },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
@@ -108,7 +113,7 @@ export function GoldTrack() {
         </group>
       ))}
 
-      <SinglePlayer from="gold" />
+      {auth && <SinglePlayer from="gold" auth={auth} />}
     </Physics>
   );
 }

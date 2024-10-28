@@ -371,6 +371,11 @@
         "internalType": "uint256",
         "name": "timeRemaining",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentCheckpoint",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -416,6 +421,11 @@
         "internalType": "struct Fastlane.SignIn",
         "name": "auth",
         "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
       },
       {
         "internalType": "uint256",

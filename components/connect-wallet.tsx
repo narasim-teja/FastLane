@@ -1,61 +1,22 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
 
-import { ConnectButton } from "thirdweb/react";
+import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { Loader2 } from "lucide-react";
 
-import { thirdwebProps } from "~/lib/thirdweb/props";
-import { cn } from "~/lib/utils";
+import { Button } from "./ui/button";
 
-type ConnectWalletProps = {
-  from?: "navbar";
-};
+export function ConnectWallet() {
+  const { sdkHasLoaded } = useDynamicContext();
 
-export function ConnectWallet({ from }: ConnectWalletProps) {
-  const pathname = usePathname();
-
-  React.useLayoutEffect(() => {
-    const applyAddressStyle = () => {
-      const address = document.querySelector(".tw-connected-wallet__address");
-      address?.classList.add("!text-background");
-    };
-
-    const timeoutId = setTimeout(applyAddressStyle, 1000);
-
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  if (pathname === "/signin" && from === "navbar") {
-    return null;
+  if (!sdkHasLoaded) {
+    return (
+      <Button disabled className="h-12 w-[9.5rem] rounded-[0.625rem]">
+        <Loader2 className="size-5 animate-spin" />
+      </Button>
+    );
   }
 
-  return (
-    <ConnectButton
-      {...thirdwebProps}
-      connectButton={{
-        label: <span>Connect Wallet</span>,
-        className: cn(
-          "!rounded-full !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background !shadow-md !transition-colors hover:!bg-foreground/90"
-        ),
-      }}
-      signInButton={{
-        className: cn(
-          "!rounded-full !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background !shadow-md !transition-colors hover:!bg-foreground/90"
-        ),
-      }}
-      detailsButton={{
-        className: cn(
-          "!rounded-full !border-none !bg-foreground !px-3 !py-0 !text-lg !font-normal !text-background *:!border-none",
-          "*:[&>span]:!text-background"
-        ),
-        style: {
-          // select first span in second nested div
-          "& > div > span": {
-            color: "black !important",
-          },
-        } as React.CSSProperties,
-      }}
-    />
-  );
+  return <DynamicWidget />;
 }

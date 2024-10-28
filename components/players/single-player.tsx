@@ -14,9 +14,10 @@ import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
+import type { Auth } from "~/types/auth";
 import type { GamePlayAction } from "~/types/misc";
 
-import { CHAIN_ID, SESSION_ID, TIME_LIMIT } from "~/config/constants";
+import { TIME_LIMIT } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
@@ -25,7 +26,10 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
 
-export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
+export const SinglePlayer: React.FC<{
+  from: "eth" | "gold";
+  auth: Auth;
+}> = ({ from, auth }) => {
   const logger = getLogger();
 
   const { gl } = useThree();
@@ -35,6 +39,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
+  const { mutate: updateCheckpoint } = api.ws.updateCheckpoint.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -132,9 +137,12 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
         if (remainingTime <= 0) {
           revealRow({
             track: from,
-            chainId: CHAIN_ID,
-            sessionId: SESSION_ID,
             rowIdx: spawnCheckpoint * 10,
+            auth: {
+              user: auth.user,
+              time: auth.time,
+              rsv: auth.rsv,
+            },
           });
 
           lastRow.current = 0;
@@ -312,21 +320,40 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
     if (currentRow > lastRow.current && bodyPosition.y > 0) {
       logger.info(lastRow.current);
       lastRow.current = currentRow; // update the last row
+
+      // Add checkpoint update logic here
+      if (currentRow % 8 === 0) {
+        // Assuming checkpoints are every 8 rows
+        console.log("yoyo");
+
+        const checkpointNumber = Math.floor(currentRow / 8);
+        updateCheckpoint({
+          address: auth.user,
+          checkpointNumber,
+        });
+      }
+
       // emit event to server to reveal the next row of obstacles
       revealRow({
         track: from,
-        chainId: CHAIN_ID,
-        sessionId: SESSION_ID,
         rowIdx: currentRow,
+        auth: {
+          user: auth.user,
+          time: auth.time,
+          rsv: auth.rsv,
+        },
       });
     }
 
     if (bodyPosition.y < -2) {
       revealRow({
         track: from,
-        chainId: CHAIN_ID,
-        sessionId: SESSION_ID,
-        rowIdx: spawnCheckpoint * 9,
+        rowIdx: spawnCheckpoint * 8,
+        auth: {
+          user: auth.user,
+          time: auth.time,
+          rsv: auth.rsv,
+        },
       });
 
       // lastRow.current = spawnCheckpoint * 10;
