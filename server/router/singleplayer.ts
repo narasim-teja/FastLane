@@ -147,12 +147,7 @@ export const singlePlayerRouter = createRouter({
     }),
 
   updateCheckpoint: protectedProcedure
-    .input(
-      z.object({
-        address: z.string(),
-        checkpointNumber: z.number(),
-      })
-    )
+    .input(z.object({ address: z.string(), checkpointNumber: z.number() }))
     .mutation(async ({ ctx: { ee }, input: { address, checkpointNumber } }) => {
       await updateCheckpoint(address, checkpointNumber);
 

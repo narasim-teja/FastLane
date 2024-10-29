@@ -10,6 +10,7 @@ import {
 } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
+import { toast } from "sonner";
 import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
@@ -39,7 +40,8 @@ export const SinglePlayer: React.FC<{
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
-  const { mutate: updateCheckpoint } = api.ws.updateCheckpoint.useMutation();
+  const { mutateAsync: updateCheckpoint } =
+    api.ws.updateCheckpoint.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -327,10 +329,17 @@ export const SinglePlayer: React.FC<{
         console.log("yoyo");
 
         const checkpointNumber = Math.floor(currentRow / 8);
-        updateCheckpoint({
-          address: auth.user,
-          checkpointNumber,
-        });
+        toast.promise(
+          updateCheckpoint({
+            address: auth.user,
+            checkpointNumber,
+          }),
+          {
+            loading: "Updating checkpoint...",
+            success: "Checkpoint updated",
+            error: "Failed to update checkpoint",
+          }
+        );
       }
 
       // emit event to server to reveal the next row of obstacles
