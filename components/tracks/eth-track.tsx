@@ -118,7 +118,7 @@ export const EthTrack: React.FC<{ auth: Auth }> = ({ auth }) => {
               return blockEnds;
             })()}
 
-            {Array.from({ length: rowCount }, (_, i) => (
+            {Array.from({ length: rowCount / 10 }, (_, i) => (
               <Bounds
                 key={i}
                 length={rowCount}

@@ -234,7 +234,7 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
   }
 
   return (
-    <View className="h-dvh w-dvw bg-background">
+    <View className="h-dvh w-dvw overflow-hidden bg-background">
       <Common />
 
       {track === "gold" && <GoldTrack />}

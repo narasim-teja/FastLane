@@ -22,8 +22,8 @@ export const Bounds: React.FC<{
   return (
     <RigidBody type="fixed" colliders="trimesh" restitution={0.2} friction={1}>
       <group
-        scale={[1.065, 1, 6.3]}
-        position={[0, 0.055, -(24.2 * (row * 2 + 1))]}
+        scale={[1.065, 1, 6.275]}
+        position={[0, 0.055, -24.25 * (2 * row + 1) - 1.5 * row]}
       >
         <mesh
           // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
