@@ -116,6 +116,8 @@ export const SinglePlayer: React.FC<{
     };
   }, [startGame, subscribeKeys, playerPosition, from]);
 
+  console.log({ lastRow: lastRow.current });
+
   useFrame((state, delta) => {
     if (!body.current) return;
 
@@ -323,12 +325,9 @@ export const SinglePlayer: React.FC<{
       logger.info(lastRow.current);
       lastRow.current = currentRow; // update the last row
 
-      // Add checkpoint update logic here
-      if (currentRow % 8 === 0) {
-        // Assuming checkpoints are every 8 rows
-        console.log("yoyo");
+      if (currentRow % 10 === 9) {
+        const checkpointNumber = Math.floor((currentRow + 1) / 10);
 
-        const checkpointNumber = Math.floor(currentRow / 8);
         toast.promise(
           updateCheckpoint({
             address: auth.user,
