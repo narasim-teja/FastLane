@@ -13,9 +13,10 @@ import type { Track } from "~/types/misc";
 
 import { Loader } from "~/components/loader";
 import { useWeb3 } from "~/components/providers/web3-provider";
+import { CartesiCommunityTrack } from "~/components/tracks/cartesi-community-track";
 import { EthTrack } from "~/components/tracks/eth-track";
 import { GoldTrack } from "~/components/tracks/gold-track";
-import { CommunityTrack } from "~/components/tracks/oasis-community-track";
+import { OasisCommunityTrack } from "~/components/tracks/oasis-community-track";
 import { useGame } from "~/hooks/use-game";
 import { useLocalStorage } from "~/hooks/use-local-storage";
 import { env } from "~/lib/env";
@@ -239,7 +240,8 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
 
       {track === "gold" && <GoldTrack />}
       {track === "eth" && auth && <EthTrack auth={auth} />}
-      {track === "oasis-track" && <CommunityTrack />}
+      {track === "oasis-track" && <OasisCommunityTrack />}
+      {track === "cartesi-track" && <CartesiCommunityTrack />}
     </View>
   );
 }

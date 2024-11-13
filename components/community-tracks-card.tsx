@@ -17,6 +17,11 @@ const communityTracks = [
     image: "/images/oasis-logo.png",
     slug: "oasis-track",
   },
+  {
+    name: "Cartesi Track",
+    image: "/images/cartesi-logo.png",
+    slug: "cartesi-track",
+  },
 ];
 
 export function CommunityTracksCard() {
@@ -68,7 +73,7 @@ export function CommunityTracksCard() {
           <h3 className="font-poppins uppercase">Community Track</h3>
         </div>
 
-        <div className="-mr-2 grid h-full grid-cols-1 gap-2 pr-2">
+        <div className="-mr-2 grid grid-cols-1 gap-2 pr-2">
           {communityTracks.map(({ name, image, slug }) => (
             <Link
               key={name}
@@ -80,7 +85,7 @@ export function CommunityTracksCard() {
                 alt={name}
                 height={32}
                 width={32}
-                className="size-8 object-contain"
+                className="size-8 rounded-full object-contain"
               />
 
               <h4 className="truncate font-poppins font-semibold">{name}</h4>

@@ -9,7 +9,7 @@ export type GamePlayAction = {
   action: string;
 };
 
-export type Track = "gold" | "eth" | "oasis-track";
+export type Track = "gold" | "eth" | "oasis-track" | "cartesi-track";
 
 export type Clients = {
   [address: string]: { position: Coordinates; rotation: Coordinates };

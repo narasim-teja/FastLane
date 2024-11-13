@@ -15,11 +15,13 @@ import type { Clients, Position } from "~/types/misc";
 import { Multiplayer } from "~/components/players/multiplayer";
 import { api } from "~/lib/trpc/react";
 
-export const CommunityTrack: React.FC<GroupProps> = (props) => {
+export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
   const { primaryWallet } = useDynamicContext();
   const address = primaryWallet?.address ?? "";
 
-  const { nodes, materials } = useGLTF("/models/community-track.glb");
+  const { nodes, materials } = useGLTF(
+    "/models/community-tracks/oasis-track.glb"
+  );
   const roadTexture = useTexture("/textures/road.jpg", (texture) => {
     // flip the texture
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -222,4 +224,4 @@ export const CommunityTrack: React.FC<GroupProps> = (props) => {
   );
 };
 
-useGLTF.preload("/models/community-track.glb");
+useGLTF.preload("/models/community-tracks/oasis-track.glb");
