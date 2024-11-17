@@ -22,6 +22,7 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
   const cameraAngle = useRef(0);
+  const cameraHeight = useRef(3);
   const lastBroadcast = useRef(0);
   const lastPlayerMovement = useRef(0);
 
@@ -64,8 +65,17 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
       return;
     }
 
-    const { forward, backward, leftward, rightward, jump, panLeft, panRight } =
-      getKeys();
+    const {
+      forward,
+      backward,
+      leftward,
+      rightward,
+      jump,
+      panLeft,
+      panRight,
+      panUp,
+      panDown,
+    } = getKeys();
     const bodyPosition = body.current.translation();
     const bodyRotation = body.current.rotation();
 
@@ -73,13 +83,17 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
 
     // compute camera position and target
     const cameraDistance = 10;
-    const cameraHeight = 3;
     const cameraAngleRad = THREE.MathUtils.degToRad(cameraAngle.current);
 
+    const horizontalDistance =
+      cameraDistance * Math.cos(THREE.MathUtils.degToRad(cameraHeight.current));
+    const verticalDistance =
+      cameraDistance * Math.sin(THREE.MathUtils.degToRad(cameraHeight.current));
+
     const cameraOffset = new THREE.Vector3(
-      cameraDistance * Math.sin(cameraAngleRad),
-      cameraHeight,
-      cameraDistance * Math.cos(cameraAngleRad)
+      horizontalDistance * Math.sin(cameraAngleRad),
+      verticalDistance,
+      horizontalDistance * Math.cos(cameraAngleRad)
     );
 
     const cameraPosition = new THREE.Vector3();
@@ -120,6 +134,14 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
 
     if (jump && bodyPosition.y <= 2.25) {
       impulse.y += 2;
+    }
+
+    if (panUp) {
+      cameraHeight.current = Math.min(cameraHeight.current + 1, 90);
+    }
+
+    if (panDown) {
+      cameraHeight.current = Math.max(cameraHeight.current - 1, 0);
     }
 
     if (panLeft) {

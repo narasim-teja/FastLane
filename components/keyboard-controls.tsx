@@ -10,6 +10,8 @@ export enum Controls {
   left = "leftward",
   right = "rightward",
   jump = "jump",
+  panUp = "panUp",
+  panDown = "panDown",
   panLeft = "panLeft",
   panRight = "panRight",
 }
@@ -17,13 +19,15 @@ export enum Controls {
 export const KeyboardControls = ({ children }: React.PropsWithChildren) => (
   <DrieKeyboardControls
     map={[
-      { name: Controls.forward, keys: ["ArrowUp", "KeyW"] },
-      { name: Controls.back, keys: ["ArrowDown", "KeyS"] },
-      { name: Controls.left, keys: ["ArrowLeft", "KeyA"] },
-      { name: Controls.right, keys: ["ArrowRight", "KeyD"] },
+      { name: Controls.forward, keys: ["KeyW"] },
+      { name: Controls.back, keys: ["KeyS"] },
+      { name: Controls.left, keys: ["KeyA"] },
+      { name: Controls.right, keys: ["KeyD"] },
       { name: Controls.jump, keys: ["Space"] },
-      { name: Controls.panLeft, keys: ["KeyZ"] },
-      { name: Controls.panRight, keys: ["KeyX"] },
+      { name: Controls.panUp, keys: ["ArrowUp"] },
+      { name: Controls.panDown, keys: ["ArrowDown"] },
+      { name: Controls.panLeft, keys: ["ArrowLeft"] },
+      { name: Controls.panRight, keys: ["ArrowRight"] },
     ]}
   >
     {children}
