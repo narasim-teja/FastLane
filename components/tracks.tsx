@@ -15,12 +15,16 @@ export function Tracks() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#d095001f] to-background duration-500 group-hover:from-[#d09500a2]" />
         <div className="flex items-center justify-between">
           <h3 className="p-2 text-sm text-[#D09500]">GOLD</h3>
-          <h3 className="text-sm text-[#D09500]">
+          <div className="flex items-center gap-1 pr-1 text-sm text-[#D09500]">
             Powered By:{" "}
-            <span className="font-semibold underline underline-offset-4">
-              Oasis
-            </span>
-          </h3>
+            <Image
+              src="/images/cartesi-logo.png"
+              alt="Oasis"
+              height={28}
+              width={28}
+              className="rounded-full"
+            />
+          </div>
         </div>
         <Image
           loading="eager"
@@ -59,12 +63,16 @@ export function Tracks() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#C2C2C21F] to-background group-hover:from-[#c2c2c254]" />
         <div className="flex items-center justify-between">
           <h3 className="p-2 text-sm text-[#C2C2C2]">ETH</h3>
-          <h3 className="text-sm text-[#C2C2C2]">
+          <div className="flex items-center gap-1 pr-1 text-sm text-[#C2C2C2]">
             Powered By:{" "}
-            <span className="font-semibold underline underline-offset-4">
-              Cartesi
-            </span>
-          </h3>
+            <Image
+              src="/images/oasis-logo.png"
+              alt="Cartesi"
+              height={28}
+              width={28}
+              className="rounded-full"
+            />
+          </div>
         </div>
         <Image
           loading="eager"
