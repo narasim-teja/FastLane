@@ -584,7 +584,6 @@ export const SinglePlayer: React.FC<{
         {/* <primitive object={ball} scale={0.005} /> */}
 
         {from === "gold" ?
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           <mesh geometry={nodes.Cube.geometry} material={materials.Material} />
         : <mesh castShadow>
             <sphereGeometry args={[0.25, 18, 18]} />

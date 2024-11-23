@@ -203,7 +203,6 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
       position={position}
     >
       <mesh
-        // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
         geometry={nodes.Icosphere.geometry}
         material={materials["Material.026"]}
       />

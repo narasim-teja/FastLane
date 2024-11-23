@@ -52,7 +52,6 @@ export const EthBlockEnd: React.FC<{
         onCollisionEnter={handleCollision}
       >
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Gold_Track_Checkpoint.geometry}
           material={materials["Material.001"]}
         />
@@ -86,7 +85,6 @@ export const EthStartingBlock: React.FC<{
         </Text>
 
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Gold_Track_Checkpoint.geometry}
           material={materials["Material.001"]}
         />
@@ -141,7 +139,6 @@ export const GoldBlockEnd: React.FC<{
         onCollisionEnter={handleCollision}
       >
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Gold_Track_Checkpoint.geometry}
           material={materials["Material.001"]}
         />
@@ -175,7 +172,6 @@ export const GoldStartingBlock: React.FC<{
         </Text>
 
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Gold_Track_Checkpoint.geometry}
           material={materials["Material.001"]}
         />

@@ -16,7 +16,6 @@ export const Track: React.FC<{
   return (
     <RigidBody type="fixed" colliders="trimesh" restitution={0.2} friction={1}>
       <mesh
-        // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
         geometry={nodes.Plane.geometry}
         material={materials["Gold Track v1"]}
         scale={[1.5, 1, 3.5]}

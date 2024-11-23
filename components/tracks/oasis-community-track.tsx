@@ -63,7 +63,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
           >
             {/* floor */}
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032.geometry}
               material={materials.plane}
               material-map={roadTexture}
@@ -71,14 +70,12 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
 
             {/* race track */}
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032_1.geometry}
               material={materials["gree.002"]}
             />
 
             {/* every other thing on the floor */}
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032_2.geometry}
               material={materials.PaletteMaterial001}
             />
@@ -88,7 +85,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         {/* buildings */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cube005_Cube002.geometry}
             material={materials["Material.011"]}
             position={[-116.09, 9.241, -34.547]}
@@ -99,7 +95,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
 
         {/* dont know what it is */}
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Cube_Cube002.geometry}
           material={materials.PaletteMaterial002}
           position={[-8.812, 0.823, 86.826]}
@@ -110,7 +105,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         {/* trees */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cylinder.geometry}
             material={materials["Material.001"]}
             position={[-121.457, 0, -7.232]}
@@ -119,7 +113,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         </RigidBody>
 
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes["Academy_White@2x"].geometry}
           material={materials["Academy White@2x"]}
           position={[-45.256, 20.77, 70.405]}
@@ -130,7 +123,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         {/* oasis logo */}
         <RigidBody type="fixed" position={[10.54, -0.62, 6.678]}>
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes["Oasis_Logo_White@2x"].geometry}
             material={materials["Oasis Logo White@2x"]}
             scale={2.058}
@@ -140,9 +132,7 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         {/* oasis logo edges */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cube.geometry}
-            // @ts-expect-error Property 'material' does not exist on type 'Object3D<Object3DEventMap>'.
             material={nodes.Cube.material}
             position={[10.54, -0.501, 6.781]}
           />
@@ -151,7 +141,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         {/* rose collectible */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Rose.geometry}
             material={materials["49"]}
             position={[-44.246, 1.803, 80.744]}
@@ -163,17 +152,14 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
         <RigidBody type="fixed">
           <group position={[-44.482, -0.016, 118.343]} scale={2.617}>
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Plane009_1.geometry}
               material={materials["Material.023"]}
             />
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Plane009_2.geometry}
               material={materials["Material.022"]}
             />
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Plane009_3.geometry}
               material={materials.PaletteMaterial001}
             />
@@ -213,7 +199,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
             scale={0.9}
           >
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Icosphere.geometry}
               material={materials["Material.026"]}
             />

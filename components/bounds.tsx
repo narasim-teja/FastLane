@@ -26,15 +26,10 @@ export const Bounds: React.FC<{
         position={[0, 0.055, -24.25 * (2 * row + 1) - 1.5 * row]}
       >
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Cube013.geometry}
           material={materials["Material.001"]}
         />
-        <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
-          geometry={nodes.Cube013_1.geometry}
-          material={materials.glow}
-        />
+        <mesh geometry={nodes.Cube013_1.geometry} material={materials.glow} />
       </group>
 
       <CuboidCollider
