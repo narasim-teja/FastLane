@@ -6,14 +6,11 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
 
-import type { Auth } from "~/types/auth";
 import type { Clients, Position } from "~/types/misc";
 
-import { useLocalStorage } from "~/hooks/use-local-storage";
 import { api } from "~/lib/trpc/react";
 
 import { Multiplayer } from "../players/multiplayer";
-// import { SinglePlayer } from "../players/single-player";
 import { CartesiModel } from "./cartesi-model";
 
 export const CartesiCommunityTrack: React.FC = () => {
@@ -42,18 +39,20 @@ export const CartesiCommunityTrack: React.FC = () => {
     },
   });
 
-  const playersCount = Object.keys(clients).length;
+  const x = React.useMemo(
+    () => Math.floor(Math.random() * (80 - 40 + 1) + 40),
+    []
+  );
 
   return (
     <Physics debug={debugPhysics} colliders="trimesh">
-      <CartesiModel />
+      <CartesiModel position={[0, 20, 0]} />
 
       {Object.keys(clients).map((clientAddress) => {
         if (clientAddress === address) {
-          const x = Math.floor((playersCount - 1) / 6) * 5;
-          const z = (playersCount % 6 || 6) * 5;
+          // ~ 40 - 80
 
-          const position: Position = [50, 2, 0];
+          const position: Position = [x, 55, 140];
 
           return (
             <Multiplayer

@@ -11,12 +11,12 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
   );
 
   return (
-    <group {...props}>
+    <group {...props} dispose={null}>
       <RigidBody type="fixed">
         <group
-          position={[-0.036, -0.847, 0.004]}
+          position={[59.567, -68.04, 120.049]}
           rotation={[-Math.PI / 2, 0, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Object_2002.geometry}
@@ -25,18 +25,16 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Landscape001.geometry}
           material={materials["Material.003"]}
-          position={[0.112, -0.356, -0.063]}
-          scale={100}
+          position={[71.417, -28.76, 114.63]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.04, 0.127, 0.001]} scale={100}>
+        <group position={[59.264, 9.862, 119.771]} scale={800}>
           <mesh
             geometry={nodes.Cylinder005_1.geometry}
             material={materials["Material.005"]}
@@ -47,9 +45,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-1.011, -0.14, 3.913]} scale={100}>
+        <group position={[-18.443, -11.504, 432.765]} scale={800}>
           <mesh
             geometry={nodes.Plane003_1.geometry}
             material={materials["Material.009"]}
@@ -60,12 +57,11 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
         <group
-          position={[-3.945, -0.19, -0.971]}
+          position={[-253.146, -15.487, 42.023]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Plane006_1.geometry}
@@ -79,9 +75,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.623, -0.191, -3.448]}
+          position={[112.273, -15.514, -156.108]}
           rotation={[0, 0.21, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Plane007_1.geometry}
@@ -93,373 +89,371 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_1.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.516, -0.158, -2.746]}
+          position={[-58.834, -12.922, -99.997]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_2.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.54, -0.158, -2.753]}
+          position={[-60.717, -12.922, -100.57]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_3.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.535, -0.158, -2.73]}
+          position={[-60.318, -12.922, -98.712]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_4.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.553, -0.158, -2.714]}
+          position={[-61.805, -12.922, -97.398]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_5.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.558, -0.158, -2.737]}
+          position={[-62.207, -12.922, -99.273]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_6.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.563, -0.158, -2.761]}
+          position={[-62.617, -12.922, -101.183]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_7.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.581, -0.158, -2.744]}
+          position={[-64.054, -12.922, -99.854]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_8.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.576, -0.158, -2.721]}
+          position={[-63.656, -12.922, -97.995]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_9.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.571, -0.158, -2.698]}
+          position={[-63.25, -12.922, -96.105]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_10.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.587, -0.158, -2.769]}
+          position={[-64.469, -12.922, -101.784]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_1001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.55, -0.158, -2.908]}
+          position={[-61.508, -12.922, -112.921]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_2001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.573, -0.158, -2.915]}
+          position={[-63.391, -12.922, -113.494]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_3001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.568, -0.158, -2.892]}
+          position={[-62.992, -12.922, -111.636]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_4001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.587, -0.158, -2.875]}
+          position={[-64.479, -12.922, -110.322]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_5001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.592, -0.158, -2.899]}
+          position={[-64.881, -12.922, -112.197]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_6001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.597, -0.158, -2.923]}
+          position={[-65.291, -12.922, -114.107]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_7001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.615, -0.158, -2.906]}
+          position={[-66.728, -12.922, -112.778]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_8001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.61, -0.158, -2.883]}
+          position={[-66.33, -12.922, -110.92]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_9001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.605, -0.158, -2.859]}
+          position={[-65.924, -12.922, -109.03]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_10001.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.62, -0.158, -2.93]}
+          position={[-67.143, -12.922, -114.708]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_1002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.582, -0.158, -3.058]}
+          position={[-64.088, -12.922, -124.941]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_2002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.605, -0.158, -3.065]}
+          position={[-65.971, -12.922, -125.514]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_3002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.6, -0.158, -3.042]}
+          position={[-65.572, -12.922, -123.656]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_4002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.619, -0.158, -3.026]}
+          position={[-67.059, -12.922, -122.342]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_5002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.624, -0.158, -3.049]}
+          position={[-67.461, -12.922, -124.217]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_6002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.629, -0.158, -3.073]}
+          position={[-67.871, -12.922, -126.127]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_7002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.647, -0.158, -3.056]}
+          position={[-69.308, -12.922, -124.797]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_8002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.642, -0.158, -3.033]}
+          position={[-68.91, -12.922, -122.939]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_9002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.637, -0.158, -3.009]}
+          position={[-68.504, -12.922, -121.049]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_10002.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.652, -0.158, -3.08]}
+          position={[-69.723, -12.922, -126.728]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_1003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.614, -0.158, -3.21]}
+          position={[-66.695, -12.922, -137.089]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_2003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.638, -0.158, -3.217]}
+          position={[-68.578, -12.922, -137.662]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_3003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.633, -0.158, -3.194]}
+          position={[-68.179, -12.922, -135.803]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_4003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.652, -0.158, -3.177]}
+          position={[-69.666, -12.922, -134.49]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_5003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.657, -0.158, -3.201]}
+          position={[-70.069, -12.922, -136.365]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_6003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.662, -0.158, -3.225]}
+          position={[-70.479, -12.922, -138.274]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_7003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.68, -0.158, -3.208]}
+          position={[-71.916, -12.922, -136.945]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_8003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.675, -0.158, -3.185]}
+          position={[-71.517, -12.922, -135.087]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_9003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.67, -0.158, -3.161]}
+          position={[-71.111, -12.922, -133.197]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Bowling_Pin_10003.geometry}
           material={materials["Bowling Pack Material"]}
-          position={[-1.685, -0.158, -3.232]}
+          position={[-72.33, -12.922, -138.876]}
           rotation={[0, 0.211, 0]}
-          scale={0.17}
+          scale={13.585}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <group
-          position={[3.892, -0.117, 1.067]}
+          position={[373.786, -9.632, 205.063]}
           rotation={[Math.PI, -0.213, Math.PI]}
-          scale={[0.674, 0.856, 0.856]}
+          scale={[53.893, 68.473, 68.473]}
         >
           <mesh
             geometry={nodes.Plane002_1.geometry}
@@ -475,47 +469,42 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Plane003.geometry}
           material={nodes.Plane003.material}
-          position={[-3.331, 0.189, 2.872]}
-          scale={100}
+          position={[-204.018, 14.834, 349.468]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Plane007.geometry}
           material={nodes.Plane007.material}
-          position={[2.498, 0.189, 3.826]}
+          position={[262.26, 14.834, 425.769]}
           rotation={[0, -0.165, 0]}
-          scale={100}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Plane008.geometry}
           material={nodes.Plane008.material}
-          position={[3.577, 0.189, -2.781]}
-          scale={100}
+          position={[348.623, 14.834, -102.737]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Plane009.geometry}
           material={nodes.Plane009.material}
-          position={[-2.329, 0.189, -3.646]}
+          position={[-123.827, 14.834, -171.945]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.833, 0.32, 0.268]} scale={100}>
+        <group position={[-4.22, 25.315, 141.132]} scale={800}>
           <mesh
             geometry={nodes.Cube005_1.geometry}
             material={materials["Snow.001"]}
@@ -539,9 +528,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.78, 0.32, 0.34]} scale={100}>
+        <group position={[0.057, 25.314, 146.873]} scale={800}>
           <mesh
             geometry={nodes.Cube027.geometry}
             material={materials["Snow.001"]}
@@ -565,9 +553,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.71, 0.32, 0.406]} scale={100}>
+        <group position={[5.627, 25.315, 152.218]} scale={800}>
           <mesh
             geometry={nodes.Cube039.geometry}
             material={materials["Snow.001"]}
@@ -591,9 +578,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.63, 0.32, 0.465]} scale={100}>
+        <group position={[12.04, 25.314, 156.944]} scale={800}>
           <mesh
             geometry={nodes.Cube051.geometry}
             material={materials["Snow.001"]}
@@ -617,9 +603,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.036, -0.153, 0.01]} scale={100}>
+        <group position={[59.577, -12.532, 120.522]} scale={800}>
           <mesh
             geometry={nodes.Cylinder023_1.geometry}
             material={materials["Material.005"]}
@@ -634,48 +619,43 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Cylinder029.geometry}
           material={materials["Material.005"]}
-          position={[-0.034, 0.051, -0.002]}
-          scale={100}
+          position={[59.704, 3.846, 119.512]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Cylinder032.geometry}
           material={materials["Material.005"]}
-          position={[0.521, 0.295, -0.295]}
-          scale={100}
+          position={[104.148, 23.355, 96.126]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Cylinder033.geometry}
           material={materials["Material.005"]}
-          position={[0.563, 0.295, -0.077]}
-          scale={100}
+          position={[107.476, 23.348, 113.547]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <mesh
           geometry={nodes.Cylinder034.geometry}
           material={materials["Material.005"]}
-          position={[0.564, 0.295, -0.075]}
-          scale={100}
+          position={[107.581, 23.348, 113.736]}
+          scale={800}
         />
       </RigidBody>
-
       <RigidBody type="fixed">
         <group
-          position={[-0.036, 0.219, 0.004]}
+          position={[59.555, 17.245, 120.06]}
           rotation={[0, 1.571, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cylinder070.geometry}
@@ -727,9 +707,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[1.031, 0.251, 0.186]} scale={100}>
+        <group position={[144.961, 19.833, 134.584]} scale={800}>
           <mesh
             geometry={nodes.Cylinder072.geometry}
             material={materials["T_B2windows.001"]}
@@ -756,9 +735,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           />
         </group>
       </RigidBody>
-
       <RigidBody type="fixed">
-        <group position={[-0.546, 0.32, 0.511]} scale={100}>
+        <group position={[18.782, 25.314, 160.576]} scale={800}>
           <mesh
             geometry={nodes.Cube001_1.geometry}
             material={materials["Snow.001"]}
@@ -784,9 +762,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.227, 0.32, 0.802]}
+          position={[80.651, 25.315, 183.836]}
           rotation={[0, 1.571, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube002_1.geometry}
@@ -813,9 +791,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.299, 0.32, 0.748]}
+          position={[86.391, 25.314, 179.559]}
           rotation={[0, 1.571, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube003_1.geometry}
@@ -842,9 +820,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.366, 0.32, 0.679]}
+          position={[91.736, 25.315, 173.989]}
           rotation={[0, 1.571, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube004_1.geometry}
@@ -871,9 +849,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.425, 0.32, 0.598]}
+          position={[96.462, 25.314, 167.575]}
           rotation={[0, 1.571, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube245.geometry}
@@ -900,9 +878,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.47, 0.32, 0.514]}
+          position={[100.095, 25.314, 160.834]}
           rotation={[0, 1.571, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube246.geometry}
@@ -929,9 +907,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.761, 0.32, -0.259]}
+          position={[123.354, 25.315, 98.965]}
           rotation={[Math.PI, 0, Math.PI]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube247.geometry}
@@ -958,9 +936,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.708, 0.32, -0.331]}
+          position={[119.077, 25.314, 93.225]}
           rotation={[Math.PI, 0, Math.PI]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube248.geometry}
@@ -987,9 +965,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.638, 0.32, -0.398]}
+          position={[113.507, 25.315, 87.879]}
           rotation={[Math.PI, 0, Math.PI]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube249.geometry}
@@ -1016,9 +994,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.558, 0.32, -0.457]}
+          position={[107.094, 25.314, 83.153]}
           rotation={[Math.PI, 0, Math.PI]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube250.geometry}
@@ -1045,9 +1023,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[0.474, 0.32, -0.502]}
+          position={[100.353, 25.314, 79.521]}
           rotation={[Math.PI, 0, Math.PI]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube251.geometry}
@@ -1074,9 +1052,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[-0.3, 0.32, -0.793]}
+          position={[38.483, 25.315, 56.262]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube252.geometry}
@@ -1103,9 +1081,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[-0.371, 0.32, -0.74]}
+          position={[32.743, 25.314, 60.538]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube253.geometry}
@@ -1132,9 +1110,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[-0.438, 0.32, -0.67]}
+          position={[27.398, 25.315, 66.109]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube254.geometry}
@@ -1161,9 +1139,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[-0.497, 0.32, -0.59]}
+          position={[22.672, 25.314, 72.522]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube255.geometry}
@@ -1190,9 +1168,9 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
       </RigidBody>
       <RigidBody type="fixed">
         <group
-          position={[-0.543, 0.32, -0.506]}
+          position={[19.04, 25.314, 79.263]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={100}
+          scale={800}
         >
           <mesh
             geometry={nodes.Cube256.geometry}
@@ -1221,8 +1199,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
         <mesh
           geometry={nodes.Plane362027.geometry}
           material={materials.Material__3}
-          position={[-0.018, -0.095, -1.452]}
-          scale={100}
+          position={[61.041, -7.852, 3.568]}
+          scale={800}
         />
       </RigidBody>
     </group>

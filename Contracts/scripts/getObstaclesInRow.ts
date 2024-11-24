@@ -1,7 +1,8 @@
 import { ethers } from "hardhat";
 
-import { env } from "../env";
 import type { Fastlane } from "../typechain-types"; // Adjust the path if necessary
+
+import { env } from "../env";
 
 async function main() {
   const contractAddress = env.CONTRACT_ADDRESS;

@@ -38,7 +38,10 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
       (value) => {
         if (value === "ready" && body.current) {
           cameraAngle.current = 0;
-          body.current.setTranslation({ x: 2, y: 1, z: 0 }, true);
+          body.current.setTranslation(
+            { x: position[0], y: position[1], z: position[2] },
+            true
+          );
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
           body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
         }
@@ -54,7 +57,7 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
       unsubscribeReset();
       unsubscribeKeys();
     };
-  }, [subscribeKeys, startGame]);
+  }, [subscribeKeys, startGame]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useFrame((state, delta) => {
     if (!body.current) return;
