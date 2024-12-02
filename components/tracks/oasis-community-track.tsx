@@ -179,6 +179,8 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
               key={clientAddress}
               address={address}
               position={position}
+              geometry={nodes.Icosphere.geometry}
+              material={materials["Material.026"]}
             />
           );
         }

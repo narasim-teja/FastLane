@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 
-import { useGLTF, useKeyboardControls } from "@react-three/drei";
+import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 
+import type { MeshProps } from "@react-three/fiber";
 import type { RapierRigidBody } from "@react-three/rapier";
 
 import type { Position } from "~/types/misc";
@@ -12,12 +13,9 @@ import type { Position } from "~/types/misc";
 import { useGame } from "~/hooks/use-game";
 import { api } from "~/lib/trpc/react";
 
-export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
-  address,
-  position,
-}) => {
-  const { nodes, materials } = useGLTF("/models/marble.glb");
-
+export const Multiplayer: React.FC<
+  MeshProps & { address: string; position: Position }
+> = ({ address, position, ...props }) => {
   const body = useRef<RapierRigidBody>(null);
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -205,10 +203,7 @@ export const Multiplayer: React.FC<{ address: string; position: Position }> = ({
       angularDamping={0.5}
       position={position}
     >
-      <mesh
-        geometry={nodes.Icosphere.geometry}
-        material={materials["Material.026"]}
-      />
+      <mesh {...props} />
     </RigidBody>
   );
 };

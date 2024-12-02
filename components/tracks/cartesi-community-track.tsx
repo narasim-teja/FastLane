@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useTexture } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
 
@@ -44,14 +45,20 @@ export const CartesiCommunityTrack: React.FC = () => {
     []
   );
 
+  const textures = useTexture({
+    base: "/textures/cartesi/base-material.webp",
+    displacement: "/textures/cartesi/displacement.webp",
+    metallic: "/textures/cartesi/metallic.webp",
+    normal: "/textures/cartesi/normal.webp",
+    roughness: "/textures/cartesi/roughness.webp",
+  });
+
   return (
     <Physics debug={debugPhysics} colliders="trimesh">
       <CartesiModel position={[0, 20, 0]} />
 
       {Object.keys(clients).map((clientAddress) => {
         if (clientAddress === address) {
-          // ~ 40 - 80
-
           const position: Position = [x, 55, 140];
 
           return (
@@ -59,7 +66,16 @@ export const CartesiCommunityTrack: React.FC = () => {
               key={clientAddress}
               address={address}
               position={position}
-            />
+            >
+              <sphereGeometry args={[0.9, 32, 32]} />
+              <meshStandardMaterial
+                map={textures.base}
+                displacementMap={textures.displacement}
+                metalnessMap={textures.metallic}
+                normalMap={textures.normal}
+                roughnessMap={textures.roughness}
+              />
+            </Multiplayer>
           );
         }
 
@@ -78,8 +94,14 @@ export const CartesiCommunityTrack: React.FC = () => {
             rotation={[rotation.x, rotation.y, rotation.z]}
           >
             <mesh>
-              <circleGeometry args={[0.2, 32]} />
-              <meshStandardMaterial />
+              <sphereGeometry args={[0.9, 32, 32]} />
+              <meshStandardMaterial
+                map={textures.base}
+                displacementMap={textures.displacement}
+                metalnessMap={textures.metallic}
+                normalMap={textures.normal}
+                roughnessMap={textures.roughness}
+              />
             </mesh>
           </RigidBody>
         );

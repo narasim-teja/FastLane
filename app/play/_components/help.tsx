@@ -1,4 +1,8 @@
+import React from "react";
+
 import { Info } from "lucide-react";
+
+import type { HTMLAttributes } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -11,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+import { cn } from "~/lib/utils";
 
 export function Help() {
   return (
@@ -34,10 +39,7 @@ export function Help() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="text-lg font-medium">
-          Not much to see here yet. Figure it out youself or just use the arrow
-          keys or WASD to move around.
-        </div>
+        <GameControls />
 
         <DialogFooter>
           <DialogClose asChild>
@@ -48,3 +50,51 @@ export function Help() {
     </Dialog>
   );
 }
+
+export const GameControls: React.FC<HTMLAttributes<HTMLDivElement>> = ({
+  className,
+  ...props
+}) => {
+  return (
+    <div
+      className={cn("flex shrink-0 justify-evenly gap-4 font-mono", className)}
+      {...props}
+    >
+      {/* WASD movement controls */}
+      <div className="flex flex-col justify-between gap-4 text-lg font-semibold">
+        <div
+          className={cn(
+            "grid grid-cols-3 gap-1 text-2xl font-black",
+            "*:flex *:size-12 *:items-center *:justify-center *:rounded-md *:bg-foreground/20 *:shadow-sm *:backdrop-blur"
+          )}
+        >
+          <div className="col-span-3 mx-auto">W</div>
+          <div>A</div>
+          <div>S</div>
+          <div>D</div>
+          <div className="col-span-3 mx-auto flex !h-11 !w-full flex-col">
+            <p className="text-xl leading-none">Space</p>
+            <p className="text-xs">Jump</p>
+          </div>
+        </div>
+        <p className="text-center">MOVEMENT</p>
+      </div>
+
+      {/* Arrow keys camera controls */}
+      <div className="flex flex-col justify-between gap-4 text-lg font-semibold">
+        <div
+          className={cn(
+            "grid grid-cols-3 gap-1 text-2xl font-black",
+            "*:flex *:size-12 *:items-center *:justify-center *:rounded-md *:bg-foreground/20 *:shadow-sm *:backdrop-blur"
+          )}
+        >
+          <div className="col-span-3 mx-auto">↑</div>
+          <div>←</div>
+          <div>↓</div>
+          <div>→</div>
+        </div>
+        <p className="text-center">CAMERA</p>
+      </div>
+    </div>
+  );
+};
