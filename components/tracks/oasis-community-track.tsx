@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { useGLTF, useTexture } from "@react-three/drei";
+import { Environment, Html, useGLTF, useTexture } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
 import * as THREE from "three";
@@ -15,7 +15,11 @@ import type { Clients, Position } from "~/types/misc";
 import { Multiplayer } from "~/components/players/multiplayer";
 import { api } from "~/lib/trpc/react";
 
-export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
+export const OasisCommunityTrack: React.FC<
+  GroupProps & { links: [string, string, string, string] }
+> = ({ links, ...props }) => {
+  const [clients, setClients] = React.useState<Clients>({});
+
   const { primaryWallet } = useDynamicContext();
   const address = primaryWallet?.address ?? "";
 
@@ -31,8 +35,6 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
   const { debugPhysics } = useControls("Debug Tools", {
     debugPhysics: false,
   });
-
-  const [clients, setClients] = React.useState<Clients>({});
 
   const { mutate: broadcastPosition } = api.ws.broadcastPosition.useMutation();
 
@@ -165,6 +167,58 @@ export const OasisCommunityTrack: React.FC<GroupProps> = (props) => {
             />
           </group>
         </RigidBody>
+
+        <Environment preset="park" background />
+
+        {/* iFrames */}
+        <Html
+          transform
+          position={[46.65, 7.18, -16.86]}
+          rotation={[0, -Math.PI / 2, 0]}
+        >
+          <iframe
+            width="1020"
+            height="573"
+            src={links[0]}
+            className="rounded-lg"
+          />
+        </Html>
+
+        <Html
+          occlude="blending"
+          transform
+          position={[20.58, 7, 105.44]}
+          rotation={[0, -Math.PI, 0]}
+        >
+          <iframe
+            width="980"
+            height="540"
+            src={links[1]}
+            className="rounded-lg"
+          />
+        </Html>
+
+        <Html transform position={[-56.86, 2.48, -48.98]}>
+          <iframe
+            width="375"
+            height="220"
+            src={links[2]}
+            className="rounded-lg"
+          />
+        </Html>
+
+        <Html
+          transform
+          position={[-94.28, 3.77, 122.38]}
+          rotation={[0, Math.PI / 2, 0]}
+        >
+          <iframe
+            width="660"
+            height="370"
+            src={links[3]}
+            className="rounded-lg"
+          />
+        </Html>
       </group>
 
       {Object.keys(clients).map((clientAddress) => {

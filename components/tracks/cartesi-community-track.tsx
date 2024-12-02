@@ -70,7 +70,7 @@ export const CartesiCommunityTrack: React.FC = () => {
               <sphereGeometry args={[0.9, 32, 32]} />
               <meshStandardMaterial
                 map={textures.base}
-                displacementMap={textures.displacement}
+                // displacementMap={textures.displacement}
                 metalnessMap={textures.metallic}
                 normalMap={textures.normal}
                 roughnessMap={textures.roughness}
@@ -97,7 +97,7 @@ export const CartesiCommunityTrack: React.FC = () => {
               <sphereGeometry args={[0.9, 32, 32]} />
               <meshStandardMaterial
                 map={textures.base}
-                displacementMap={textures.displacement}
+                // displacementMap={textures.displacement}
                 metalnessMap={textures.metallic}
                 normalMap={textures.normal}
                 roughnessMap={textures.roughness}
