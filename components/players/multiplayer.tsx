@@ -21,8 +21,9 @@ export const Multiplayer: React.FC<
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
   const cameraAngle = useRef(0);
   const cameraHeight = useRef(3);
-  const lastBroadcast = useRef(0);
   const lastPlayerMovement = useRef(0);
+  const lastBroadcastTime = useRef(0);
+  const lastJumpedTime = useRef(0);
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
@@ -59,6 +60,8 @@ export const Multiplayer: React.FC<
 
   useFrame((state, delta) => {
     if (!body.current) return;
+
+    const { elapsedTime } = state.clock;
 
     if (isPaused) {
       body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -116,25 +119,27 @@ export const Multiplayer: React.FC<
 
     // adjust movement controls to be relative to the camera
     const impulse = new THREE.Vector3();
+    const canJump = elapsedTime - lastJumpedTime.current > 1.75;
 
-    if (forward) {
+    if (forward && canJump) {
       impulse.addScaledVector(cameraForward, impulseStrength);
     }
 
-    if (backward) {
+    if (backward && canJump) {
       impulse.addScaledVector(cameraForward, -impulseStrength);
     }
 
-    if (leftward) {
+    if (leftward && canJump) {
       impulse.addScaledVector(cameraRight, -impulseStrength);
     }
 
-    if (rightward) {
+    if (rightward && canJump) {
       impulse.addScaledVector(cameraRight, impulseStrength);
     }
 
-    if (jump && bodyPosition.y <= 2.25) {
-      impulse.y += 2;
+    if (jump && canJump) {
+      impulse.y += 40;
+      lastJumpedTime.current = elapsedTime;
     }
 
     if (panUp) {
@@ -176,19 +181,17 @@ export const Multiplayer: React.FC<
      * broadcaster
      * -----------------------------------------------------------------------------------------------*/
 
-    const currentTime = Date.now();
-
-    // broadcast position every 2, dont broadcast if the player has moved since last 10 seconds
+    // broadcast position every 2 milliseconds, dont broadcast if the player has moved since last 10 seconds
     if (
-      currentTime - lastBroadcast.current > 20 &&
-      currentTime - lastPlayerMovement.current < 10 * 1000
+      elapsedTime - lastBroadcastTime.current > 0.2 &&
+      elapsedTime - lastPlayerMovement.current < 10
     ) {
       broadcastPosition({
         address,
         position: bodyPosition,
         rotation: bodyRotation,
       });
-      lastBroadcast.current = currentTime;
+      lastBroadcastTime.current = elapsedTime;
     }
   });
 

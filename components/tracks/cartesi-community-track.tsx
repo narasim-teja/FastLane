@@ -67,10 +67,10 @@ export const CartesiCommunityTrack: React.FC = () => {
               address={address}
               position={position}
             >
-              <sphereGeometry args={[0.9, 32, 32]} />
+              <sphereGeometry args={[1, 32, 32]} />
               <meshStandardMaterial
                 map={textures.base}
-                displacementMap={textures.displacement}
+                // displacementMap={textures.displacement}
                 metalnessMap={textures.metallic}
                 normalMap={textures.normal}
                 roughnessMap={textures.roughness}
@@ -94,10 +94,10 @@ export const CartesiCommunityTrack: React.FC = () => {
             rotation={[rotation.x, rotation.y, rotation.z]}
           >
             <mesh>
-              <sphereGeometry args={[0.9, 32, 32]} />
+              <sphereGeometry args={[1, 32, 32]} />
               <meshStandardMaterial
                 map={textures.base}
-                displacementMap={textures.displacement}
+                // displacementMap={textures.displacement}
                 metalnessMap={textures.metallic}
                 normalMap={textures.normal}
                 roughnessMap={textures.roughness}
