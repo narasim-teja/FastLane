@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { useGLTF } from "@react-three/drei";
+import { Environment, useGLTF } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 
 import type { GroupProps } from "@react-three/fiber";
@@ -1203,6 +1203,8 @@ export const CartesiModel: React.FC<GroupProps> = (props) => {
           scale={800}
         />
       </RigidBody>
+
+      <Environment preset="park" background />
     </group>
   );
 };

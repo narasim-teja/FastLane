@@ -240,7 +240,16 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
 
       {track === "gold" && <GoldTrack />}
       {track === "eth" && auth && <EthTrack auth={auth} />}
-      {track === "oasis-track" && <OasisCommunityTrack />}
+      {track === "oasis-track" && (
+        <OasisCommunityTrack
+          links={[
+            "https://www.youtube.com/embed/tgbNymZ7vqY",
+            "https://www.youtube.com/embed/tgbNymZ7vqY",
+            "https://www.youtube.com/embed/tgbNymZ7vqY",
+            "https://www.youtube.com/embed/tgbNymZ7vqY",
+          ]}
+        />
+      )}
       {track === "cartesi-track" && <CartesiCommunityTrack />}
     </View>
   );
