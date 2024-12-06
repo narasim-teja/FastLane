@@ -179,13 +179,14 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
 
       try {
         console.log("Initializing game...");
-        const authResult = await checkAuth();
-        if (authResult) {
-          console.log("Auth successful, fetching game state...");
-          const gameState = await fetchGameState(authResult);
-          console.log("Fetched game state:", gameState);
 
-          if (track === "eth") {
+        if (track === "eth") {
+          const authResult = await checkAuth();
+          if (authResult) {
+            console.log("Auth successful, fetching game state...");
+            const gameState = await fetchGameState(authResult);
+            console.log("Fetched game state:", gameState);
+
             if (!gameState.isActive || gameState.timeRemaining === "0") {
               await startGameOnChain();
               const updatedGameState = await fetchGameState(authResult);
@@ -204,12 +205,13 @@ export default function GamePage({ searchParams: { track } }: GamePageProps) {
               startGame(); // Update the game state in the useGame hook
             }
           } else {
-            setIsGameActive(true);
+            console.log("Auth failed or not available");
+            toast.error("Authentication failed");
+            router.push("/tracks");
           }
         } else {
-          console.log("Auth failed or not available");
-          toast.error("Authentication failed");
-          router.push("/tracks");
+          // For non-ETH tracks, simply activate the game without auth
+          setIsGameActive(true);
         }
       } catch (error) {
         console.error("Error initializing game:", error);
