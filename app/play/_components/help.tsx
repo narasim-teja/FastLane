@@ -29,7 +29,7 @@ export function Help() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-2xl ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-4">
         <DialogHeader>
           <DialogTitle className="font-cal text-3xl tracking-wide">
             Help
@@ -93,7 +93,29 @@ export const GameControls: React.FC<HTMLAttributes<HTMLDivElement>> = ({
           <div>↓</div>
           <div>→</div>
         </div>
-        <p className="text-center">CAMERA</p>
+        <p className="text-center">CAMERA ROTATION</p>
+      </div>
+
+      {/* Camera mode toggle control */}
+      <div className="flex flex-col items-center justify-between gap-4 text-lg font-semibold">
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-1 text-2xl font-black",
+            "*:flex *:size-12 *:items-center *:justify-center *:rounded-md *:bg-foreground/20 *:shadow-sm *:backdrop-blur"
+          )}
+        >
+          <div className="flex !h-12 !w-12 flex-col">
+            <p className="text-xl leading-none">K</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-1 font-mono">
+          <p className="text-xs">First Person</p>
+          <p className="text-xs">Top Down</p>
+          <p className="text-xs">Normal</p>
+        </div>
+
+        <p className="text-center">CAMERA MODE</p>
       </div>
     </div>
   );

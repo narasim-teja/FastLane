@@ -24,6 +24,9 @@ export const Multiplayer: React.FC<
   const lastPlayerMovement = useRef(0);
   const lastBroadcastTime = useRef(0);
   const lastJumpedTime = useRef(0);
+  const cameraMode = useRef<"normal" | "first-person" | "top">("normal");
+  const lastCameraToggle = useRef(0);
+  const verticalAngle = useRef(0);
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
@@ -79,6 +82,7 @@ export const Multiplayer: React.FC<
       panRight,
       panUp,
       panDown,
+      camera,
     } = getKeys();
     const bodyPosition = body.current.translation();
     const bodyRotation = body.current.rotation();
@@ -100,12 +104,64 @@ export const Multiplayer: React.FC<
       horizontalDistance * Math.cos(cameraAngleRad)
     );
 
-    const cameraPosition = new THREE.Vector3();
-    cameraPosition.copy(bodyPosition).add(cameraOffset);
+    if (camera && elapsedTime - lastCameraToggle.current > 0.5) {
+      if (cameraMode.current === "normal") {
+        cameraMode.current = "first-person";
+      } else if (cameraMode.current === "first-person") {
+        cameraMode.current = "top";
+      } else {
+        cameraMode.current = "normal";
+      }
+      lastCameraToggle.current = elapsedTime;
+    }
 
+    const cameraPosition = new THREE.Vector3();
     const cameraTarget = new THREE.Vector3();
-    cameraTarget.copy(bodyPosition);
-    cameraTarget.y += 0.25;
+
+    switch (cameraMode.current) {
+      case "first-person": {
+        const verticalRad = THREE.MathUtils.degToRad(verticalAngle.current);
+        const forwardOffset = 0.3; // small offset to keep camera in front of ball
+
+        cameraPosition.copy(bodyPosition);
+        cameraPosition.y += 0.5;
+        // add small offset in movement direction to prevent camera going inside ball
+        cameraPosition.x += Math.sin(cameraAngleRad) * forwardOffset;
+        cameraPosition.z += Math.cos(cameraAngleRad) * forwardOffset;
+
+        cameraTarget.copy(cameraPosition);
+        // apply both horizontal and vertical rotation to look direction
+        cameraTarget.x += Math.sin(cameraAngleRad) * Math.cos(verticalRad);
+        cameraTarget.y += Math.sin(verticalRad);
+        cameraTarget.z += Math.cos(cameraAngleRad) * Math.cos(verticalRad);
+        break;
+      }
+
+      case "top": {
+        const distance = 25; // fixed distance
+        const angleInDegrees = 5 + cameraHeight.current * 0.777; // convert height control to angle (5-85 degrees)
+        const angleInRadians = THREE.MathUtils.degToRad(angleInDegrees);
+
+        cameraPosition.copy(bodyPosition);
+        // position camera using spherical coordinates
+        cameraPosition.x +=
+          Math.sin(cameraAngleRad) * distance * Math.cos(angleInRadians);
+        cameraPosition.y += distance * Math.sin(angleInRadians);
+        cameraPosition.z +=
+          Math.cos(cameraAngleRad) * distance * Math.cos(angleInRadians);
+
+        // always look at the player
+        cameraTarget.copy(bodyPosition);
+        cameraTarget.y += 0.5;
+        break;
+      }
+
+      default:
+        cameraPosition.copy(bodyPosition).add(cameraOffset);
+        cameraTarget.copy(bodyPosition);
+        cameraTarget.y += 0.25;
+        break;
+    }
 
     // compute camera's forward and right vectors
     const cameraForward = new THREE.Vector3();
@@ -143,11 +199,19 @@ export const Multiplayer: React.FC<
     }
 
     if (panUp) {
-      cameraHeight.current = Math.min(cameraHeight.current + 1, 90);
+      if (cameraMode.current === "first-person") {
+        verticalAngle.current = Math.min(verticalAngle.current + 1, 89); // limit to 89 degrees up
+      } else {
+        cameraHeight.current = Math.min(cameraHeight.current + 1, 90);
+      }
     }
 
     if (panDown) {
-      cameraHeight.current = Math.max(cameraHeight.current - 1, 0);
+      if (cameraMode.current === "first-person") {
+        verticalAngle.current = Math.max(verticalAngle.current - 1, -89); // limit to 89 degrees down
+      } else {
+        cameraHeight.current = Math.max(cameraHeight.current - 1, 0);
+      }
     }
 
     if (panLeft) {
@@ -170,12 +234,18 @@ export const Multiplayer: React.FC<
       restartGame();
     }
 
-    // Smoothly interpolate the camera position and target
-    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+    if (cameraMode.current === "first-person") {
+      // in first-person, directly set camera position without smoothing
+      state.camera.position.copy(cameraPosition);
+      state.camera.lookAt(cameraTarget);
+    } else {
+      // for other modes, keep the smooth interpolation
+      smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+      smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
-    state.camera.position.copy(smoothedCameraPosition);
-    state.camera.lookAt(smoothedCameraTarget);
+      state.camera.position.copy(smoothedCameraPosition);
+      state.camera.lookAt(smoothedCameraTarget);
+    }
 
     /* -----------------------------------------------------------------------------------------------
      * broadcaster
