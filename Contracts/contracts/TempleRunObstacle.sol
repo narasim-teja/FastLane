@@ -7,6 +7,12 @@ struct SignatureRSV {
     uint256 v;
 }
 
+struct SignIn {
+    address user;
+    uint32 time;
+    SignatureRSV rsv;
+}
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Fastlane is Ownable{
@@ -79,12 +85,6 @@ contract Fastlane is Ownable{
         ));
       checkpointCounter = 0;
       currentLatestCheckpointOwner = msg.sender;
-    }
-
-    struct SignIn {
-        address user;
-        uint32 time;
-        SignatureRSV rsv;
     }
 
     modifier authenticated(SignIn calldata auth)
