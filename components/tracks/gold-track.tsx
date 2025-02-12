@@ -6,7 +6,10 @@ import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
 import { fromHex, stringToHex } from "thirdweb";
+
 import type { Hex } from "viem";
+
+import type { Notice } from "~/utils/types";
 
 import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
@@ -19,7 +22,6 @@ import { api } from "~/lib/trpc/react";
 import { useWriteInputBoxAddInput } from "~/server/hooks/generated";
 import { fetchGraphQLData } from "~/utils/api";
 import { NOTICES_QUERY } from "~/utils/queries";
-import type { Notice } from "~/utils/types";
 
 function convertFlatArrayTo2DArray(
   flatArray: Uint8Array,
@@ -38,7 +40,6 @@ function convertFlatArrayTo2DArray(
     }
     twoDArray.push(row); // Push the row into the 2D array
   }
-
   return twoDArray;
 }
 
@@ -59,7 +60,9 @@ export function GoldTrack() {
     // ...
   } = useGame();
 
-  const [attempts, setAttempts] = useState(0);
+  console.log(rowCount);
+
+  // const [attempts, setAttempts] = useState(0);
   const { isPending, isSuccess, error, writeContractAsync } =
     useWriteInputBoxAddInput();
   const dAppAddress = `0xab7528bb862fb57e8a2bcd567a2e929a0be56a5e`; // Default address for running locally change upon deployment
@@ -77,6 +80,8 @@ export function GoldTrack() {
   };
 
   useEffect(() => {
+    console.log(rowCount);
+
     writeContractAsync({
       args: [
         dAppAddress,
@@ -86,20 +91,16 @@ export function GoldTrack() {
       ],
     });
 
-    setAttempts(attempts + 1);
     console.log("sent");
-    console.log(attempts);
     fetchNotices();
   }, []);
-  setAttempts(attempts + 1);
 
-  console.log(attempts);
-  console.log(notices[attempts]?.payload);
-  const payload = fromHex(
-    (notices[attempts]?.payload as Hex) || "0x0",
-    "bytes"
-  );
-  console.log(convertFlatArrayTo2DArray(payload, rowCount, 5));
+  const lastNotice = notices[notices.length - 1];
+
+  const payload = fromHex((lastNotice?.payload as Hex) || "0x0", "bytes");
+  const cartesiObstacles = convertFlatArrayTo2DArray(payload, rowCount, 5);
+  // console.log(payload);
+  console.log(cartesiObstacles);
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
