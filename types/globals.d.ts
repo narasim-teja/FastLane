@@ -36,8 +36,15 @@ declare global {
     : [];
 }
 
+declare module "three" {
+  type Object3D = {
+    geometry: BufferGeometry;
+    material: Material;
+  };
+}
+
 declare module "react" {
-  type FCC<Props = UnknownObject> = React.FC<React.PropsWithChildren<Props>>;
+  type FCC<Props = unknown> = React.FC<React.PropsWithChildren<Props>>;
 }
 
 export {};

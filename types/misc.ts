@@ -9,8 +9,8 @@ export type GamePlayAction = {
   action: string;
 };
 
-export type Track = "gold" | "eth" | "oasis-track";
+export type Track = "gold" | "eth" | "oasis-track" | "cartesi-track";
 
 export type Clients = {
-  [K: string]: { position: Coordinates; rotation: Coordinates };
+  [address: string]: { position: Coordinates; rotation: Coordinates };
 };

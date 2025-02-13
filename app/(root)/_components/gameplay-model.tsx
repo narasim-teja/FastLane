@@ -13,6 +13,7 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
   const light = React.useRef<THREE.DirectionalLight>(null);
 
   const { nodes, materials, animations } = useGLTF("/models/gameplay.glb");
+  // @ts-expect-error ignore
   const { actions, names } = useAnimations(animations, group);
 
   useFrame((state) => {
@@ -48,7 +49,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone.geometry}
           material={materials.TrafficConeMat}
           position={[1.448, 0.227, -0.39]}
@@ -59,7 +59,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone001"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone001.geometry}
           material={materials.TrafficConeMat}
           position={[-1.51, 0.227, 2.689]}
@@ -70,7 +69,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone002"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone002.geometry}
           material={materials.TrafficConeMat}
           position={[-1.345, 0.227, -3.171]}
@@ -81,7 +79,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone003"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone003.geometry}
           material={materials.TrafficConeMat}
           position={[-0.018, 0.227, -3.564]}
@@ -92,7 +89,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone005"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone005.geometry}
           material={materials.TrafficConeMat}
           position={[1.493, 0.227, -1.364]}
@@ -103,7 +99,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone006"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone006.geometry}
           material={materials.TrafficConeMat}
           position={[1.459, 0.227, 0.462]}
@@ -114,7 +109,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone007"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone007.geometry}
           material={materials.TrafficConeMat}
           position={[1.526, 0.227, 2.014]}
@@ -125,7 +119,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone008"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone008.geometry}
           material={materials.TrafficConeMat}
           position={[0.012, 0.227, 3.558]}
@@ -136,7 +129,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone009"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone009.geometry}
           material={materials.TrafficConeMat}
           position={[-1.54, 0.227, -0.295]}
@@ -147,7 +139,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone010"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone010.geometry}
           material={materials.TrafficConeMat}
           position={[-0.033, 0.227, 1.812]}
@@ -158,7 +149,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone011"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone011.geometry}
           material={materials.TrafficConeMat}
           position={[-0.513, 0.227, -0.318]}
@@ -169,7 +159,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone012"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone012.geometry}
           material={materials.TrafficConeMat}
           position={[-0.305, 0.227, -2.327]}
@@ -180,7 +169,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone013"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone013.geometry}
           material={materials.TrafficConeMat}
           position={[-0.401, 0.227, -1.367]}
@@ -191,7 +179,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone014"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone014.geometry}
           material={materials.TrafficConeMat}
           position={[-0.288, 0.227, 0.77]}
@@ -202,7 +189,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone015"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone015.geometry}
           material={materials.TrafficConeMat}
           position={[-1.54, 0.227, 1.699]}
@@ -213,7 +199,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone016"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone016.geometry}
           material={materials.TrafficConeMat}
           position={[-1.533, 0.227, -2.552]}
@@ -224,7 +209,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone017"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone017.geometry}
           material={materials.TrafficConeMat}
           position={[-1.533, 0.227, -1.487]}
@@ -235,7 +219,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone018"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone018.geometry}
           material={materials.TrafficConeMat}
           position={[-1.525, 0.227, 0.702]}
@@ -246,7 +229,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone019"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone019.geometry}
           material={materials.TrafficConeMat}
           position={[1.436, 0.227, 2.914]}
@@ -257,7 +239,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone020"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone020.geometry}
           material={materials.TrafficConeMat}
           position={[0.902, 0.227, -3.404]}
@@ -268,7 +249,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone021"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone021.geometry}
           material={materials.TrafficConeMat}
           position={[1.51, 0.227, -2.095]}
@@ -279,7 +259,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone022"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone022.geometry}
           material={materials.TrafficConeMat}
           position={[1.462, 0.227, 1.294]}
@@ -290,7 +269,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone023"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone023.geometry}
           material={materials.TrafficConeMat}
           position={[-0.876, 0.227, 3.355]}
@@ -301,7 +279,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone024"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone024.geometry}
           material={materials.TrafficConeMat}
           position={[-0.774, 0.227, -3.549]}
@@ -312,7 +289,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone025"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone025.geometry}
           material={materials.TrafficConeMat}
           position={[1.528, 0.227, -2.848]}
@@ -323,7 +299,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="TrafficCone026"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.TrafficCone026.geometry}
           material={materials.TrafficConeMat}
           position={[0.844, 0.227, 3.48]}
@@ -335,7 +310,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="Sphere"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Sphere.geometry}
           material={materials["cyberpunk.001"]}
           position={[-0.95, 0.572, 0.802]}
@@ -345,7 +319,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="Base_Coin"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Base_Coin.geometry}
           material={materials["Material.002"]}
           position={[0.75, 0.983, 1.95]}
@@ -361,7 +334,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="mesh"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.mesh.geometry}
             material={materials["Black Metal"]}
           />
@@ -369,7 +341,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="mesh_1"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.mesh_1.geometry}
             material={materials.Gold}
           />
@@ -377,7 +348,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="mesh_2"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.mesh_2.geometry}
             material={materials["Grey Meta"]}
           />
@@ -385,7 +355,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="mesh_3"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.mesh_3.geometry}
             material={materials["Material.001"]}
           />
@@ -394,7 +363,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
           name="Circle"
           castShadow
           receiveShadow
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Circle.geometry}
           material={materials["Material.003"]}
           position={[0.933, 0.971, -1.614]}
@@ -405,7 +373,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="Circle001"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Circle001.geometry}
             material={materials["Material.003"]}
             position={[0.264, -0.603, 0.164]}
@@ -417,7 +384,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="Cube001"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cube001.geometry}
             material={materials["cyberpunk.002"]}
           />
@@ -425,7 +391,6 @@ export const GamePlayModel: React.FC<GroupProps> = (props) => {
             name="Cube001_1"
             castShadow
             receiveShadow
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cube001_1.geometry}
             material={materials["glow.001"]}
           />

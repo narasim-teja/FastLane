@@ -2,16 +2,23 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-import { Html, useKeyboardControls, useTexture } from "@react-three/drei";
+import {
+  Html,
+  useGLTF,
+  useKeyboardControls,
+  useTexture,
+} from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
+import { toast } from "sonner";
 import * as THREE from "three";
 
 import type { RapierRigidBody } from "@react-three/rapier";
 
+import type { Auth } from "~/types/auth";
 import type { GamePlayAction } from "~/types/misc";
 
-import { CHAIN_ID, SESSION_ID, TIME_LIMIT } from "~/config/constants";
+import { TIME_LIMIT } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
@@ -20,14 +27,21 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
 
-export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
+export const SinglePlayer: React.FC<{
+  from: "eth" | "gold";
+  auth: Auth;
+}> = ({ from, auth }) => {
   const logger = getLogger();
 
   const { gl } = useThree();
 
+  const { nodes, materials } = useGLTF("/models/gold-track/marble.glb");
+
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
+  const { mutateAsync: updateCheckpoint } =
+    api.ws.updateCheckpoint.useMutation();
 
   const smoothedCameraPosition = useRef(new THREE.Vector3(10, 10, 10)).current;
   const smoothedCameraTarget = useRef(new THREE.Vector3()).current;
@@ -58,9 +72,9 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
     spawnCheckpoint,
   } = useGame();
 
-  const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 2.5);
+  const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 0.75);
 
-  // useEffect(() => {const TIME_LIMIT = 10; // in seconds
+  // useEffect(() => {
 
   //   void (async () => {
   //     try {
@@ -85,10 +99,7 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
       (value) => {
         if (value === "ready" && body.current) {
           // TODO: check for the wakeUp parameter
-          body.current.setTranslation(
-            { x: from === "gold" ? 0 : 2, y: 1, z: playerPosition },
-            true
-          );
+          body.current.setTranslation({ x: 0, y: 1, z: playerPosition }, true);
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
           body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
         }
@@ -104,6 +115,8 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
       unsubscribeKeys();
     };
   }, [startGame, subscribeKeys, playerPosition, from]);
+
+  console.log({ lastRow: lastRow.current });
 
   useFrame((state, delta) => {
     if (!body.current) return;
@@ -128,9 +141,12 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
         if (remainingTime <= 0) {
           revealRow({
             track: from,
-            chainId: CHAIN_ID,
-            sessionId: SESSION_ID,
             rowIdx: spawnCheckpoint * 10,
+            auth: {
+              user: auth.user,
+              time: auth.time,
+              rsv: auth.rsv,
+            },
           });
 
           lastRow.current = 0;
@@ -308,21 +324,44 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
     if (currentRow > lastRow.current && bodyPosition.y > 0) {
       logger.info(lastRow.current);
       lastRow.current = currentRow; // update the last row
+
+      if (currentRow % 10 === 9) {
+        const checkpointNumber = Math.floor((currentRow + 1) / 10);
+
+        toast.promise(
+          updateCheckpoint({
+            address: auth.user,
+            checkpointNumber,
+          }),
+          {
+            loading: "Updating checkpoint...",
+            success: "Checkpoint updated",
+            error: "Failed to update checkpoint",
+          }
+        );
+      }
+
       // emit event to server to reveal the next row of obstacles
       revealRow({
         track: from,
-        chainId: CHAIN_ID,
-        sessionId: SESSION_ID,
         rowIdx: currentRow,
+        auth: {
+          user: auth.user,
+          time: auth.time,
+          rsv: auth.rsv,
+        },
       });
     }
 
     if (bodyPosition.y < -2) {
       revealRow({
         track: from,
-        chainId: CHAIN_ID,
-        sessionId: SESSION_ID,
-        rowIdx: spawnCheckpoint * 9,
+        rowIdx: spawnCheckpoint * 8,
+        auth: {
+          user: auth.user,
+          time: auth.time,
+          rsv: auth.rsv,
+        },
       });
 
       // lastRow.current = spawnCheckpoint * 10;
@@ -540,14 +579,17 @@ export const SinglePlayer: React.FC<{ from: "eth" | "gold" }> = ({ from }) => {
         friction={1}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[from === "gold" ? 0 : 2, 1, playerPosition]}
+        position={[0, 1, playerPosition]}
       >
         {/* <primitive object={ball} scale={0.005} /> */}
 
-        <mesh castShadow>
-          <sphereGeometry args={[0.25, 18, 18]} />
-          <meshStandardMaterial attach="material" map={texture} />
-        </mesh>
+        {from === "gold" ?
+          <mesh geometry={nodes.Cube.geometry} material={materials.Material} />
+        : <mesh castShadow>
+            <sphereGeometry args={[0.25, 18, 18]} />
+            <meshStandardMaterial attach="material" map={texture} />
+          </mesh>
+        }
       </RigidBody>
     </>
   );

@@ -3,11 +3,16 @@
 
 import { EventEmitter, on } from "node:events";
 
-import type { BroadcastPositionData, RevealRowData } from "~/types/ws";
+import type {
+  BroadcastPositionData,
+  RevealRowData,
+  UpdateCheckpointData,
+} from "~/types/ws";
 
 export interface MyEvents {
   revealRow: (data: RevealRowData) => void;
   broadcastPosition: (data: BroadcastPositionData) => void;
+  updateCheckpoint: (data: UpdateCheckpointData) => void;
 }
 
 declare interface MyEventEmitter {

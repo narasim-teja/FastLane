@@ -1,24 +1,31 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 
-import { useGLTF, useTexture } from "@react-three/drei";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { Environment, Html, useGLTF, useTexture } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useControls } from "leva";
 import * as THREE from "three";
 
 import type { GroupProps } from "@react-three/fiber";
 
-import type { Clients } from "~/types/misc";
+import type { Clients, Position } from "~/types/misc";
 
 import { Multiplayer } from "~/components/players/multiplayer";
 import { api } from "~/lib/trpc/react";
 
-export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
-  address,
-  ...props
-}) => {
-  const { nodes, materials } = useGLTF("/models/community-track.glb");
+export const OasisCommunityTrack: React.FC<
+  GroupProps & { links: [string, string, string, string] }
+> = ({ links, ...props }) => {
+  const [clients, setClients] = React.useState<Clients>({});
+
+  const { primaryWallet } = useDynamicContext();
+  const address = primaryWallet?.address ?? "";
+
+  const { nodes, materials } = useGLTF(
+    "/models/community-tracks/oasis-track.glb"
+  );
   const roadTexture = useTexture("/textures/road.jpg", (texture) => {
     // flip the texture
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -28,8 +35,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
   const { debugPhysics } = useControls("Debug Tools", {
     debugPhysics: false,
   });
-
-  const [clients, setClients] = React.useState<Clients>({});
 
   const { mutate: broadcastPosition } = api.ws.broadcastPosition.useMutation();
 
@@ -47,6 +52,8 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
     },
   });
 
+  const playersCount = Object.keys(clients).length;
+
   return (
     <Physics debug={debugPhysics} colliders="trimesh">
       <group {...props}>
@@ -58,7 +65,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
           >
             {/* floor */}
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032.geometry}
               material={materials.plane}
               material-map={roadTexture}
@@ -66,14 +72,12 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
 
             {/* race track */}
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032_1.geometry}
               material={materials["gree.002"]}
             />
 
             {/* every other thing on the floor */}
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Cube032_2.geometry}
               material={materials.PaletteMaterial001}
             />
@@ -83,7 +87,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         {/* buildings */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cube005_Cube002.geometry}
             material={materials["Material.011"]}
             position={[-116.09, 9.241, -34.547]}
@@ -94,7 +97,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
 
         {/* dont know what it is */}
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes.Cube_Cube002.geometry}
           material={materials.PaletteMaterial002}
           position={[-8.812, 0.823, 86.826]}
@@ -105,7 +107,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         {/* trees */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cylinder.geometry}
             material={materials["Material.001"]}
             position={[-121.457, 0, -7.232]}
@@ -114,7 +115,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         </RigidBody>
 
         <mesh
-          // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
           geometry={nodes["Academy_White@2x"].geometry}
           material={materials["Academy White@2x"]}
           position={[-45.256, 20.77, 70.405]}
@@ -125,7 +125,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         {/* oasis logo */}
         <RigidBody type="fixed" position={[10.54, -0.62, 6.678]}>
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes["Oasis_Logo_White@2x"].geometry}
             material={materials["Oasis Logo White@2x"]}
             scale={2.058}
@@ -135,9 +134,7 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         {/* oasis logo edges */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Cube.geometry}
-            // @ts-expect-error Property 'material' does not exist on type 'Object3D<Object3DEventMap>'.
             material={nodes.Cube.material}
             position={[10.54, -0.501, 6.781]}
           />
@@ -146,7 +143,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         {/* rose collectible */}
         <RigidBody type="fixed">
           <mesh
-            // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
             geometry={nodes.Rose.geometry}
             material={materials["49"]}
             position={[-44.246, 1.803, 80.744]}
@@ -158,27 +154,89 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
         <RigidBody type="fixed">
           <group position={[-44.482, -0.016, 118.343]} scale={2.617}>
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Plane009_1.geometry}
               material={materials["Material.023"]}
             />
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Plane009_2.geometry}
               material={materials["Material.022"]}
             />
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Plane009_3.geometry}
               material={materials.PaletteMaterial001}
             />
           </group>
         </RigidBody>
+
+        <Environment preset="park" background />
+
+        {/* iFrames */}
+        <Html
+          transform
+          position={[46.65, 7.18, -16.86]}
+          rotation={[0, -Math.PI / 2, 0]}
+        >
+          <iframe
+            width="1020"
+            height="573"
+            src={links[0]}
+            className="rounded-lg"
+          />
+        </Html>
+
+        <Html
+          occlude="blending"
+          transform
+          position={[20.58, 7, 105.44]}
+          rotation={[0, -Math.PI, 0]}
+        >
+          <iframe
+            width="980"
+            height="540"
+            src={links[1]}
+            className="rounded-lg"
+          />
+        </Html>
+
+        <Html transform position={[-56.86, 2.48, -48.98]}>
+          <iframe
+            width="375"
+            height="220"
+            src={links[2]}
+            className="rounded-lg"
+          />
+        </Html>
+
+        <Html
+          transform
+          position={[-94.28, 3.77, 122.38]}
+          rotation={[0, Math.PI / 2, 0]}
+        >
+          <iframe
+            width="660"
+            height="370"
+            src={links[3]}
+            className="rounded-lg"
+          />
+        </Html>
       </group>
 
       {Object.keys(clients).map((clientAddress) => {
         if (clientAddress === address) {
-          return <Multiplayer key={clientAddress} address={address} />;
+          const x = Math.floor((playersCount - 1) / 6) * 5;
+          const z = (playersCount % 6 || 6) * 5;
+
+          const position: Position = [-7.2 + x, 0.09, -(1.16 + z)];
+
+          return (
+            <Multiplayer
+              key={clientAddress}
+              address={address}
+              position={position}
+              geometry={nodes.Icosphere.geometry}
+              material={materials["Material.026"]}
+            />
+          );
         }
 
         const { position, rotation } = clients[clientAddress];
@@ -197,7 +255,6 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
             scale={0.9}
           >
             <mesh
-              // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
               geometry={nodes.Icosphere.geometry}
               material={materials["Material.026"]}
             />
@@ -208,4 +265,4 @@ export const CommunityTrack: React.FC<GroupProps & { address: string }> = ({
   );
 };
 
-useGLTF.preload("/models/community-track.glb");
+useGLTF.preload("/models/community-tracks/oasis-track.glb");

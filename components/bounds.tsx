@@ -1,37 +1,37 @@
-import { useFBX } from "@react-three/drei";
+import React from "react";
+
+import { useGLTF } from "@react-three/drei";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 
 import { useGame } from "~/hooks/use-game";
-import { quantize } from "~/lib/utils";
 
-type BoundsProps = {
+export const Bounds: React.FC<{
   length?: number;
-  rowCount: number;
+  row: number;
   onCollison: () => void;
-};
-
-export function Bounds({ length = 10, onCollison, rowCount }: BoundsProps) {
-  const corridor = useFBX("/road-plane.fbx");
+}> = ({ length = 10, onCollison, row }) => {
+  const { nodes, materials } = useGLTF("/models/eth-track/track.glb");
 
   const { togglePause } = useGame();
-
-  const boundPosition = rowCount / 10 - 1;
 
   const handleCheckpointEnter = () => {
     togglePause();
     onCollison();
   };
 
-  // Quantizing scale and position values to 3 decimal places
-  const scale = [0.014, 0.01, 0.0066 * length].map(quantize);
-  // const position = [2, -0.21, -(2 * length) + 0.05].map(quantize);
-  const position = [2, -0.2, -(2 * length) - 5.5 - 4.5 * boundPosition].map(
-    quantize
-  );
-
   return (
     <RigidBody type="fixed" colliders="trimesh" restitution={0.2} friction={1}>
-      <primitive object={corridor} scale={scale} position={position} />
+      <group
+        scale={[1.065, 1, 6.275]}
+        position={[0, 0.055, -24.25 * (2 * row + 1) - 1.5 * row]}
+      >
+        <mesh
+          geometry={nodes.Cube013.geometry}
+          material={materials["Material.001"]}
+        />
+        <mesh geometry={nodes.Cube013_1.geometry} material={materials.glow} />
+      </group>
+
       <CuboidCollider
         // args={[2.5, 0, 2.5]}
         args={[2.5, 0, 2.5]}
@@ -43,6 +43,6 @@ export function Bounds({ length = 10, onCollison, rowCount }: BoundsProps) {
       />
     </RigidBody>
   );
-}
+};
 
-useFBX.preload("/road-plane.fbx");
+useGLTF.preload("/models/eth-track/track.glb");

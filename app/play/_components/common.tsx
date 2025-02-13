@@ -27,7 +27,7 @@ export default function Common({ children }: React.PropsWithChildren) {
 
   return (
     <>
-      <color args={["#bdedfc"]} attach="background" />
+      <color args={["#000"]} attach="background" />
       <OrbitControls makeDefault />
 
       {showPerf && <Perf />}

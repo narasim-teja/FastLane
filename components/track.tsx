@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useFBX, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 
 import { useGame } from "~/hooks/use-game";
@@ -16,12 +16,12 @@ export const Track: React.FC<{
   return (
     <RigidBody type="fixed" colliders="trimesh" restitution={0.2} friction={1}>
       <mesh
-        // @ts-expect-error Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
         geometry={nodes.Plane.geometry}
         material={materials["Gold Track v1"]}
         scale={[1.5, 1, 3.5]}
         position={[0, 0, -(25 * (row * 2 + 1))]}
       />
+
       <CuboidCollider
         // args={[2.5, 0, 2.5]}
         args={[2.5, 0, 2.5]}
@@ -35,4 +35,4 @@ export const Track: React.FC<{
   );
 };
 
-useFBX.preload("/road-plane.fbx");
+useGLTF.preload("/models/gold-track/track.glb");
