@@ -43,6 +43,20 @@ export const DynamicProvider: React.FCC = ({ children }) => {
 
 const evmNetworks = [
   {
+    blockExplorerUrls: ["http://localhost:8545"],
+    chainId: 31337,
+    chainName: "Anvil Local",
+    iconUrls: ["../images/eth-coin.png"],
+    name: "Anvil Local",
+    nativeCurrency: {
+      decimals: 18,
+      name: "Ethereum",
+      symbol: "ETH",
+    },
+    networkId: 31337,
+    rpcUrls: ["http://localhost:8545"],
+  },
+  {
     blockExplorerUrls: ["https://testnet.explorer.sapphire.oasis.dev"],
     chainId: 23295, // 23295 in decimal, 0x5B4F in hex
     chainName: "Oasis Sapphire Testnet",
