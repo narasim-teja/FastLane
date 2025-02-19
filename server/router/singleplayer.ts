@@ -1,13 +1,16 @@
 import { tracked } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
+import { fromHex } from "viem";
 import { z } from "zod";
 
 import type { RevealRowData, UpdateCheckpointData } from "~/types/ws";
 
 import { getLogger } from "~/lib/logger";
+import { fetchGraphQLData } from "~/utils/api";
+import { NOTICES_QUERY } from "~/utils/queries";
 
 import {
-  fetchAllObstacles,
+  convertFlatArrayTo2DArray,
   revealObstaclesInRow,
   updateCheckpoint,
 } from "../helper";
@@ -31,23 +34,33 @@ function generateRandomObstacleData(): number[][] {
 }
 
 const obstacleData = generateRandomObstacleData();
+const cartesiObstacleData: number[][] = [];
+
+const authSchema = z.object({
+  user: z.string(),
+  time: z.number(),
+  rsv: z.object({
+    r: z.string(),
+    s: z.string(),
+    v: z.number(),
+  }),
+});
 
 export const singlePlayerRouter = createRouter({
   revealRow: protectedProcedure
     .input(
-      z.object({
-        track: z.enum(["eth", "gold"]),
-        rowIdx: z.number(),
-        auth: z.object({
-          user: z.string(),
-          time: z.number(),
-          rsv: z.object({
-            r: z.string(),
-            s: z.string(),
-            v: z.number(),
-          }),
+      z.discriminatedUnion("track", [
+        z.object({
+          track: z.literal("eth"),
+          rowIdx: z.number(),
+          auth: authSchema,
         }),
-      })
+        z.object({
+          track: z.literal("gold"),
+          rowIdx: z.number(),
+          auth: authSchema.optional(),
+        }),
+      ])
     )
     .mutation(async ({ ctx: { ee }, input: { track, rowIdx, auth } }) => {
       console.log("revealRow called with:", { track, rowIdx, auth });
@@ -60,9 +73,35 @@ export const singlePlayerRouter = createRouter({
           auth
         ));
       } else {
-        console.log("Using generated obstacle data for non-ETH track");
-        obstacles = obstacleData.at(rowIdx) ?? [];
-        rowCount = obstacleData.length;
+        if (cartesiObstacleData.length === 0) {
+          try {
+            const data = await fetchGraphQLData<{
+              notices: { edges: { node: { payload: string } }[] };
+            }>(NOTICES_QUERY);
+
+            const lastNotice =
+              data.notices.edges[data.notices.edges.length - 1]?.node;
+
+            if (lastNotice) {
+              const payload = fromHex(
+                lastNotice.payload as `0x${string}`,
+                "bytes"
+              );
+              cartesiObstacleData.push(
+                ...convertFlatArrayTo2DArray(payload, 50, 5)
+              );
+            }
+          } catch (error) {
+            console.error("Failed to fetch Cartesi data:", error);
+            // Fallback to random data if Cartesi fetch fails
+            obstacles = obstacleData.at(rowIdx) ?? [];
+            rowCount = obstacleData.length;
+            return { rowIdx, rowCount, obstacles };
+          }
+        }
+
+        obstacles = cartesiObstacleData.at(rowIdx) ?? [];
+        rowCount = cartesiObstacleData.length;
       }
 
       console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
@@ -119,18 +158,10 @@ export const singlePlayerRouter = createRouter({
   updateObstacles: protectedProcedure
     .input(
       z.object({
-        auth: z.object({
-          user: z.string(),
-          time: z.number(),
-          rsv: z.object({
-            r: z.string(),
-            s: z.string(),
-            v: z.number(),
-          }),
-        }),
+        auth: authSchema,
       })
     )
-    .mutation(async ({ ctx: { ee }, input: { auth } }) => {
+    .mutation(async ({ input: { auth } }) => {
       console.log("updateObstacles called with auth:", auth);
       // 15 sec delay to allow for the blockchain to update
       await new Promise((resolve) => setTimeout(resolve, 15000));

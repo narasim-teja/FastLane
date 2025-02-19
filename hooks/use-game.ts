@@ -54,7 +54,7 @@ export const useGame = create<State>()(
         return { track: null };
       }),
 
-    rowCount: 0,
+    rowCount: -1,
     setRowCount: (rowCount) => set(() => ({ rowCount })),
 
     spawnCheckpoint: 0,

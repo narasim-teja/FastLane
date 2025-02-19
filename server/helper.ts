@@ -180,3 +180,23 @@ export async function updateCheckpoint(
 
   log.info(`Checkpoint updated for address: ${address}`);
 }
+
+export function convertFlatArrayTo2DArray(
+  flatArray: Uint8Array,
+  rows: number,
+  cols: number
+): number[][] {
+  let index = 0;
+  const twoDArray: number[][] = [];
+
+  for (let i = 0; i < rows; i++) {
+    const row: number[] = [];
+    for (let j = 0; j < cols; j++) {
+      const value = flatArray[index];
+      row.push(value);
+      index++;
+    }
+    twoDArray.push(row);
+  }
+  return twoDArray;
+}
