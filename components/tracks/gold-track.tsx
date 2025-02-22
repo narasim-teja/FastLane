@@ -12,6 +12,7 @@ import { Loader } from "~/components/loader";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
 import { Track } from "~/components/track";
+import { DAPP_ADDRESS } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
@@ -38,17 +39,24 @@ export function GoldTrack() {
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
 
-  const dAppAddress = `0xab7528bb862fb57e8a2bcd567a2e929a0be56a5e`; // Default address for running locally change upon deployment
-
   React.useEffect(() => {
-    writeContractAsync({
-      args: [
-        dAppAddress,
-        stringToHex(
-          `{"method":"generate_random","rows":${10},"cols":5,"max":4}`
-        ),
-      ],
-    });
+    (async () => {
+      await writeContractAsync({
+        args: [
+          DAPP_ADDRESS,
+          stringToHex(
+            `{"method":"generate_random","rows":${10},"cols":5,"max":4}`
+          ),
+        ],
+      });
+
+      logger.info(">>> Fetching Initial Row");
+      revealRow({
+        track: "gold",
+        rowIdx: 0,
+        refetch: true,
+      });
+    })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debugging mode check
@@ -56,13 +64,6 @@ export function GoldTrack() {
 
   if (!isDebugging) {
     api.ws.onRevealRow.useSubscription(void function () {}, {
-      onStarted: () => {
-        logger.info(">>> Fetching Initial Row");
-        revealRow({
-          track: "gold",
-          rowIdx: 0,
-        });
-      },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
         logger.info({ obstacles }, `>>> Raw event data for row ${rowIdx}:`);
         addObstaclesRow(obstacles);

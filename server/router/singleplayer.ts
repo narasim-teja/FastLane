@@ -34,7 +34,7 @@ function generateRandomObstacleData(): number[][] {
 }
 
 const obstacleData = generateRandomObstacleData();
-const cartesiObstacleData: number[][] = [];
+let cartesiObstacleData: number[][] = [];
 
 const authSchema = z.object({
   user: z.string(),
@@ -54,61 +54,106 @@ export const singlePlayerRouter = createRouter({
           track: z.literal("eth"),
           rowIdx: z.number(),
           auth: authSchema,
+          refetch: z.boolean().optional(),
         }),
         z.object({
           track: z.literal("gold"),
           rowIdx: z.number(),
           auth: authSchema.optional(),
+          refetch: z.boolean().optional(),
         }),
       ])
     )
-    .mutation(async ({ ctx: { ee }, input: { track, rowIdx, auth } }) => {
-      console.log("revealRow called with:", { track, rowIdx, auth });
-      let rowCount: number, obstacles: number[];
+    .mutation(
+      async ({ ctx: { ee }, input: { track, rowIdx, auth, refetch } }) => {
+        console.log("revealRow called with:", { track, rowIdx, auth });
+        let rowCount: number, obstacles: number[];
 
-      if (track === "eth") {
-        console.log("Calling revealObstaclesInRow for ETH track");
-        ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
-          rowIdx,
-          auth
-        ));
-      } else {
-        if (cartesiObstacleData.length === 0) {
-          try {
-            const data = await fetchGraphQLData<{
-              notices: { edges: { node: { payload: string } }[] };
-            }>(NOTICES_QUERY);
-
-            const lastNotice =
-              data.notices.edges[data.notices.edges.length - 1]?.node;
-
-            if (lastNotice) {
-              const payload = fromHex(
-                lastNotice.payload as `0x${string}`,
-                "bytes"
-              );
-              cartesiObstacleData.push(
-                ...convertFlatArrayTo2DArray(payload, 50, 5)
-              );
-            }
-          } catch (error) {
-            console.error("Failed to fetch Cartesi data:", error);
-            // Fallback to random data if Cartesi fetch fails
-            obstacles = obstacleData.at(rowIdx) ?? [];
-            rowCount = obstacleData.length;
-            return { rowIdx, rowCount, obstacles };
+        if (track === "eth") {
+          console.log("Calling revealObstaclesInRow for ETH track");
+          ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
+            rowIdx,
+            auth
+          ));
+        } else {
+          // Clear existing data if refetch is true
+          if (refetch) {
+            logger.info(">>> Clearing and refetching Cartesi Data");
+            cartesiObstacleData = [];
           }
+
+          // Apply retry logic for both empty data and refetch cases
+          if (cartesiObstacleData.length === 0) {
+            let retryCount = 0;
+            const maxRetries = 3;
+
+            while (
+              retryCount < maxRetries &&
+              cartesiObstacleData.length === 0
+            ) {
+              logger.info(
+                `>>> ${refetch ? "Refetching" : "Fetching"} Cartesi Data - Attempt ${retryCount + 1}`
+              );
+              try {
+                const data = await fetchGraphQLData<{
+                  notices: { edges: { node: { payload: string } }[] };
+                }>(NOTICES_QUERY);
+
+                const lastNotice =
+                  data.notices.edges[data.notices.edges.length - 1]?.node;
+
+                if (lastNotice) {
+                  const payload = fromHex(
+                    lastNotice.payload as `0x${string}`,
+                    "bytes"
+                  );
+                  cartesiObstacleData = [
+                    ...convertFlatArrayTo2DArray(payload, 10, 5),
+                  ];
+                }
+
+                if (cartesiObstacleData.length === 0) {
+                  console.log(
+                    `Attempt ${retryCount + 1}: No obstacles found, retrying...`
+                  );
+                  retryCount++;
+                  // Add a small delay before retrying
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+              } catch (error) {
+                console.error(
+                  `Attempt ${retryCount + 1}: Failed to fetch Cartesi data:`,
+                  error
+                );
+                retryCount++;
+                if (retryCount < maxRetries) {
+                  // Add a small delay before retrying
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+              }
+            }
+
+            // If after all retries we still don't have data, fallback to random data
+            if (cartesiObstacleData.length === 0) {
+              console.log(
+                "All retry attempts failed, falling back to random data"
+              );
+              obstacles = obstacleData.at(rowIdx) ?? [];
+              rowCount = obstacleData.length;
+              return { rowIdx, rowCount, obstacles };
+            }
+          }
+
+          obstacles = cartesiObstacleData.at(rowIdx) ?? [];
+          rowCount = cartesiObstacleData.length;
         }
 
-        obstacles = cartesiObstacleData.at(rowIdx) ?? [];
-        rowCount = cartesiObstacleData.length;
+        console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
+        ee.emit("revealRow", { rowIdx, rowCount, obstacles });
+
+        return { rowIdx, rowCount, obstacles };
       }
-
-      console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
-      ee.emit("revealRow", { rowIdx, rowCount, obstacles });
-
-      return { rowIdx, rowCount, obstacles };
-    }),
+    ),
 
   onRevealRow: protectedProcedure.subscription(async function* ({
     ctx: { ee },
