@@ -1,22 +1,22 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 
 import { Environment, Html } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import { useControls } from "leva";
-
-import type { Auth } from "~/types/auth";
+import { stringToHex } from "viem";
 
 import { GoldBlockEnd, GoldStartingBlock } from "~/components/block";
 import { Loader } from "~/components/loader";
 import { ObstaclesSpawner } from "~/components/obstacles/spawner";
 import { SinglePlayer } from "~/components/players/single-player";
 import { Track } from "~/components/track";
+import { DAPP_ADDRESS } from "~/config/constants";
 import { useGame } from "~/hooks/use-game";
-import { useLocalStorage } from "~/hooks/use-local-storage";
 import { getLogger } from "~/lib/logger";
 import { api } from "~/lib/trpc/react";
+import { useWriteInputBoxAddInput } from "~/server/hooks/generated";
 
 export function GoldTrack() {
   const logger = getLogger();
@@ -35,25 +35,35 @@ export function GoldTrack() {
     // ...
   } = useGame();
 
-  const [auth] = useLocalStorage<Auth | null>("auth", null);
+  const { writeContractAsync } = useWriteInputBoxAddInput();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
+
+  React.useEffect(() => {
+    (async () => {
+      await writeContractAsync({
+        args: [
+          DAPP_ADDRESS,
+          stringToHex(
+            `{"method":"generate_random","rows":${10},"cols":5,"max":4}`
+          ),
+        ],
+      });
+
+      logger.info(">>> Fetching Initial Row");
+      revealRow({
+        track: "gold",
+        rowIdx: 0,
+        refetch: true,
+      });
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debugging mode check
   const isDebugging = false; // Set to true for debugging, false for normal operation
 
   if (!isDebugging) {
     api.ws.onRevealRow.useSubscription(void function () {}, {
-      onStarted: () => {
-        logger.info(">>> Fetching Initial Row");
-        if (!auth) return;
-
-        revealRow({
-          track: "gold",
-          rowIdx: 0,
-          auth,
-        });
-      },
       onData: ({ data: { rowCount, rowIdx, obstacles } }) => {
         logger.info({ obstacles }, `>>> Raw event data for row ${rowIdx}:`);
         addObstaclesRow(obstacles);
@@ -113,7 +123,7 @@ export function GoldTrack() {
         </group>
       ))}
 
-      {auth && <SinglePlayer from="gold" auth={auth} />}
+      <SinglePlayer from="gold" />
     </Physics>
   );
 }

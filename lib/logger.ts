@@ -20,7 +20,7 @@ export function getLogger() {
   logger = pino({
     browser: {
       asObject: true,
-      disabled: env.NODE_ENV === "production",
+      disabled: env.NODE_ENV === "development",
     },
     level: "debug",
   });

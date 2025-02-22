@@ -57,7 +57,7 @@ export function CommunityTracksCard() {
 
       <div
         className={cn(
-          "absolute inset-0 h-full space-y-2 bg-foreground/10 p-4 backdrop-blur animate-in slide-in-from-bottom-full",
+          "animate-in slide-in-from-bottom-full absolute inset-0 h-full space-y-2 bg-foreground/10 p-4 backdrop-blur",
           !showTracks && "hidden"
         )}
       >

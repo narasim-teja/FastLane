@@ -1,19 +1,23 @@
 import { tracked } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
+import { fromHex } from "viem";
 import { z } from "zod";
 
 import type { RevealRowData, UpdateCheckpointData } from "~/types/ws";
 
 import { getLogger } from "~/lib/logger";
+import { fetchGraphQLData } from "~/utils/api";
+import { NOTICES_QUERY } from "~/utils/queries";
 
 import {
-  fetchAllObstacles,
+  convertFlatArrayTo2DArray,
   revealObstaclesInRow,
   updateCheckpoint,
 } from "../helper";
 import { createRouter, protectedProcedure } from "../trpc";
 
 const logger = getLogger();
+
 function generateRandomObstacleData(): number[][] {
   const numRows = Math.floor(Math.random() * (50 - 10 + 1)) + 10; // Random length between 10 and 50
   const numCols = 5; // Fixed number of columns per row
@@ -30,45 +34,126 @@ function generateRandomObstacleData(): number[][] {
 }
 
 const obstacleData = generateRandomObstacleData();
+let cartesiObstacleData: number[][] = [];
+
+const authSchema = z.object({
+  user: z.string(),
+  time: z.number(),
+  rsv: z.object({
+    r: z.string(),
+    s: z.string(),
+    v: z.number(),
+  }),
+});
 
 export const singlePlayerRouter = createRouter({
   revealRow: protectedProcedure
     .input(
-      z.object({
-        track: z.enum(["eth", "gold"]),
-        rowIdx: z.number(),
-        auth: z.object({
-          user: z.string(),
-          time: z.number(),
-          rsv: z.object({
-            r: z.string(),
-            s: z.string(),
-            v: z.number(),
-          }),
+      z.discriminatedUnion("track", [
+        z.object({
+          track: z.literal("eth"),
+          rowIdx: z.number(),
+          auth: authSchema,
+          refetch: z.boolean().optional(),
         }),
-      })
+        z.object({
+          track: z.literal("gold"),
+          rowIdx: z.number(),
+          auth: authSchema.optional(),
+          refetch: z.boolean().optional(),
+        }),
+      ])
     )
-    .mutation(async ({ ctx: { ee }, input: { track, rowIdx, auth } }) => {
-      console.log("revealRow called with:", { track, rowIdx, auth });
-      let rowCount: number, obstacles: number[];
+    .mutation(
+      async ({ ctx: { ee }, input: { track, rowIdx, auth, refetch } }) => {
+        console.log("revealRow called with:", { track, rowIdx, auth });
+        let rowCount: number, obstacles: number[];
 
-      if (track === "eth") {
-        console.log("Calling revealObstaclesInRow for ETH track");
-        ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
-          rowIdx,
-          auth
-        ));
-      } else {
-        console.log("Using generated obstacle data for non-ETH track");
-        obstacles = obstacleData.at(rowIdx) ?? [];
-        rowCount = obstacleData.length;
+        if (track === "eth") {
+          console.log("Calling revealObstaclesInRow for ETH track");
+          ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
+            rowIdx,
+            auth
+          ));
+        } else {
+          // Clear existing data if refetch is true
+          if (refetch) {
+            logger.info(">>> Clearing and refetching Cartesi Data");
+            cartesiObstacleData = [];
+          }
+
+          // Apply retry logic for both empty data and refetch cases
+          if (cartesiObstacleData.length === 0) {
+            let retryCount = 0;
+            const maxRetries = 3;
+
+            while (
+              retryCount < maxRetries &&
+              cartesiObstacleData.length === 0
+            ) {
+              logger.info(
+                `>>> ${refetch ? "Refetching" : "Fetching"} Cartesi Data - Attempt ${retryCount + 1}`
+              );
+              try {
+                const data = await fetchGraphQLData<{
+                  notices: { edges: { node: { payload: string } }[] };
+                }>(NOTICES_QUERY);
+
+                const lastNotice =
+                  data.notices.edges[data.notices.edges.length - 1]?.node;
+
+                if (lastNotice) {
+                  const payload = fromHex(
+                    lastNotice.payload as `0x${string}`,
+                    "bytes"
+                  );
+                  cartesiObstacleData = [
+                    ...convertFlatArrayTo2DArray(payload, 10, 5),
+                  ];
+                }
+
+                if (cartesiObstacleData.length === 0) {
+                  console.log(
+                    `Attempt ${retryCount + 1}: No obstacles found, retrying...`
+                  );
+                  retryCount++;
+                  // Add a small delay before retrying
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+              } catch (error) {
+                console.error(
+                  `Attempt ${retryCount + 1}: Failed to fetch Cartesi data:`,
+                  error
+                );
+                retryCount++;
+                if (retryCount < maxRetries) {
+                  // Add a small delay before retrying
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+              }
+            }
+
+            // If after all retries we still don't have data, fallback to random data
+            if (cartesiObstacleData.length === 0) {
+              console.log(
+                "All retry attempts failed, falling back to random data"
+              );
+              obstacles = obstacleData.at(rowIdx) ?? [];
+              rowCount = obstacleData.length;
+              return { rowIdx, rowCount, obstacles };
+            }
+          }
+
+          obstacles = cartesiObstacleData.at(rowIdx) ?? [];
+          rowCount = cartesiObstacleData.length;
+        }
+
+        console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
+        ee.emit("revealRow", { rowIdx, rowCount, obstacles });
+
+        return { rowIdx, rowCount, obstacles };
       }
-
-      console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
-      ee.emit("revealRow", { rowIdx, rowCount, obstacles });
-
-      return { rowIdx, rowCount, obstacles };
-    }),
+    ),
 
   onRevealRow: protectedProcedure.subscription(async function* ({
     ctx: { ee },
@@ -118,18 +203,10 @@ export const singlePlayerRouter = createRouter({
   updateObstacles: protectedProcedure
     .input(
       z.object({
-        auth: z.object({
-          user: z.string(),
-          time: z.number(),
-          rsv: z.object({
-            r: z.string(),
-            s: z.string(),
-            v: z.number(),
-          }),
-        }),
+        auth: authSchema,
       })
     )
-    .mutation(async ({ ctx: { ee }, input: { auth } }) => {
+    .mutation(async ({ input: { auth } }) => {
       console.log("updateObstacles called with auth:", auth);
       // 15 sec delay to allow for the blockchain to update
       await new Promise((resolve) => setTimeout(resolve, 15000));

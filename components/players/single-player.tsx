@@ -27,10 +27,9 @@ import { cn } from "~/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "../icons";
 import { Button } from "../ui/button";
 
-export const SinglePlayer: React.FC<{
-  from: "eth" | "gold";
-  auth: Auth;
-}> = ({ from, auth }) => {
+export const SinglePlayer: React.FC<
+  { from: "gold" } | { from: "eth"; auth: Auth }
+> = (props) => {
   const logger = getLogger();
 
   const { gl } = useThree();
@@ -72,7 +71,8 @@ export const SinglePlayer: React.FC<{
     spawnCheckpoint,
   } = useGame();
 
-  const playerPosition = -(spawnCheckpoint * 50) + (from === "gold" ? 2 : 0.75);
+  const playerPosition =
+    -(spawnCheckpoint * 50) + (props.from === "gold" ? 2 : 0.75);
 
   // useEffect(() => {
 
@@ -114,7 +114,7 @@ export const SinglePlayer: React.FC<{
       unsubscribeReset();
       unsubscribeKeys();
     };
-  }, [startGame, subscribeKeys, playerPosition, from]);
+  }, [startGame, subscribeKeys, playerPosition, props.from]);
 
   console.log({ lastRow: lastRow.current });
 
@@ -139,15 +139,18 @@ export const SinglePlayer: React.FC<{
         }
 
         if (remainingTime <= 0) {
-          revealRow({
-            track: from,
-            rowIdx: spawnCheckpoint * 10,
-            auth: {
-              user: auth.user,
-              time: auth.time,
-              rsv: auth.rsv,
-            },
-          });
+          if (props.from === "eth") {
+            revealRow({
+              track: props.from,
+              rowIdx: spawnCheckpoint * 10,
+              auth: props.auth,
+            });
+          } else {
+            revealRow({
+              track: props.from,
+              rowIdx: spawnCheckpoint * 10,
+            });
+          }
 
           lastRow.current = 0;
 
@@ -330,7 +333,8 @@ export const SinglePlayer: React.FC<{
 
         toast.promise(
           updateCheckpoint({
-            address: auth.user,
+            // @ts-expect-error TODO: fix this
+            address: props.auth.user,
             checkpointNumber,
           }),
           {
@@ -342,27 +346,33 @@ export const SinglePlayer: React.FC<{
       }
 
       // emit event to server to reveal the next row of obstacles
-      revealRow({
-        track: from,
-        rowIdx: currentRow,
-        auth: {
-          user: auth.user,
-          time: auth.time,
-          rsv: auth.rsv,
-        },
-      });
+      if (props.from === "eth") {
+        revealRow({
+          track: props.from,
+          rowIdx: currentRow,
+          auth: props.auth,
+        });
+      } else {
+        revealRow({
+          track: props.from,
+          rowIdx: currentRow,
+        });
+      }
     }
 
     if (bodyPosition.y < -2) {
-      revealRow({
-        track: from,
-        rowIdx: spawnCheckpoint * 8,
-        auth: {
-          user: auth.user,
-          time: auth.time,
-          rsv: auth.rsv,
-        },
-      });
+      if (props.from === "eth") {
+        revealRow({
+          track: props.from,
+          rowIdx: spawnCheckpoint * 8,
+          auth: props.auth,
+        });
+      } else {
+        revealRow({
+          track: props.from,
+          rowIdx: spawnCheckpoint * 8,
+        });
+      }
 
       // lastRow.current = spawnCheckpoint * 10;
       lastRow.current = 0;
@@ -583,7 +593,7 @@ export const SinglePlayer: React.FC<{
       >
         {/* <primitive object={ball} scale={0.005} /> */}
 
-        {from === "gold" ?
+        {props.from === "gold" ?
           <mesh geometry={nodes.Cube.geometry} material={materials.Material} />
         : <mesh castShadow>
             <sphereGeometry args={[0.25, 18, 18]} />
