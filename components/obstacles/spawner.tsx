@@ -1,5 +1,10 @@
+import { EthText } from "./eth-text";
 import { GreenCandle } from "./green-candle";
+import { OasisText } from "./oasis-text";
 import { PoopObstacle } from "./poop";
+import { Ramp } from "./ramp";
+import { SlowPad } from "./slow-pad";
+import { SpeedPad } from "./speed-pad";
 import { TextObstacle } from "./text";
 import { WhaleObstacle } from "./whale";
 
@@ -10,10 +15,15 @@ type ObstaclesSpawnerProps = {
 };
 
 const ObstaclesMap = new Map([
-  ["1", WhaleObstacle],
-  ["2", TextObstacle],
-  ["3", PoopObstacle],
-  ["4", GreenCandle],
+  // ["1", WhaleObstacle],
+  // ["2", TextObstacle],
+  // ["3", PoopObstacle],
+  // ["4", GreenCandle],
+  ["1", SpeedPad],
+  ["2", SlowPad],
+  ["3", EthText],
+  ["4", OasisText],
+  ["5", Ramp],
 ]);
 
 export function ObstaclesSpawner({ id, row, col }: ObstaclesSpawnerProps) {

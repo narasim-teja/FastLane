@@ -11,22 +11,13 @@ import { getLogger } from "~/lib/logger";
 export function PoopObstacle({ position = [0, 0, 0] }) {
   const logger = getLogger();
 
-  const [isGameReady, setGameReady] = React.useState(false);
-
   const poop = useFBX("/poop.fbx");
 
   const { activateSpeedReduced } = useGame();
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => setGameReady(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleCollisionExit = () => {
-    if (isGameReady) {
-      logger.info(">>> activating speed reduction");
-      activateSpeedReduced();
-    }
+    logger.info(">>> activating speed reduction");
+    activateSpeedReduced();
   };
 
   return (
