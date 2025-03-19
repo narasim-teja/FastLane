@@ -136,23 +136,24 @@ export const SinglePlayer: React.FC<{
           timerRef.current.classList.remove("text-red-500");
         }
 
-        // if (remainingTime <= 0) {
-        //   revealRow({
-        //     track: from,
-        //     rowIdx: spawnCheckpoint * 10,
-        //     auth: {
-        //       user: auth.user,
-        //       time: auth.time,
-        //       rsv: auth.rsv,
-        //     },
-        //   });
+        if (remainingTime <= 0) {
+          revealRow({
+            track: from,
+            rowIdx: spawnCheckpoint * 10,
+            regenerate: true,
+            auth: {
+              user: auth.user,
+              time: auth.time,
+              rsv: auth.rsv,
+            },
+          });
 
-        //   lastRow.current = 0;
+          lastRow.current = 0;
 
-        //   restartGame();
+          restartGame();
 
-        //   timerRef.current.textContent = TIME_LIMIT.toString();
-        // }
+          timerRef.current.textContent = TIME_LIMIT.toString();
+        }
       }
     }
 
@@ -326,17 +327,17 @@ export const SinglePlayer: React.FC<{
       if (currentRow % 10 === 9) {
         const checkpointNumber = Math.floor((currentRow + 1) / 10);
 
-        // toast.promise(
-        //   updateCheckpoint({
-        //     address: auth.user,
-        //     checkpointNumber,
-        //   }),
-        //   {
-        //     loading: "Updating checkpoint...",
-        //     success: "Checkpoint updated",
-        //     error: "Failed to update checkpoint",
-        //   }
-        // );
+        toast.promise(
+          updateCheckpoint({
+            address: auth.user,
+            checkpointNumber,
+          }),
+          {
+            loading: "Updating checkpoint...",
+            success: "Checkpoint updated",
+            error: "Failed to update checkpoint",
+          }
+        );
       }
 
       // emit event to server to reveal the next row of obstacles
@@ -355,6 +356,7 @@ export const SinglePlayer: React.FC<{
       revealRow({
         track: from,
         rowIdx: spawnCheckpoint * 8,
+        regenerate: true,
         auth: {
           user: auth.user,
           time: auth.time,

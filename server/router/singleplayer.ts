@@ -6,11 +6,7 @@ import type { RevealRowData, UpdateCheckpointData } from "~/types/ws";
 
 import { getLogger } from "~/lib/logger";
 
-import {
-  fetchAllObstacles,
-  revealObstaclesInRow,
-  updateCheckpoint,
-} from "../helper";
+import { revealObstaclesInRow, updateCheckpoint } from "../helper";
 import { createRouter, protectedProcedure } from "../trpc";
 
 const logger = getLogger();
@@ -21,7 +17,7 @@ function generateRandomObstacleData(): number[][] {
   const random2DArray: number[][] = Array.from({ length: numRows }, () => {
     const row = new Array(numCols).fill(0); // Initialize a row of zeros
     const randomIndex = Math.floor(Math.random() * numCols); // Random index for non-zero element
-    const randomValue = Math.floor(Math.random() * 4) + 1; // Random value between 1 and 4
+    const randomValue = Math.floor(Math.random() * 9) + 1; // Random value between 1 and 9
     row[randomIndex] = randomValue;
     return row;
   });
@@ -29,12 +25,13 @@ function generateRandomObstacleData(): number[][] {
   return random2DArray;
 }
 
-const obstacleData = generateRandomObstacleData();
+let obstacleData = generateRandomObstacleData();
 
 export const singlePlayerRouter = createRouter({
   revealRow: protectedProcedure
     .input(
       z.object({
+        regenerate: z.boolean().optional(),
         track: z.enum(["eth", "gold"]),
         rowIdx: z.number(),
         auth: z.object({
@@ -48,27 +45,34 @@ export const singlePlayerRouter = createRouter({
         }),
       })
     )
-    .mutation(async ({ ctx: { ee }, input: { track, rowIdx, auth } }) => {
-      console.log("revealRow called with:", { track, rowIdx, auth });
-      let rowCount: number, obstacles: number[];
+    .mutation(
+      async ({ ctx: { ee }, input: { track, rowIdx, auth, regenerate } }) => {
+        if (regenerate) {
+          logger.info("Regenerating obstacle data");
+          obstacleData = generateRandomObstacleData();
+        }
 
-      if (track === "eth") {
-        console.log("Calling revealObstaclesInRow for ETH track");
-        ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
-          rowIdx,
-          auth
-        ));
-      } else {
-        console.log("Using generated obstacle data for non-ETH track");
-        obstacles = obstacleData.at(rowIdx) ?? [];
-        rowCount = obstacleData.length;
+        console.log("revealRow called with:", { track, rowIdx, auth });
+        let rowCount: number, obstacles: number[];
+
+        if (track === "eth") {
+          console.log("Calling revealObstaclesInRow for ETH track");
+          ({ obstaclesInRow: obstacles, rowCount } = await revealObstaclesInRow(
+            rowIdx,
+            auth
+          ));
+        } else {
+          console.log("Using generated obstacle data for non-ETH track");
+          obstacles = obstacleData.at(rowIdx) ?? [];
+          rowCount = obstacleData.length;
+        }
+
+        console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
+        ee.emit("revealRow", { rowIdx, rowCount, obstacles });
+
+        return { rowIdx, rowCount, obstacles };
       }
-
-      console.log("Revealed row data:", { rowIdx, rowCount, obstacles });
-      ee.emit("revealRow", { rowIdx, rowCount, obstacles });
-
-      return { rowIdx, rowCount, obstacles };
-    }),
+    ),
 
   onRevealRow: protectedProcedure.subscription(async function* ({
     ctx: { ee },
@@ -129,7 +133,7 @@ export const singlePlayerRouter = createRouter({
         }),
       })
     )
-    .mutation(async ({ ctx: { ee }, input: { auth } }) => {
+    .mutation(async ({ input: { auth } }) => {
       console.log("updateObstacles called with auth:", auth);
       // 15 sec delay to allow for the blockchain to update
       await new Promise((resolve) => setTimeout(resolve, 15000));

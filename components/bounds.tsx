@@ -8,15 +8,15 @@ import { useGame } from "~/hooks/use-game";
 export const Bounds: React.FC<{
   length?: number;
   row: number;
-  onCollison: () => void;
-}> = ({ length = 10, onCollison, row }) => {
+  onCollision: () => void;
+}> = ({ length = 10, onCollision, row }) => {
   const { nodes, materials } = useGLTF("/models/eth-track/track.glb");
 
   const { togglePause } = useGame();
 
   const handleCheckpointEnter = () => {
     togglePause();
-    onCollison();
+    onCollision();
   };
 
   return (

@@ -15,15 +15,15 @@ type ObstaclesSpawnerProps = {
 };
 
 const ObstaclesMap = new Map([
-  // ["1", WhaleObstacle],
-  // ["2", TextObstacle],
-  // ["3", PoopObstacle],
-  // ["4", GreenCandle],
-  ["1", SpeedPad],
-  ["2", SlowPad],
-  ["3", EthText],
-  ["4", OasisText],
-  ["5", Ramp],
+  ["1", WhaleObstacle],
+  ["2", TextObstacle],
+  ["3", PoopObstacle],
+  ["4", GreenCandle],
+  ["5", SpeedPad],
+  ["6", SlowPad],
+  ["7", EthText],
+  ["8", OasisText],
+  ["9", Ramp],
 ]);
 
 export function ObstaclesSpawner({ id, row, col }: ObstaclesSpawnerProps) {
