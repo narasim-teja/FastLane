@@ -123,7 +123,7 @@ export const EthTrack: React.FC<{ auth: Auth }> = ({ auth }) => {
                 key={i}
                 length={rowCount}
                 row={i}
-                onCollison={() => {
+                onCollision={() => {
                   if (i === segments.length - 1) {
                     logger.info(">>> Opening editor...");
                     toggleEditor(true);

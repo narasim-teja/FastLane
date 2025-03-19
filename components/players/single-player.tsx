@@ -116,8 +116,6 @@ export const SinglePlayer: React.FC<{
     };
   }, [startGame, subscribeKeys, playerPosition, from]);
 
-  console.log({ lastRow: lastRow.current });
-
   useFrame((state, delta) => {
     if (!body.current) return;
 
@@ -142,6 +140,7 @@ export const SinglePlayer: React.FC<{
           revealRow({
             track: from,
             rowIdx: spawnCheckpoint * 10,
+            regenerate: true,
             auth: {
               user: auth.user,
               time: auth.time,
@@ -357,6 +356,7 @@ export const SinglePlayer: React.FC<{
       revealRow({
         track: from,
         rowIdx: spawnCheckpoint * 8,
+        regenerate: true,
         auth: {
           user: auth.user,
           time: auth.time,
