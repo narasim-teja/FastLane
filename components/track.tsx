@@ -18,8 +18,8 @@ export const Track: React.FC<{
       <mesh
         geometry={nodes.Plane.geometry}
         material={materials["Gold Track v1"]}
-        scale={[1.5, 1, 3.5]}
-        position={[0, 0, -(25 * (row * 2 + 1))]}
+        scale={[1.5, 1, 5.25]}
+        position={[0, 0, -(37.5 * (row * 2 + 1))]}
       />
 
       <CuboidCollider

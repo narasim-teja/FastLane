@@ -54,6 +54,11 @@ export const SinglePlayer: React.FC<
   const lastRow = useRef(0);
   const timerRef = useRef<HTMLParagraphElement>(null);
 
+  const checkpointTimesRef = useRef<Record<number, number>>({});
+  const lastCheckpointTimeRef = useRef<number>(0);
+  const totalTimeRef = useRef<number>(0);
+  const lapTimeRef = useRef<number>(0);
+
   const [_recordedActions, setRecordedActions] = useState<GamePlayAction[]>([]);
   const [switchControls, setSwitchControls] = useState(false);
   // const [_, setSimulationData] = useState<GamePlayAction[]>([]);
@@ -116,8 +121,6 @@ export const SinglePlayer: React.FC<
     };
   }, [startGame, subscribeKeys, playerPosition, props.from]);
 
-  console.log({ lastRow: lastRow.current });
-
   useFrame((state, delta) => {
     if (!body.current) return;
 
@@ -157,6 +160,12 @@ export const SinglePlayer: React.FC<
           restartGame();
 
           timerRef.current.textContent = TIME_LIMIT.toString();
+
+          // Reset timing refs when restarting
+          checkpointTimesRef.current = {};
+          lastCheckpointTimeRef.current = 0;
+          totalTimeRef.current = 0;
+          lapTimeRef.current = 0;
         }
       }
     }
@@ -328,8 +337,38 @@ export const SinglePlayer: React.FC<
       logger.info(lastRow.current);
       lastRow.current = currentRow; // update the last row
 
-      if (currentRow % 10 === 9) {
-        const checkpointNumber = Math.floor((currentRow + 1) / 10);
+      if (
+        props.from === "gold" ? currentRow % 15 === 0 : currentRow % 10 === 9
+      ) {
+        const checkpointNumber = Math.floor(
+          (currentRow + 1) / (props.from === "gold" ? 15 : 10)
+        );
+        const currentTime = Date.now();
+
+        // Calculate checkpoint time
+        const checkpointTime =
+          currentTime - (lastCheckpointTimeRef.current || startTime);
+        checkpointTimesRef.current[checkpointNumber] = checkpointTime;
+
+        // Update lap time
+        lapTimeRef.current = currentTime - startTime;
+
+        // Update total time
+        totalTimeRef.current += checkpointTime;
+
+        // Update last checkpoint time for next calculation
+        lastCheckpointTimeRef.current = currentTime;
+
+        logger.info({
+          checkpointNumber,
+          checkpointTime: `${(checkpointTime / 1000).toFixed(2)}s`,
+          lapTime: `${(lapTimeRef.current / 1000).toFixed(2)}s`,
+          totalTime: `${(totalTimeRef.current / 1000).toFixed(2)}s`,
+        });
+
+        toast.success(
+          `Checkpoint ${checkpointNumber} reached in ${checkpointTime / 1000}s, Total: ${totalTimeRef.current / 1000}s, Lap: ${lapTimeRef.current / 1000}s`
+        );
 
         toast.promise(
           updateCheckpoint({
@@ -338,7 +377,7 @@ export const SinglePlayer: React.FC<
             checkpointNumber,
           }),
           {
-            loading: "Updating checkpoint...",
+            loading: `Checkpoint ${checkpointNumber} reached in ${checkpointTime / 1000}s, Total: ${totalTimeRef.current / 1000}s, Lap: ${lapTimeRef.current / 1000}s, Updating Checkpoint...`,
             success: "Checkpoint updated",
             error: "Failed to update checkpoint",
           }
@@ -382,6 +421,12 @@ export const SinglePlayer: React.FC<
       if (timerRef.current) {
         timerRef.current.textContent = TIME_LIMIT.toString();
         timerRef.current.classList.remove("text-red-500");
+
+        // Reset timing refs when restarting
+        checkpointTimesRef.current = {};
+        lastCheckpointTimeRef.current = 0;
+        totalTimeRef.current = 0;
+        lapTimeRef.current = 0;
       }
     }
   });

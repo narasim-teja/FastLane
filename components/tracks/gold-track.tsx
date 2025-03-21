@@ -108,7 +108,7 @@ export function GoldTrack() {
               blockEnds.push(
                 <GoldBlockEnd
                   key={i}
-                  position={[0, 0, -i]}
+                  position={[0, 0, -(i + 29.15)]}
                   checkpoint={i / 50 + 1}
                 />
               );
@@ -116,7 +116,7 @@ export function GoldTrack() {
             return blockEnds;
           })()}
 
-          {Array.from({ length: rowCount / 9 }, (_, i) => (
+          {Array.from({ length: rowCount / 13 }, (_, i) => (
             <Track key={i} length={rowCount} row={i} />
           ))}
           <Environment preset="dawn" background />
