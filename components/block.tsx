@@ -99,8 +99,7 @@ export const EthStartingBlock: React.FC<{
 
 export const GoldBlockEnd: React.FC<{
   position?: Position;
-  checkpoint?: number;
-}> = ({ position = [0, 0, 0], checkpoint }) => {
+}> = ({ position = [0, 0, 0] }) => {
   const hascollided = React.useRef(false);
 
   const { nodes, materials } = useGLTF("/models/gold-track/checkpoint.glb");
@@ -126,7 +125,7 @@ export const GoldBlockEnd: React.FC<{
         // position={[0, 1.25, 2]}
         position={[0, 1, -2]}
       >
-        Checkpoint {checkpoint}
+        End
         <meshBasicMaterial toneMapped={false} />
       </Text>
 
@@ -167,7 +166,7 @@ export const GoldStartingBlock: React.FC<{
           // position={[0, 1.25, 2]}
           position={[0, 1, -2]}
         >
-          Checkpoint 1
+          Start
           <meshBasicMaterial toneMapped={false} />
         </Text>
 

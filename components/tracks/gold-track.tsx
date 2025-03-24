@@ -28,7 +28,6 @@ export function GoldTrack() {
   });
 
   const {
-    rowCount,
     setRowCount,
     segments,
     addObstaclesRow,
@@ -108,11 +107,7 @@ export function GoldTrack() {
 
           <GoldStartingBlock position={[0, 0, 2]} />
           {/* Single end block positioned at the end of 13 rows */}
-          <GoldBlockEnd
-            key="end-block"
-            position={[0, 0, -(10 * 5 + 29.15)]}
-            checkpoint={1}
-          />
+          <GoldBlockEnd key="end-block" position={[0, 0, -(10 * 5 + 29.15)]} />
 
           {/* Fixed track with 13 rows */}
           <Track key="main-track" length={15} row={0} />
