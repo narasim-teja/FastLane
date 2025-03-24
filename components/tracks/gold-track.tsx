@@ -35,6 +35,11 @@ export function GoldTrack() {
     // ...
   } = useGame();
 
+  // Set a fixed row count of 15
+  React.useEffect(() => {
+    setRowCount(15);
+  }, [setRowCount]);
+
   const { writeContractAsync } = useWriteInputBoxAddInput();
 
   const { mutate: revealRow } = api.ws.revealRow.useMutation();
@@ -45,7 +50,7 @@ export function GoldTrack() {
         args: [
           DAPP_ADDRESS,
           stringToHex(
-            `{"method":"generate_random","rows":${10},"cols":5,"max":4}`
+            `{"method":"generate_random","rows":${15},"cols":5,"max":4}`
           ),
         ],
       });
@@ -102,23 +107,15 @@ export function GoldTrack() {
           })}
 
           <GoldStartingBlock position={[0, 0, 2]} />
-          {(() => {
-            const blockEnds = [];
-            for (let i = 50; i <= rowCount * 5; i += 50) {
-              blockEnds.push(
-                <GoldBlockEnd
-                  key={i}
-                  position={[0, 0, -(i + 29.15)]}
-                  checkpoint={i / 50 + 1}
-                />
-              );
-            }
-            return blockEnds;
-          })()}
+          {/* Single end block positioned at the end of 13 rows */}
+          <GoldBlockEnd
+            key="end-block"
+            position={[0, 0, -(10 * 5 + 29.15)]}
+            checkpoint={1}
+          />
 
-          {Array.from({ length: rowCount / 13 }, (_, i) => (
-            <Track key={i} length={rowCount} row={i} />
-          ))}
+          {/* Fixed track with 13 rows */}
+          <Track key="main-track" length={15} row={0} />
           <Environment preset="dawn" background />
         </group>
       ))}

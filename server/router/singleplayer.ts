@@ -108,7 +108,7 @@ export const singlePlayerRouter = createRouter({
                     "bytes"
                   );
                   cartesiObstacleData = [
-                    ...convertFlatArrayTo2DArray(payload, 10, 5),
+                    ...convertFlatArrayTo2DArray(payload, 15, 5),
                   ];
                 }
 
