@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-properties */
 import { createApp } from "@deroll/app";
 import { createWallet } from "@deroll/wallet";
+import type { Address} from "viem";
 import { getAddress, hexToString, toHex } from "viem";
 
 const app = createApp({
@@ -8,6 +9,8 @@ const app = createApp({
 });
 
 const wallet = createWallet();
+
+const checkpoints: Record<Address, number> = {};
 
 app.addAdvanceHandler(wallet.handler);
 
@@ -33,36 +36,56 @@ function generateRandomObstacleDataFromHex(
 }
 
 app.addAdvanceHandler(async ({ metadata, payload }) => {
-  const payloadString = hexToString(payload);
-  console.log("Payload: ", payloadString);
   const sender = getAddress(metadata.msg_sender);
+  const payloadString = hexToString(payload);
+  console.log("Sender: ", sender);
+  console.log("Payload: ", payloadString);
 
-  const jsonPayload = JSON.parse(payloadString) as {
-    method: string;
+  type GenerateRandomPayload = {
+    method: "generate_random";
     rows: number;
     cols: number;
     max: number;
   };
 
-  if (jsonPayload.method === "generate_random") {
-    // Increment the number of attempts before generating the random obstacle data
+  type UpdateCheckpointPayload = {
+    method: "update_checkpoint";
+    checkpoint: number;
+    user: Address;
+  };
 
-    // Generate a 2D array of random obstacle data using hex payload and attempts
-    const randomObstacleData = generateRandomObstacleDataFromHex(
-      jsonPayload.rows,
-      jsonPayload.cols,
-      1,
-      jsonPayload.max
-    );
-    console.log("2D Array created: ", randomObstacleData);
+  type JsonPayload = GenerateRandomPayload | UpdateCheckpointPayload;
 
-    // Convert the 2D array to a flat Uint8Array and send it back as hex
-    const flatArray = randomObstacleData.flat();
-    const arr = new Uint8Array(flatArray);
-    app.createNotice({ payload: toHex(arr) });
+  const jsonPayload = JSON.parse(payloadString) as JsonPayload;
+
+  // Replace with desired address
+  if (sender == "0x0000000000000000000000000000000000000000") {
+    if (jsonPayload.method === "generate_random") {
+      // Generate a 2D array of random obstacle data using hex payload and attempts
+      const randomObstacleData = generateRandomObstacleDataFromHex(
+        jsonPayload.rows,
+        jsonPayload.cols,
+        1,
+        jsonPayload.max
+      );
+      console.log("2D Array created: ", randomObstacleData);
+      // Convert the 2D array to a flat Uint8Array and send it back as hex
+      const flatArray = randomObstacleData.flat();
+      const arr = new Uint8Array(flatArray);
+      app.createNotice({ payload: toHex(arr) });
+
+      return "accept";
+    } else if (jsonPayload.method === "update_checkpoint") {
+      const { checkpoint, user } = jsonPayload;
+      checkpoints[user] = checkpoint;
+      app.createNotice({ payload: toHex(checkpoints[user]) });
+
+      return "accept";
+    }
+    return "accept";
   }
 
-  return "accept";
+  return "reject";
 });
 
 app.start().catch((e) => {
